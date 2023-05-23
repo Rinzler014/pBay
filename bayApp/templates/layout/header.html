@@ -1,0 +1,84 @@
+
+
+
+  {% load static %}
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href=
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <title>Landing</title>
+      <link rel="stylesheet" href="{% static 'styles/navbar.css' %}" />
+
+      <!-- Simple lightbox CSS -->
+    <link rel="stylesheet" href="assets/css/simple-lightbox.min.css" />
+
+    <!-- Favicons -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/favicon-16x16.png"
+    />
+    </head>
+    <body>
+
+<nav>
+      <a href="#" class="logo">
+        <h1>
+          <span class="jab">p</span><span class="tv">Bay</span
+          >
+        </h1>
+      </a>
+  <div class="search">
+    <form class="search-box">
+      <input type="text" placeholder="Buscar...">
+      <button type="submit">
+        <img src="./img/search-img.png">
+      </button>
+    </form>
+  </div>
+  <ul>
+        <li class="nav-item">
+          <a href="#Home" class="nav-link" id="nav-link">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a href="#stars" class="nav-link" id="nav-link">Boxing Stars</a>
+        </li>
+        <li class="nav-item">
+          <a href="#stakeholders" class="nav-link" id="nav-link"
+            >Carrito de Compra</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="#sub" class="nav-link" id="nav-link">Cerrar Sesión</a>
+        </li>
+  </ul>
+
+  <div class="hamburger" id="hamburger">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+  </div>
+</nav>
+    </body>
+
+    {% block content %}
+    {% endblock %}
+
+    </html>
+
