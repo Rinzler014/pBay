@@ -1,0 +1,132 @@
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  .left {
+    left: 0;
+    background-color: #fff9ec;
+  }
+  
+  .img-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-top: 15%;
+  }
+  
+  .login-img {
+    border-radius: 10%;
+  }
+  
+  .welcome-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+  }
+  
+  .right {
+    right: 0;
+    background-color: #facb0c;
+  }
+  
+  .logo {
+    width: max-content;
+    height: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .right-container {
+    margin-top: 5%;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+  }
+  
+  .form-group {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  
+  .login-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .login-btn {
+    background-color: #facb0c;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1.2rem;
+    height: 3rem;
+    color: #333;
+  }
+  
+  .login-btn:hover {
+    background-color: #d7ae07;
+  }
+  
+  .register-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .register-btn {
+    background-color: #b3aa99;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+    height: 3rem;
+    font-size: 1.2rem;
+  }
+  
+  .register-btn:hover {
+    background-color: #a39b88;
+  }
+  
+  .password-help {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .password-help-text {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-style: italic;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+  }
+  

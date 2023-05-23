@@ -1,3 +1,6 @@
+{% extends "layouts/header.html"%}
+
+<!--  -->
 {% block content %}
 
   {% load static %}
@@ -5,14 +8,87 @@
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Landing</title>
-      <link rel="stylesheet" href="{% static 'styles/global.css' %}" />
+  
+      <link rel="stylesheet" href="{% static 'styles/login.css' %}" />
     </head>
+  
     <body>
-        <h1>Este es la pagina login</h1>
+      <div class="split right">
+        <div class="container">
+          <div class="img-container">
+            <img
+              class="login-img"
+              src="{% static 'assets/images/pablo.jpeg' %}"
+              alt=""
+              srcset=""
+            />
+          </div>
+        </div>
+      </div>
+  
+      <div class="split left">
+        <div class="container container-md right-container">
+          <div class="row">
+            <div class="col col-md logo-container">
+              <img
+                class="logo"
+                src="{% static 'assets/images/testfarma_logo.png' %}"
+                alt=""
+                srcset=""
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-md welcome-title">
+              <h1 class="title">Bienvenido</h1>
+            </div>
+          </div>
+          <div class="row login-form">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group">{{ form.email }}</div>
+  
+              <div class="form-group">{{ form.password }}</div>
+  
+              <div class="row btn-group">
+                <div class="col col-md-6 login-btn-container">
+                  <button class="btn btn-primary login-btn" type="submit">
+                    Inicia Sesión
+                  </button>
+                </div>
+                <div class="col col-md-6 register-btn-container">
+                  <button
+                    class="btn btn-primary register-btn"
+                    onclick="link_to_view()"
+                  >
+                    Registrate
+                  </button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col col-md-12 password-help">
+                  <small class="form-text text-muted"
+                    ><a class="password-help-text" href="#"
+                      >¿Olvidaste tu contraseña?</a
+                    ></small
+                  >
+                </div>
+              </div>
+            </form>
+  
+            <div class="register-group"></div>
+          </div>
+        </div>
+      </div>
+  
+      <script>
+        function link_to_view() {
+          
+        }
+      </script>
     </body>
-    </html>
+  </html>
 
 {% endblock %}
