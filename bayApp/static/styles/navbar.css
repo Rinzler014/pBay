@@ -60,7 +60,7 @@ body {
   }
 
   nav {
-    background: #fff;
+    background: #19456B;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -70,6 +70,43 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+  }
+
+  .search {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-box {
+    background-color: #fff;
+    width: 90%;
+    max-width: 650px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    height: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 15px 10px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 20px;
+  }
+
+  .search-box button {
+    padding: 10px 15px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    cursor: pointer;
   }
 
   .hamburger {

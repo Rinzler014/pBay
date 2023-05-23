@@ -8,6 +8,8 @@
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href=
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <title>Landing</title>
       <link rel="stylesheet" href="{% static 'styles/navbar.css' %}" />
 
@@ -38,32 +40,40 @@
 <nav>
       <a href="#" class="logo">
         <h1>
-          <span class="jab">B</span><span class="tv">bay</span
+          <span class="jab">p</span><span class="tv">Bay</span
           >
         </h1>
       </a>
-<ul>
+  <div class="search">
+    <form class="search-box">
+      <input type="text" placeholder="Buscar...">
+      <button type="submit">
+        <img src="./img/search-img.png">
+      </button>
+    </form>
+  </div>
+  <ul>
         <li class="nav-item">
-          <a href="#about" class="nav-link" id="nav-link">About</a>
+          <a href="#Home" class="nav-link" id="nav-link">Inicio</a>
         </li>
         <li class="nav-item">
           <a href="#stars" class="nav-link" id="nav-link">Boxing Stars</a>
         </li>
         <li class="nav-item">
           <a href="#stakeholders" class="nav-link" id="nav-link"
-            >stakeholders</a
+            >Carrito de Compra</a
           >
         </li>
         <li class="nav-item">
-          <a href="#sub" class="nav-link" id="nav-link">Subscribe</a>
+          <a href="#sub" class="nav-link" id="nav-link">Cerrar Sesión</a>
         </li>
-</ul>
+  </ul>
 
-<div class="hamburger" id="hamburger">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-</div>
+  <div class="hamburger" id="hamburger">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+  </div>
 </nav>
     </body>
 
