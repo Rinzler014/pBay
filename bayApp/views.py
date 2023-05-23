@@ -14,3 +14,7 @@ def landing(request):
 
     return render(request, "landing.html")
 
+def details(request):
+
+    return render(request, "details_prod.html")
+
