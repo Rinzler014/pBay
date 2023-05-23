@@ -31,18 +31,8 @@
       <div class="split left">
         <div class="container container-md right-container">
           <div class="row">
-            <div class="col col-md logo-container">
-              <img
-                class="logo"
-                src="{% static 'assets/images/testfarma_logo.png' %}"
-                alt=""
-                srcset=""
-              />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col col-md welcome-title">
-              <h1 class="title">Bienvenido</h1>
+            <div class="col col-md welcome-title no-margin-top">
+              <h1>Sign In</h1>
             </div>
           </div>
           <div class="row login-form">
@@ -51,31 +41,36 @@
               <div class="form-group">{{ form.email }}</div>
   
               <div class="form-group">{{ form.password }}</div>
-  
-              <div class="row btn-group">
-                <div class="col col-md-6 login-btn-container">
-                  <button class="btn btn-primary login-btn" type="submit">
-                    Inicia Sesión
-                  </button>
-                </div>
-                <div class="col col-md-6 register-btn-container">
-                  <button
-                    class="btn btn-primary register-btn"
-                    onclick="link_to_view()"
-                  >
-                    Registrate
-                  </button>
-                </div>
-              </div>
+
               <div class="row">
                 <div class="col col-md-12 password-help">
                   <small class="form-text text-muted"
                     ><a class="password-help-text" href="#"
-                      >¿Olvidaste tu contraseña?</a
+                      >Forgot Password?</a
                     ></small
                   >
                 </div>
               </div>
+
+              <div class="row btn-group">
+                <div class="col col-md-10 offset-md-1 login-btn-container">
+                  <button class="btn btn-primary login-btn" type="submit">
+                    Login
+                  </button>
+                </div>
+                <div class="col col-md-10 offset-md-1">
+                  <p class="or">or</p>
+                </div>
+                <div class="col col-md-10 offset-md-1 register-btn-container">
+                  <button
+                    class="btn btn-primary register-btn"
+                    onclick="link_to_view()"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              </div>
+              
             </form>
   
             <div class="register-group"></div>

@@ -7,6 +7,10 @@ import json
 cred = credentials.Certificate("serAccountKey.json")
 firebase_admin.initialize_app(cred)
 
+def get_user(uid):
+    user = auth.get_user(uid)
+
+
 def get_db(collection):
     
     database = firestore.client()
