@@ -21,21 +21,25 @@
 
 <nav>
 
-  <div class="search">
-    <a href="#" class="logo">
-        <img style="width: 150px;" src = "{% static 'assets/img/Logo.png' %}" >
-    </a>
-    <form class="search-box">
-      <input type="text" placeholder="Buscar...">
-      <button type="submit" >
-        <img style="width: 30px;" src = "{% static 'assets/img/search-img.png' %}" >   
-      </button>
-    </form>
-    <div>
-        <button style="margin-right: 20px;" class=" boton-primary user-btn"><img style="width: 30px;" src="{% static 'assets/img/user.png' %}" alt=""></button>
-        <button class=" boton-secondary car-btn"><img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt=""></button>
-    </div>
-  </div>
+    <div class="search">
+        <div class="logo">
+          <img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}">
+        </div>
+        <form class="search-box">
+          <input type="text" placeholder="Buscar...">
+          <button type="submit">
+            <img style="width: 30px;" src="{% static 'assets/img/search-img.png' %}">
+          </button>
+        </form>
+        <div class="buttons">
+          <button class="user-btn" style="margin-right: 20px;">
+            <img style="width: 30px;" src="{% static 'assets/img/user.png' %}" alt="">
+          </button>
+          <button class="car-btn">
+            <img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt="">
+          </button>
+        </div>
+      </div>
 
 
 

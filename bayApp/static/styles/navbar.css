@@ -99,19 +99,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   .search-box {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
     background-color: #fff;
     width: 90%;
     max-width: 650px;
     padding: 10px;
-    display: flex;
-    align-items: center;
-    border-radius: 10px;
     height: 40px;
-    position: relative;
-    overflow: hidden;
+    border-radius: 10px;
   }
 
   .search-box input {
@@ -131,8 +133,21 @@ body {
     cursor: pointer;
   }
 
-  .hamburger {
-    display: none;
+  .buttons {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  @media (max-width: 600px) {
+    .search-box {
+      flex-basis: 100%;
+    }
+    
+    .buttons {
+      justify-content: flex-start;
+    }
   }
 
   .logo {
