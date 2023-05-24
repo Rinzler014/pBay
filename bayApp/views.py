@@ -41,3 +41,7 @@ def details(request):
 
     return render(request, "details_prod.html")
 
+def signup_2(request):
+
+    return render(request, "signup_2.html")
+
