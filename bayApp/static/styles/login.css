@@ -34,8 +34,11 @@
   color: #F8F1F1;
 }
 
-.no-margin-top {
-  margin-top: 0%;
+.signin-title {
+  margin-top: 10%;
+  align-items: start;
+  text-align: left;
+  justify-content: start;
 }
 
 .right {
@@ -111,14 +114,23 @@
   font-size: 1.2rem;
 }
 
-.or{
-display: flex;
-align-items: center;
-text-align: center;
-justify-content: center;
-margin-top: 2%;
-margin-bottom: 2%;
-color: #F8F1F1;
+p {
+  width: 100%; 
+  text-align: center; 
+  color: #F8F1F1;
+  border-bottom: 1px solid #F8F1F1; 
+  line-height: 0.1em;
+  margin: 10px 0 10px;
+}
+
+p span { 
+  background:#19456B; 
+  padding:0 10px;
+}
+
+.or {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .register-btn:hover {
