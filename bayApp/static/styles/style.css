@@ -47,22 +47,22 @@ a:hover{
     font-size: 1rem;
     border-radius: 5px;
 }
-.btn-primary{
+.boton-primary{
     background-color: #11698E;
     color: white;
     cursor: pointer;
 }
-.btn-primary:hover{
+.boton-primary:hover{
     color: white;
     background-color: #529cc6;
 }
 
-.btn-secondary{
+.boton-secondary{
     background-color: #16C79A;
     color: white;
     cursor: pointer;
 }
-.btn-secondary:hover{
+.boton-secondary:hover{
     color: white;
     background-color: #57e7c3;
 }

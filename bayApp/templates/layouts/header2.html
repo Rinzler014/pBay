@@ -1,0 +1,48 @@
+
+
+
+  {% load static %}
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      <title>Landing</title>
+      <link rel="stylesheet" href="{% static 'styles/navbar.css' %}" />
+      <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+
+      <!-- Simple lightbox CSS -->
+    <link rel="stylesheet" href="assets/css/simple-lightbox.min.css" />
+
+    </head>
+    <body>
+
+<nav>
+
+  <div class="search">
+    <a href="#" class="logo">
+        <img style="width: 150px;" src = "{% static 'assets/img/Logo.png' %}" >
+    </a>
+    <form class="search-box">
+      <input type="text" placeholder="Buscar...">
+      <button type="submit" >
+        <img style="width: 30px;" src = "{% static 'assets/img/search-img.png' %}" >   
+      </button>
+    </form>
+    <div>
+        <button style="margin-right: 20px;" class=" boton-primary user-btn"><img style="width: 30px;" src="{% static 'assets/img/user.png' %}" alt=""></button>
+        <button class=" boton-secondary car-btn"><img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt=""></button>
+    </div>
+  </div>
+
+
+
+</nav>
+    </body>
+
+    {% block content %}
+    {% endblock %}
+
+    </html>
