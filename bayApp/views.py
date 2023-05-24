@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.shortcuts import redirect
 from .forms import *
-import utils
+from utils import *
 
 
 def login(request):
@@ -18,8 +19,8 @@ def login(request):
         if form.is_valid():
             
             try:
-                user = utils.authenticate_user(form.cleaned_data["email"], form.cleaned_data["password"])
-                messages.success(request, f"Usuario autenticado correctamente con el UID {user.uid}")
+                user = firebase.auth().sign_in_with_email_and_password(form.cleaned_data["email"], form.cleaned_data["password"])
+                messages.success(request, f"Usuario {user['localId']} autenticado correctamente") 
             
             except Exception as e:
                 
