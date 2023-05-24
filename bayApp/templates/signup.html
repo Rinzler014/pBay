@@ -1,21 +1,50 @@
-{% extends "layouts/header.html"%}
 
-
-{% block content %}
 
   {% load static %}
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Landing</title>
-      <link rel="stylesheet" href="{% static 'styles/global.css' %}" />
-    </head>
-    <body>
-        <h1>Este es la pagina sign up</h1>
-    </body>
-    </html>
 
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing</title>
+    <link rel="stylesheet" href="{% static 'styles/signup_1.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="blue_box">
+        <div class="flex-3">
+          <h1 class="tittle">Primer Paso, Conocerte Mejor</h1>
+        <div class="flex-2">
+          <form class="form">
+            <input type="text" class="form-input" placeholder="Nombre(s)" />
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Apellido Paterno"
+            />
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Apellido Materno"
+            />
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Telefono Celular"
+            />
+          </form>
+          <img class="img" src="./../static/assets/img/Logo.png" alt="Logo image">
+        </div>
+        <div class="flex-2">
+          <button class="btn-sig">Siguiente</button>
+          <div class="spacer"></div>
+        </div> 
+        </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
