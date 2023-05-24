@@ -11,6 +11,28 @@
   --transition: 0.4s ease-in;
 }
 
+.user-btn {
+  background-color: #11698E;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  height: 3rem;
+  color: #F8F1F1;
+}
+
+.car-btn {
+  background-color: #16C79A;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  height: 3rem;
+  color: #F8F1F1;
+}
+
 /* Smooth scroll effect */
 html {
   scroll-behavior: smooth;
