@@ -113,10 +113,10 @@ def signup_3(request):
             
             try:
                 
-                auth.create_user_with_email_and_password(data["email"], data["password"])
-                data.pop("password")
-                db.child("users").child(data["personalID"]).set(data)
-                storage.child(f"users/{data['email']}/personalID").put(f"temp/{data['personalID_filename']}")
+                user = auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")           
+                db.child("users").child(user["localId"]).set(data)
+                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID_filename']}")
                 print("Usuario creado correctamente")
                 
                 os.remove(f"temp/{data['personalID_filename']}")
