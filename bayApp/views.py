@@ -25,6 +25,8 @@ def login(request):
             try:
                 user = firebase.auth().sign_in_with_email_and_password(form.cleaned_data["email"], form.cleaned_data["password"])
                 messages.success(request, f"Usuario {user['localId']} autenticado correctamente") 
+                
+                return redirect("landing", user=user["localId"])
             
             except Exception as e:
                 
@@ -129,12 +131,13 @@ def signup_3(request):
     
     return render(request, "signup_3.html", context)
 
-def landing(request):
+def landing(request, user):
+    
     context = db.child("products").child("product1").get().val()
 
     context_list = [context] * 10
 
-    return render(request, "landing.html", {"context_list": context_list})
+    return render(request, "landing.html", {"context_list": context_list, "user": user})
     
 def details(request):
     context = db.child("products").child("product1").get().val()
