@@ -17,30 +17,19 @@
         <div class="flex-3">
           <h1 class="tittle">Primer Paso, Conocerte Mejor</h1>
         <div class="flex-2">
-          <form class="form">
-            <input type="text" class="form-input" placeholder="Nombre(s)" />
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Apellido Paterno"
-            />
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Apellido Materno"
-            />
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Telefono Celular"
-            />
+          <form method="POST" class = "form">
+            {{ form.name }}
+            {{ form.last_name }}
+            {{ form.mom_last_name }}
+            {{ form.cellular }}
           </form>
-          <img class="img" src="./../static/assets/img/Logo.png" alt="Logo image">
+          <img class="img" src="{% static 'assets/img/Logo.png' %}" alt="Logo image">
         </div>
         <div class="flex-2">
           <button class="btn-sig">Siguiente</button>
-          <div class="spacer"></div>
-        </div> 
+        <div class="spacer"></div>
+        
+      </div> 
         </div>
         </div>
       </div>

@@ -30,8 +30,13 @@ def login(request):
     return render(request, "login.html", context)
 
 def signup(request):
+    
+    form = CacheSignUpFormP1()
+    context = {
+        "form": form
+    }
 
-    return render(request, "signup.html")
+    return render(request, "signup.html", context)
 
 def landing(request):
 
