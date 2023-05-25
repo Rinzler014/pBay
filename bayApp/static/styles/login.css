@@ -10,7 +10,7 @@
 
 .left {
   left: 0;
-  background-color: #19456B;
+  background-color: #19456b;
 }
 
 .img-container {
@@ -18,11 +18,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  margin-top: 15%;
-}
-
-.login-img {
-  border-radius: 10%;
+  margin-top: 40%;
 }
 
 .welcome-title {
@@ -31,11 +27,11 @@
   text-align: center;
   justify-content: center;
   margin-top: 10%;
-  color: #F8F1F1;
+  color: #f8f1f1;
 }
 
 .signin-title {
-  margin-top: 10%;
+  margin-top: 20%;
   align-items: start;
   text-align: left;
   justify-content: start;
@@ -43,7 +39,7 @@
 
 .right {
   right: 0;
-  background-color: #19456B;
+  background-color: #19456b;
 }
 
 .logo {
@@ -86,15 +82,14 @@
 }
 
 .login-btn {
-  background-color: #11698E;
+  background-color: #11698e;
   border: none;
   width: 100%;
   font-weight: bold;
   font-size: 1.2rem;
   height: 3rem;
-  color: #F8F1F1;
+  color: #f8f1f1;
 }
-
 
 .login-btn:hover {
   background-color: #0f5572;
@@ -107,7 +102,7 @@
 }
 
 .register-btn {
-  background-color: #16C79A;
+  background-color: #16c79a;
   border: none;
   width: 100%;
   font-weight: bold;
@@ -116,17 +111,17 @@
 }
 
 p {
-  width: 100%; 
-  text-align: center; 
-  color: #F8F1F1;
-  border-bottom: 1px solid #F8F1F1; 
+  width: 100%;
+  text-align: center;
+  color: #f8f1f1;
+  border-bottom: 1px solid #f8f1f1;
   line-height: 0.1em;
   margin: 10px 0 10px;
 }
 
-p span { 
-  background:#19456B; 
-  padding:0 10px;
+p span {
+  background: #19456b;
+  padding: 0 10px;
 }
 
 .or {
@@ -147,7 +142,7 @@ p span {
 
 .password-help-text {
   text-decoration: none;
-  color : #F8F1F1;
+  color: #f8f1f1;
   font-weight: bold;
   font-style: italic;
 }
