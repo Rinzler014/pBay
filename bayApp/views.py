@@ -38,8 +38,9 @@ def landing(request):
     return render(request, "landing.html")
 
 def details(request):
+    context = db.child("products").child("product1").get().val()
 
-    return render(request, "details_prod.html")
+    return render(request, "details_prod.html", context)
 
 def signup_2(request):
 
