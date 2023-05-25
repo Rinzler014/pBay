@@ -108,6 +108,7 @@ def signup_3(request):
             data = form.cleaned_data
             data["personalID_filename"] = location_info["personalID_filename"]
             data.pop("password2")
+            data.pop("password1")
             
             try:
                 

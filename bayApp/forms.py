@@ -140,18 +140,18 @@ class SignUpForm(forms.Form):
 
     email = forms.EmailField(required=True,
             widget=forms.widgets.EmailInput(attrs={
-                'class': 'form-control form-control-lg',
+                'class': 'form-input form-control form-control-lg',
                 'placeholder': 'Correo Electrónico',
             }))
     
     password = forms.CharField(required=True,
             widget=forms.widgets.PasswordInput(attrs={
-                'class': 'pass1 form-control form-control-lg',
+                'class': 'form-input pass1 form-control form-control-lg',
                 'placeholder': 'Contraseña',
             }))
     
     password2 = forms.CharField(required=True,
             widget=forms.widgets.PasswordInput(attrs={
-                'class' : 'pass2 form-control form-control-lg',
+                'class' : 'form-input pass2 form-control form-control-lg',
                 'placeholder': 'Confirma tu contraseña',
             }))
