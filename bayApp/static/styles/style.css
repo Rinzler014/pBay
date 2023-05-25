@@ -150,10 +150,11 @@ fieldset{
 .food-menu-box{
     width: 17%;
     margin: 1%;
-    padding: 2%;
+    padding: 1.5%;
     float: left;
     background-color: white;
     border-radius: 15px;
+    
 }
 
 .food-menu-img{
@@ -170,6 +171,13 @@ fieldset{
     margin-left: 8%;
 }
 
+.food-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+}
+
 .food-price{
     font-size: 1.2rem;
     margin: 2% 0;
@@ -177,6 +185,11 @@ fieldset{
 .food-detail{
     font-size: 1rem;
     color: #747d8c;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 设置你想要的行数 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    
 }
 
 

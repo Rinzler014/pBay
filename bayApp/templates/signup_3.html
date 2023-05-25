@@ -15,13 +15,11 @@
         Solo unos datos mas $user y tendras tu cuenta lista !
       </h1>
       <div class="flex-box">
-        <form action="" class="flex-form">
-          <input
-            class="form-input"
-            placeholder="Corre Electrónico"
-            type="text"
-          />
-          <input class="form-input" placeholder="Contraseña" type="password" />
+        <form method="POST" class="flex-form">
+          {% csrf_token %}
+          
+          {{ form.email }}
+          {{ form.password }}
           <div class="list">
             <p>Para una mejor seguridad tu contraseña debe tener :</p>
             <ul>
@@ -32,11 +30,7 @@
               <li>Digitos</li>
             </ul>
           </div>
-          <input
-            class="form-input"
-            placeholder="Confirma tu Contraseña"
-            type="password"
-          />
+          {{ form.password2 }}
           <div class="flex-2">
             <input class="form-check" type="checkbox" />
             <p class="terminos">Acepto terminos y condiciones.</p>
@@ -45,7 +39,7 @@
         </form>
         <img
           class="logo"
-          src="./../static/assets/img/Logo.png"
+          src="{% static 'assets/img/Logo.png' %}"
           alt="Logo image"
         />
       </div>
