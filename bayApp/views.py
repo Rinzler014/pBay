@@ -54,3 +54,7 @@ def signup_2(request):
 def signup_3(request):
 
     return render(request, "signup_3.html")
+
+def edit_info_prod(request):
+
+    return render(request, "edit_info_prod.html")
