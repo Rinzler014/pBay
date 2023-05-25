@@ -138,3 +138,8 @@ def details(request):
     context = db.child("products").child("product1").get().val()
 
     return render(request, "details_prod.html", context)
+
+def shopping(request):
+    context = db.child("products").child("product1").get().val()
+
+    return render(request, "shopping_cart.html", context)
