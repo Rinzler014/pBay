@@ -46,3 +46,6 @@ def signup_2(request):
 
     return render(request, "signup_2.html")
 
+def signup_3(request):
+
+    return render(request, "signup_3.html")
