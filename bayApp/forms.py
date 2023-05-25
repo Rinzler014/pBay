@@ -73,7 +73,6 @@ class CacheSignUpFormP2(forms.Form):
     
     personalID = forms.FileField(required=True,
             widget=forms.widgets.FileInput(attrs={
-                "class" : "file-input",
                 'placeholder': 'Identificacion Personal',
             }))
 
