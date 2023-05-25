@@ -39,9 +39,12 @@ def signup(request):
     return render(request, "signup.html", context)
 
 def landing(request):
+    context = db.child("products").child("product1").get().val()
 
-    return render(request, "landing.html")
+    context_list = [context] * 10
 
+    return render(request, "landing.html", {"context_list": context_list})
+    
 def details(request):
     context = db.child("products").child("product1").get().val()
 
