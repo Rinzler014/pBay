@@ -7,8 +7,7 @@ urlpatterns = [
     path("signup/", views.signup, name="signup"),
     path("signup/personal_info/", views.signup_2, name="signup_2"),
     path("signup/personal_info/account", views.signup_3, name="signup_3"),
-    path("landing/", views.landing, name="landing"),
-    path("details/", views.details, name="details"),
-    path("edit_info_prod/", views.edit_info_prod, name="edit_info_prod")
-
+    path("landing/<str:user>", views.landing, name="landing"),
+    path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
+    path("details/", views.details, name="details"), 
 ]

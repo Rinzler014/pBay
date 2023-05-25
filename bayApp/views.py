@@ -25,6 +25,8 @@ def login(request):
             try:
                 user = firebase.auth().sign_in_with_email_and_password(form.cleaned_data["email"], form.cleaned_data["password"])
                 messages.success(request, f"Usuario {user['localId']} autenticado correctamente") 
+                
+                return redirect("landing", user=user["localId"])
             
             except Exception as e:
                 
@@ -87,7 +89,7 @@ def signup_2(request):
 
 def signup_3(request):
 
-    form = SignUpForm()
+    form = SignUpForm(request=request)
     context = {
         "form": form
     }
@@ -101,7 +103,7 @@ def signup_3(request):
         updated_data.update(personal_info)
         updated_data.update(location_info)
         
-        form = SignUpForm(updated_data)
+        form = SignUpForm(updated_data, request=request)
         
         if form.is_valid():
             
@@ -111,10 +113,10 @@ def signup_3(request):
             
             try:
                 
-                auth.create_user_with_email_and_password(data["email"], data["password"])
-                data.pop("password")
-                db.child("users").child(data["personalID"]).set(data)
-                storage.child(f"users/{data['email']}/personalID").put(f"temp/{data['personalID_filename']}")
+                user = auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")           
+                db.child("users").child(user["localId"]).set(data)
+                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID_filename']}")
                 print("Usuario creado correctamente")
                 
                 os.remove(f"temp/{data['personalID_filename']}")
@@ -124,17 +126,23 @@ def signup_3(request):
             except Exception as e:
                 
                 print(e)
+        
+        
     
     return render(request, "signup_3.html", context)
 
-def landing(request):
+def landing(request, user):
+    
     context = db.child("products").child("product1").get().val()
 
     context_list = [context] * 10
 
-    return render(request, "landing.html", {"context_list": context_list})
+    return render(request, "landing.html", {"context_list": context_list, "user": user})
     
 def details(request):
     context = db.child("products").child("product1").get().val()
 
     return render(request, "details_prod.html", context)
+
+def shopping_cart(request):
+    return render(request, "shopping_cart.html")
