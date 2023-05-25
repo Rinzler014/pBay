@@ -1,5 +1,6 @@
 from django import forms
-
+import re
+from django.contrib import messages
 class LoginForm(forms.Form):
     
     email = forms.EmailField(widget=forms.widgets.TextInput(attrs={
@@ -78,6 +79,10 @@ class CacheSignUpFormP2(forms.Form):
 
 
 class SignUpForm(forms.Form):
+        
+    def __init__(self, *args, **kwargs): 
+        self.request = kwargs.pop('request')
+        super(SignUpForm,self).__init__(*args,**kwargs)
     
     name = forms.CharField(required=True,
         widget=forms.widgets.TextInput(attrs={
@@ -155,3 +160,22 @@ class SignUpForm(forms.Form):
                 'class' : 'form-input pass2 form-control form-control-lg',
                 'placeholder': 'Confirma tu contraseña',
             }))
+    
+    def clean_password(self):
+            
+            password = self.cleaned_data.get('password')
+            regex = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
+            
+            if not regex.match(password):
+                messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
+                raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
+            
+    
+    def clean_password2(self):
+        cleaned_data = super().clean()
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+        if password != password2:
+            messages.error(self.request, "Las contraseñas no coinciden")
+            raise forms.ValidationError("Las contraseñas no coinciden")
+        return cleaned_data

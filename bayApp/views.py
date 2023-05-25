@@ -87,7 +87,7 @@ def signup_2(request):
 
 def signup_3(request):
 
-    form = SignUpForm()
+    form = SignUpForm(request=request)
     context = {
         "form": form
     }
@@ -101,7 +101,7 @@ def signup_3(request):
         updated_data.update(personal_info)
         updated_data.update(location_info)
         
-        form = SignUpForm(updated_data)
+        form = SignUpForm(updated_data, request=request)
         
         if form.is_valid():
             
@@ -124,6 +124,8 @@ def signup_3(request):
             except Exception as e:
                 
                 print(e)
+        
+        
     
     return render(request, "signup_3.html", context)
 
