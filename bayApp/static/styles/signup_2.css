@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  background-color: #f8f1f1;
+  background-color: #19456b;
   color: #222;
   font-family: sans-serif;
   width: 100%;
@@ -65,13 +65,13 @@ body {
 .title {
   color: #f8f1f1;
   text-align: center;
-  font-size: 3rem;
-  padding-top: 1.5rem;
+  font-size: 3.5rem;
+  padding-top: 1rem;
 }
 
 .subtitle {
   color: #f8f1f1;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .normal-text {
@@ -86,10 +86,13 @@ body {
   border-radius: 10rem;
   width: 10rem;
   height: 2rem;
+  margin-bottom: 3rem;
 }
 
 .btn-sig {
   transition: all 0.3s;
+  margin-top: 1rem;
+  grid-column: 1/4;
   height: 3rem;
   background-color: #11698e;
   border: transparent;
