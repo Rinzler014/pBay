@@ -161,6 +161,8 @@ class SignUpForm(forms.Form):
                 'placeholder': 'Confirma tu contraseña',
             }))
     
+
+    
     def clean_password(self):
             
             password = self.cleaned_data.get('password')
@@ -169,13 +171,18 @@ class SignUpForm(forms.Form):
             if not regex.match(password):
                 messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
                 raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
+        
+            return password
             
     
     def clean_password2(self):
+
         cleaned_data = super().clean()
-        password = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
+        password = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
+
         if password != password2:
             messages.error(self.request, "Las contraseñas no coinciden")
             raise forms.ValidationError("Las contraseñas no coinciden")
-        return cleaned_data
+
+        return password2

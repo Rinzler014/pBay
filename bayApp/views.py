@@ -126,6 +126,7 @@ def signup_3(request):
             except Exception as e:
                 
                 print(e)
+                messages.error(request, f"Error al crear usuario: {e}")
         
         
     
