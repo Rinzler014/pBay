@@ -1,0 +1,103 @@
+{% extends "layouts/header2.html"%} {% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/shopping_cart.css' %}" />
+  </head>
+  <body>
+    <h2 class="title-shopping">Carro de compras</h2>
+    <section class="container-shopping">
+      <div class="container-products">
+        <div class="container-product">
+          <div class="container-img-title">
+            <h2 class="seller">
+              Vendedor:
+              <p>Acer</p>
+            </h2>
+            <img src="../static//images//prod_1.jpg" alt="" />
+          </div>
+          <p class="product-description">
+            Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
+            - nueva y sellada ...
+          </p>
+          <div class="substract-add">
+            <button class="buttons-product">-</button>
+            <p>1</p>
+            <button class="buttons-product">+</button>
+          </div>
+          <div class="info">
+            <p class="price">MX $11,000</p>
+            <p class="shipping-method">Gratis</p>
+            <button class="button-info">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="container-product">
+          <div class="container-img-title">
+            <h2 class="seller">
+              Vendedor:
+              <p>Acer</p>
+            </h2>
+            <img src="../static//images//prod_1.jpg" alt="" />
+          </div>
+          <p class="product-description">
+            Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
+            - nueva y sellada ...
+          </p>
+          <div class="substract-add">
+            <button class="buttons-product">-</button>
+            <p>1</p>
+            <button class="buttons-product">+</button>
+          </div>
+          <div class="info">
+            <p class="price">MX $11,000</p>
+            <p class="shipping-method">Gratis</p>
+            <button class="button-info">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="container-product">
+            <div class="container-img-title">
+              <h2 class="seller">
+                Vendedor:
+                <p>Acer</p>
+              </h2>
+              <img src="../static//images//prod_1.jpg" alt="" />
+            </div>
+            <p class="product-description">
+              Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
+              - nueva y sellada ...
+            </p>
+            <div class="substract-add">
+              <button class="buttons-product">-</button>
+              <p>1</p>
+              <button class="buttons-product">+</button>
+            </div>
+            <div class="info">
+              <p class="price">MX $11,000</p>
+              <p class="shipping-method">Gratis</p>
+              <button class="button-info">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="container-details-buy">
+          <button class="button-details-buy">Completar Transacción</button>
+          <div class="container-info">
+            <div><p>Articulos:</p><sapan>MX $26,000</sapan></div>
+            <div><p>Envio:</p><sapan>Gratis</sapan></div>
+            <div><p>Subtotal:</p><sapan>MX $26,000</sapan></div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
+
+{% endblock %}
