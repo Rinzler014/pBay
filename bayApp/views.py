@@ -108,12 +108,12 @@ def signup_3(request):
             data = form.cleaned_data
             data["personalID_filename"] = location_info["personalID_filename"]
             data.pop("password2")
-            data.pop("password")
             
             try:
                 
-                db.child("users").child(data["personalID"]).set(data)
                 auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")
+                db.child("users").child(data["personalID"]).set(data)
                 storage.child(f"users/{data['email']}/personalID").put(f"temp/{data['personalID_filename']}")
                 print("Usuario creado correctamente")
                 
