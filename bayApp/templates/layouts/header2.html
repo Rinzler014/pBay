@@ -23,7 +23,7 @@
 
     <div class="search">
         <div class="logo">
-          <img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}">
+          <a href=""><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
         </div>
         <form class="search-box">
           <input type="text" placeholder="Buscar...">
@@ -36,7 +36,7 @@
             <img style="width: 30px;" src="{% static 'assets/img/user.png' %}" alt="">
           </button>
           <button class="car-btn">
-            <img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt="">
+            <a href="{% url 'shopping_cart' %}"><img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt=""></a>
           </button>
         </div>
       </div>
