@@ -15,7 +15,31 @@
     </head>
     <body>
 
-        <!-- fOOD MEnu Section Starts Here -->
+      <div class="container" >
+        <div class="counters">
+          <div class="counter">
+            <span class="counter-value">0</span>
+            <span class="counter-label">Activo</span>
+          </div>
+          <div class="counter">
+            <span class="counter-value">0</span>
+            <span class="counter-label">Vendido</span>
+          </div>
+          <div class="counter">
+            <span class="counter-value">0</span>
+            <span class="counter-label">No vendido</span>
+          </div>
+        </div>
+        <div class="total-counter">
+          <span class="currency-symbol">$</span>
+          <span class="counter-value">0</span>
+          <span class="counter-label">Total en 90 días</span>
+        </div>
+        <button class="sell-button">Vender Articulo</button>
+      
+      </div>
+
+    <!-- fOOD MEnu Section Starts Here -->
     <div class="container" >
         <h2 class="text-left">Objetos Vendidos</h2>
 
@@ -40,8 +64,37 @@
       {% endfor %}        
   
     </div>
-  <!-- fOOD Menu Section Ends Here -->
 </div>
+<!-- fOOD Menu Section Ends Here -->
+
+<!-- fOOD MEnu Section Starts Here -->
+<div class="container" >
+  <h2 class="text-left">Objetos en Venta</h2>
+
+  {% for context in context_list %}
+  <div>
+  <div class="food-menu-box">
+      <div class="food-menu-img">
+          <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+      </div>
+
+      <div class="food-menu-desc">
+          <h4 class="food-title">{{ context.title }}</h4>
+          <p class="food-price">${{ context.price }}</p>
+          <p class="food-detail">
+            {{ context.description }}
+          </p>
+          <br>
+
+          <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
+      </div>
+  </div>
+{% endfor %}        
+
+</div>
+</div>
+<!-- fOOD Menu Section Ends Here -->
+
 </body> 
 
 {% endblock %}

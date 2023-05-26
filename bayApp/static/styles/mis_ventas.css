@@ -1,3 +1,4 @@
+
 .text-right{
     text-align: right;
 }
@@ -8,13 +9,59 @@
     text-align: left;
 }
 
-.container{
+.container {
     width: 90%;
     margin: 0 auto;
     padding: 1%;
     background-color: rgba(236, 236, 236, 1);
     margin-top: 1%;
-}
+  }
+  
+  .counters {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  .counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .counter-label {
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+  }
+  
+  .counter-value {
+    font-size: 28px;
+    margin-top: 5px;
+    text-align: center;
+  }
+  
+  .total-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: center;
+  }
+  
+  .currency-symbol {
+    font-size: 18px;
+  }
+  
+  .sell-button {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    align-self: flex-end;
+  }
+  
 
 .divgrande{
     width: 90%;
