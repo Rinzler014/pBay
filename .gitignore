@@ -1,2 +1,7 @@
 # Ignore all pyc files
 *.pyc
+bayApp/__pycache__/forms.cpython-310.pyc
+bayApp/__pycache__/forms.cpython-310.pyc
+bayApp/__pycache__/urls.cpython-310.pyc
+bayApp/__pycache__/views.cpython-310.pyc
+*.pyc

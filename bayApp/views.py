@@ -25,10 +25,12 @@ def login(request):
             try:
                 user = firebase.auth().sign_in_with_email_and_password(form.cleaned_data["email"], form.cleaned_data["password"])
                 messages.success(request, f"Usuario {user['localId']} autenticado correctamente") 
+                
+                return redirect("landing", user=user["localId"])
             
             except Exception as e:
                 
-                messages.error(request, f"Error al autenticar usuario: {e}")
+                messages.error(request, "Usuario o Contraseña incorrectos")
             
     
     return render(request, "login.html", context)
@@ -74,8 +76,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
             
-            form.cleaned_data["personalID"] = file_name
-            form.cleaned_data["personalID_filename"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(form.cleaned_data, default=str)
             
@@ -87,7 +88,7 @@ def signup_2(request):
 
 def signup_3(request):
 
-    form = SignUpForm()
+    form = SignUpForm(request=request)
     context = {
         "form": form
     }
@@ -101,7 +102,7 @@ def signup_3(request):
         updated_data.update(personal_info)
         updated_data.update(location_info)
         
-        form = SignUpForm(updated_data)
+        form = SignUpForm(updated_data, request=request)
         
         if form.is_valid():
             
@@ -111,10 +112,10 @@ def signup_3(request):
             
             try:
                 
-                auth.create_user_with_email_and_password(data["email"], data["password"])
-                data.pop("password")
-                db.child("users").child(data["personalID"]).set(data)
-                storage.child(f"users/{data['email']}/personalID").put(f"temp/{data['personalID_filename']}")
+                user = auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")           
+                db.child("users").child(user["localId"]).set(data)
+                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID']}")
                 print("Usuario creado correctamente")
                 
                 os.remove(f"temp/{data['personalID_filename']}")
@@ -124,17 +125,32 @@ def signup_3(request):
             except Exception as e:
                 
                 print(e)
+                messages.error(request, f"Error al crear usuario: {e}")
+        
+        
     
     return render(request, "signup_3.html", context)
 
-def landing(request):
+def landing(request, user):
+    
     context = db.child("products").child("product1").get().val()
 
     context_list = [context] * 10
 
-    return render(request, "landing.html", {"context_list": context_list})
+    return render(request, "landing.html", {"context_list": context_list, "user": user})
     
 def details(request):
     context = db.child("products").child("product1").get().val()
 
     return render(request, "details_prod.html", context)
+
+def shopping_cart(request):
+    return render(request, "shopping_cart.html")
+
+def auctions(request, user):
+    
+    context = {
+        "user": user
+    }
+    
+    return render(request, "auctions.html", context)
