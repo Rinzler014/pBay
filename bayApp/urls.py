@@ -9,6 +9,12 @@ urlpatterns = [
     path("signup/personal_info/account", views.signup_3, name="signup_3"),
     path("landing/<str:user>", views.landing, name="landing"),
     path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
+<<<<<<< HEAD
     path("details/", views.details, name="details"),
     path("mis_ventas/<str:user>", views.mis_ventas, name="mis_ventas"),
 ]
+=======
+    path("details/", views.details, name="details"), 
+    path("bids/", views.bids, name="bids"),
+]
+>>>>>>> main

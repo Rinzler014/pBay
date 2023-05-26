@@ -18,6 +18,7 @@ def login(request):
 
         if form.is_valid():
             try:
+<<<<<<< HEAD
                 user = firebase.auth().sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
                 )
@@ -30,6 +31,18 @@ def login(request):
             except Exception as e:
                 messages.error(request, f"Error al autenticar usuario: {e}")
 
+=======
+                user = firebase.auth().sign_in_with_email_and_password(form.cleaned_data["email"], form.cleaned_data["password"])
+                messages.success(request, f"Usuario {user['localId']} autenticado correctamente") 
+                
+                return redirect("landing", user=user["localId"])
+            
+            except Exception as e:
+                
+                messages.error(request, "Usuario o Contraseña incorrectos")
+            
+    
+>>>>>>> main
     return render(request, "login.html", context)
 
 
@@ -64,6 +77,7 @@ def signup_2(request):
             file_extension = file.name.split(".")[-1]
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
+<<<<<<< HEAD
 
             form.cleaned_data["personalID"] = file_name
             form.cleaned_data["personalID_filename"] = (
@@ -73,6 +87,10 @@ def signup_2(request):
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
             )
+=======
+            
+            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
+>>>>>>> main
 
             return redirect("signup_3")
 
@@ -85,6 +103,14 @@ def signup_3(request):
     form = SignUpForm(request=request)
     context = {"form": form}
 
+<<<<<<< HEAD
+=======
+    form = SignUpForm(request=request)
+    context = {
+        "form": form
+    }
+    
+>>>>>>> main
     if request.method == "POST":
         personal_info = json.loads(request.session["personal_info"])
         location_info = json.loads(request.session["location_info"])
@@ -92,15 +118,22 @@ def signup_3(request):
         updated_data = request.POST.copy()
         updated_data.update(personal_info)
         updated_data.update(location_info)
+<<<<<<< HEAD
 
         form = SignUpForm(updated_data, request=request)
 
+=======
+        
+        form = SignUpForm(updated_data, request=request)
+        
+>>>>>>> main
         if form.is_valid():
             data = form.cleaned_data
             data["personalID_filename"] = location_info["personalID_filename"]
             data.pop("password2")
 
             try:
+<<<<<<< HEAD
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
@@ -109,6 +142,13 @@ def signup_3(request):
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID_filename']}"
                 )
+=======
+                
+                user = auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")           
+                db.child("users").child(user["localId"]).set(data)
+                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID']}")
+>>>>>>> main
                 print("Usuario creado correctamente")
 
                 os.remove(f"temp/{data['personalID_filename']}")
@@ -118,23 +158,38 @@ def signup_3(request):
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
+<<<<<<< HEAD
 
     return render(request, "signup_3.html", context)
 
 
 def landing(request, user):
+=======
+        
+        
+    
+    return render(request, "signup_3.html", context)
+
+def landing(request, user):
+    
+>>>>>>> main
     context = db.child("products").child("product1").get().val()
 
     context_list = [context] * 10
 
     return render(request, "landing.html", {"context_list": context_list, "user": user})
+<<<<<<< HEAD
 
 
+=======
+    
+>>>>>>> main
 def details(request):
     context = db.child("products").child("product1").get().val()
 
     return render(request, "details_prod.html", context)
 
+<<<<<<< HEAD
 
 def shopping_cart(request):
     return render(request, "shopping_cart.html")
@@ -148,3 +203,18 @@ def mis_ventas(request, user):
     return render(
         request, "mis_ventas.html", {"context_list": context_list, "user": user}
     )
+=======
+def shopping_cart(request):
+    return render(request, "shopping_cart.html")
+
+def auctions(request, user):
+    
+    context = {
+        "user": user
+    }
+    
+    return render(request, "auctions.html", context)
+
+def bids(request):
+    return render(request, "bids.html")
+>>>>>>> main
