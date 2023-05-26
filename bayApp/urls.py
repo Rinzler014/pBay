@@ -10,6 +10,7 @@ urlpatterns = [
     path("landing/<str:user>", views.landing, name="landing"),
     path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
 <<<<<<< HEAD
+<<<<<<< HEAD
     path("details/", views.details, name="details"),
     path("mis_ventas/<str:user>", views.mis_ventas, name="mis_ventas"),
 ]
@@ -20,6 +21,13 @@ urlpatterns = [
 ]
 >>>>>>> main
 =======
+    path("my_products/", views.my_products, name="my_products"),
+]
+>>>>>>> main
+=======
+    path("details/", views.details, name="details"),
+    path("bids/", views.bids, name="bids"),
+    path("bids_state/", views.bids_state, name="bids_state"),
     path("my_products/", views.my_products, name="my_products"),
 ]
 >>>>>>> main

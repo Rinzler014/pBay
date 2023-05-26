@@ -71,18 +71,30 @@ p {
   margin-left: 1rem;
 }
 
-.time-for-auction {
+.message {
   font-size: 1.2rem;
   margin-left: 0;
   color: rgb(102, 101, 101);
   margin-bottom: 3rem;
 }
 
-.countdown {
+.auction {
   font-size: 2.5rem;
   margin-top: 1rem;
   margin-left: 0;
   margin-bottom: 0;
+}
+
+.won {
+  color: #16c79a;
+}
+
+.lost {
+  color: #ab3131;
+}
+
+.finished {
+  color: #11698e;
 }
 
 .current-bid {

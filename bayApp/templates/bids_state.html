@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="{% static 'styles/bids.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/bids_state.css' %}" />
   </head>
   <body>
     <div class="container-fluid w-75">
@@ -45,36 +45,10 @@
         <div class="col col-md-4">
           <div class="info-box">
             <div class="row">
-              <p class="center countdown bold">00:00:00</p>
+              <p class="center auction bold won">Auction Won</p>
             </div>
             <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center countdown bold">00:00:00</p>
-            </div>
-            <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
+              <p class="center message">Congratulations!</p>
             </div>
             <div class="row">
               <div class="col col-sm-5 offset-sm-1 right">
@@ -97,10 +71,36 @@
         <div class="col col-md-4">
           <div class="info-box">
             <div class="row">
-              <p class="center countdown bold">00:00:00</p>
+              <p class="center auction bold lost">Auction Lost</p>
             </div>
             <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
+              <p class="center message">Your bid was not accepted</p>
+            </div>
+            <div class="row">
+              <div class="col col-sm-5 offset-sm-1 right">
+                <p class="bold">Start Price&nbsp;:</p>
+              </div>
+              <div class="col col-sm-6 left">
+                <p>$&nbsp;000.000</p>
+              </div>
+            </div>
+            <div class="row current-bid">
+              <div class="col col-sm-5 offset-sm-1 right">
+                <p class="bold">Current Bid&nbsp;:</p>
+              </div>
+              <div class="col col-sm-6 left">
+                <p>$&nbsp;000.000</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-md-4">
+          <div class="info-box">
+            <div class="row">
+              <p class="center auction bold finished">Auction Finished</p>
+            </div>
+            <div class="row">
+              <p class="center message">Time is up!</p>
             </div>
             <div class="row">
               <div class="col col-sm-5 offset-sm-1 right">
