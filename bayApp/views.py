@@ -217,4 +217,11 @@ def auctions(request, user):
 
 def bids(request):
     return render(request, "bids.html")
+<<<<<<< HEAD
+>>>>>>> main
+=======
+
+def my_products(request):
+
+    return render(request, "my_products.html")
 >>>>>>> main

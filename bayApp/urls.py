@@ -16,5 +16,10 @@ urlpatterns = [
 =======
     path("details/", views.details, name="details"), 
     path("bids/", views.bids, name="bids"),
+<<<<<<< HEAD
+]
+>>>>>>> main
+=======
+    path("my_products/", views.my_products, name="my_products"),
 ]
 >>>>>>> main
