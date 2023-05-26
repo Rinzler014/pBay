@@ -1,99 +1,92 @@
 {% extends "layouts/header.html"%}
 
 <!--  -->
-{% block content %}
+{% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  {% load static %}
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-      <link rel="stylesheet" href="{% static 'styles/login.css' %}" />
-    </head>
-  
-    <body>
+    <link rel="stylesheet" href="{% static 'styles/login.css' %}" />
+  </head>
 
-
-
-      <div class="split right">
-
-        <div class="container">
-          <div class="img-container">
-            <img
-              class="login-img"
-              src="{% static 'assets/img/Logo.png' %}"
-              alt=""
-              srcset=""
-            />
-          </div>
+  <body>
+    <div class="split right">
+      <div class="container">
+        <div class="img-container">
+          <img
+            class="login-img"
+            src="{% static 'assets/img/Logo.png' %}"
+            alt=""
+            srcset=""
+          />
         </div>
       </div>
-      
-  
-      <div class="split left">
+    </div>
 
-        <div class="container container-md right-container">
-          <div class="row">
-            <div class="col col-md col-md-10 offset-md-1 welcome-title signin-title">
-              <h1>Sign In</h1>
+    <div class="split left">
+      <div class="container container-md right-container">
+        <div class="row">
+          <div
+            class="col col-md col-md-10 offset-md-1 welcome-title signin-title"
+          >
+            <h1>Sign In</h1>
+          </div>
+        </div>
+        <div class="row login-form">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="col col-md-10 offset-md-1">
+              <div class="form-group">{{ form.email }}</div>
             </div>
-          </div>
-          <div class="row login-form">
-            <form method="POST">
-              {% csrf_token %}
-              <div class="col col-md-10 offset-md-1">
-                <div class="form-group">{{ form.email }}</div>
+            <div class="col col-md-10 offset-md-1">
+              <div class="form-group">{{ form.password }}</div>
+            </div>
+            <div class="row">
+              <div class="col col-md-12 password-help">
+                <small class="form-text text-muted"
+                  ><a class="password-help-text" href="#"
+                    >Forgot Password?</a
+                  ></small
+                >
               </div>
-              <div class="col col-md-10 offset-md-1">
-                <div class="form-group">{{ form.password }}</div>
-              </div>
-              <div class="row">
-                <div class="col col-md-12 password-help">
-                  <small class="form-text text-muted"
-                    ><a class="password-help-text" href="#"
-                      >Forgot Password?</a
-                    ></small
-                  >
-                </div>
-              </div>
+            </div>
 
-              <div class="row btn-group">
-                <div class="col col-md-10 offset-md-1 login-btn-container">
-                  <button class="btn btn-primary login-btn" type="submit">
-                    Login
-                  </button>
-                </div>
-                <div class="col col-md-10 offset-md-1 or">
-                  <p>
-                    <span>or</span>
-                  </p>
-                </div>
-                <div class="col col-md-10 offset-md-1 register-btn-container">
-                  <button
-                    class="btn btn-primary register-btn"
-                    onclick="link_to_view()"
-                  >
-                    Sign Up
-                  </button>
-                </div>
+            <div class="row btn-group">
+              <div class="col col-md-10 offset-md-1 login-btn-container">
+                <button class="btn btn-primary login-btn" type="submit">
+                  Login
+                </button>
               </div>
-              
-            </form>
-  
-            <div class="register-group"></div>
-          </div>
+              <div class="col col-md-10 offset-md-1 or">
+                <p>
+                  <span>or</span>
+                </p>
+              </div>
+              <div class="col col-md-10 offset-md-1 register-btn-container">
+                <button
+                  class="btn btn-primary register-btn"
+                  onclick="link_to_view()"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="register-group"></div>
         </div>
       </div>
-  
-      <script>
-        function link_to_view() {
-          window.location.href = "{% url 'signup' %}";
-        }
-      </script>
-    </body>
-  </html>
+    </div>
+
+    <script>
+      function link_to_view() {
+        window.location.href = "{% url 'signup' %}";
+      }
+    </script>
+  </body>
+</html>
 
 {% endblock %}
