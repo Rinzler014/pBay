@@ -155,5 +155,5 @@ def auctions(request, user):
     
     return render(request, "auctions.html", context)
 
-def auctions(request):
-    return render(request, "auctions.html")
+def bids(request):
+    return render(request, "bids.html")

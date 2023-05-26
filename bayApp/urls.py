@@ -10,5 +10,5 @@ urlpatterns = [
     path("landing/<str:user>", views.landing, name="landing"),
     path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
     path("details/", views.details, name="details"), 
-    path("auctions/", views.auctions, name="auctions"),
+    path("bids/", views.bids, name="bids"),
 ]
