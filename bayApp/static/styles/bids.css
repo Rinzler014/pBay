@@ -6,40 +6,85 @@ body {
   margin-top: 4%;
 }
 
-.col {
+.bold {
+  font-weight: bold;
+}
+
+.center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 0;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 0;
+}
+
 .btn {
   margin: 0 0;
   width: 100%;
-  background-color: #11698e;
   color: #f8f1f1;
   font-weight: bold;
+  font-size: 1.5rem;
   letter-spacing: 1.2px;
   border: transparent;
   border-radius: 0.5rem;
   box-shadow: 0 3px #0000003f;
 }
 
-.btn.left {
+.left-btn {
+  background-color: #11698e;
+}
+
+.right-btn {
   background-color: #16c79a;
 }
 
 .img-fluid {
-  border-radius: 10px;
+  border-radius: 5px;
   margin-top: 4rem;
   margin-bottom: 4rem;
 }
 
 .info-box {
   width: 100%;
-  height: 19rem;
-  border-radius: 10px;
+  height: fit-content;
+  border-radius: 5px;
   background-color: #f1eaea;
   box-shadow: -1px 4px 7px 0px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: -1px 4px 7px 0px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: -1px 4px 7px 0px rgba(0, 0, 0, 0.4);
+}
+
+p {
+  font-size: 1.5rem;
+  margin-left: 1rem;
+}
+
+.time-for-auction {
+  font-size: 1.2rem;
+  margin-left: 0;
+  color: rgb(102, 101, 101);
+  margin-bottom: 3rem;
+}
+
+.countdown {
+  font-size: 2.5rem;
+  margin-top: 1rem;
+  margin-left: 0;
+  margin-bottom: 0;
+}
+
+.current-bid {
+  padding-bottom: 2.4rem;
 }
