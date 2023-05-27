@@ -14,7 +14,8 @@
       <link rel="stylesheet" href="{% static 'styles/mis_ventas.css' %}" />
     </head>
     <body>
-
+    
+      <!-- Contadores -->
       <div class="container" >
         <div class="counters">
           <div class="counter">
@@ -29,72 +30,73 @@
             <span class="counter-value">0</span>
             <span class="counter-label">No vendido</span>
           </div>
-        </div>
-        <div class="total-counter">
-          <span class="currency-symbol">$</span>
-          <span class="counter-value">0</span>
+        <div class="counter">
+          <span class="counter-value">$0</span>
           <span class="counter-label">Total en 90 días</span>
         </div>
-        <button class="sell-button">Vender Articulo</button>
-      
+        <div class="counter">
+          <button class="sell-button">Vender Articulo</button>
+        </div>
       </div>
+      </div>
+    <!-- Contadores -->
 
-    <!-- fOOD MEnu Section Starts Here -->
-    <div class="container" >
-        <h2 class="text-left">Objetos Vendidos</h2>
-
+    <!-- Sección 1 -->
+    <div class="container">
+      <h2 class="text-left">Objetos Vendidos</h2>
+      <div class="counters">
         {% for context in context_list %}
         <div>
-        <div class="food-menu-box">
+          <div class="food-menu-box">
             <div class="food-menu-img">
-                <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
             </div>
-      
-            <div class="food-menu-desc">
-                <h4 class="food-title">{{ context.title }}</h4>
-                <p class="food-price">${{ context.price }}</p>
-                <p class="food-detail">
-                  {{ context.description }}
-                </p>
-                <br>
-      
-                <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
-            </div>
-        </div>
-      {% endfor %}        
   
+            <div class="food-menu-desc">
+              <h4 class="food-title">{{ context.title }}</h4>
+              <p class="food-price">${{ context.price }}</p>
+              <p class="food-detail">
+                {{ context.description }}
+              </p>
+              <br>
+  
+              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
-</div>
-<!-- fOOD Menu Section Ends Here -->
+    <!-- Fin Sección 1 -->
 
-<!-- fOOD MEnu Section Starts Here -->
-<div class="container" >
-  <h2 class="text-left">Objetos en Venta</h2>
-
-  {% for context in context_list %}
-  <div>
-  <div class="food-menu-box">
-      <div class="food-menu-img">
-          <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+    <!-- Sección 2 -->
+    <div class="container">
+      <h2 class="text-left">Objetos Vendidos</h2>
+      <div class="counters">
+        {% for context in context_list %}
+        <div>
+          <div class="food-menu-box">
+            <div class="food-menu-img">
+              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+            </div>
+  
+            <div class="food-menu-desc">
+              <h4 class="food-title">{{ context.title }}</h4>
+              <p class="food-price">${{ context.price }}</p>
+              <p class="food-detail">
+                {{ context.description }}
+              </p>
+              <br>
+  
+              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-
-      <div class="food-menu-desc">
-          <h4 class="food-title">{{ context.title }}</h4>
-          <p class="food-price">${{ context.price }}</p>
-          <p class="food-detail">
-            {{ context.description }}
-          </p>
-          <br>
-
-          <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
-      </div>
-  </div>
-{% endfor %}        
-
-</div>
-</div>
-<!-- fOOD Menu Section Ends Here -->
-
+    </div>
+    <!-- Fin Sección 1 -->
+    
 </body> 
 
 {% endblock %}

@@ -162,8 +162,6 @@ class SignUpForm(forms.Form):
             }))
     
 
-<<<<<<< HEAD
-=======
     def clean_password2(self):
 
         cleaned_data = super().clean()
@@ -175,7 +173,6 @@ class SignUpForm(forms.Form):
             raise forms.ValidationError("Las contraseñas no coinciden")
 
         return password2
->>>>>>> main
     
     def clean_password(self):
             
@@ -189,17 +186,3 @@ class SignUpForm(forms.Form):
             return password
             
     
-<<<<<<< HEAD
-    def clean_password2(self):
-
-        cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password2 = cleaned_data.get('password2')
-
-        if password != password2:
-            messages.error(self.request, "Las contraseñas no coinciden")
-            raise forms.ValidationError("Las contraseñas no coinciden")
-
-        return password2
-=======
->>>>>>> main

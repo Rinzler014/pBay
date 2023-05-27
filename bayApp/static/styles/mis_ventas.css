@@ -19,7 +19,7 @@
   
   .counters {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
   }
   
@@ -44,13 +44,10 @@
   
   .total-counter {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    justify-content: flex-end;
+    align-items: center;
     text-align: center;
-  }
-  
-  .currency-symbol {
-    font-size: 18px;
+    margin-right: 20px;
   }
   
   .sell-button {
@@ -59,7 +56,7 @@
     padding: 10px 20px;
     border-radius: 10px;
     margin-top: 20px;
-    align-self: flex-end;
+    margin-left: auto;
   }
   
 
