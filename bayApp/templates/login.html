@@ -1,4 +1,4 @@
-{% extends "layouts/header.html"%}
+{% include "layouts/header.html"%}
 
 <!--  -->
 {% block content %} {% load static %}
@@ -12,16 +12,19 @@
     <link rel="stylesheet" href="{% static 'styles/login.css' %}" />
   </head>
 
-  <body>
-    <div class="split right">
-      <div class="container">
-        <div class="img-container">
-          <img
-            class="login-img"
-            src="{% static 'assets/img/Logo.png' %}"
-            alt=""
-            srcset=""
-          />
+
+
+      <div class="split right">
+
+        <div class="container">
+          <div class="img-container">
+            <img
+              class="login-img"
+              src="{% static 'assets/img/Logo.png' %}"
+              alt=""
+              srcset=""
+            />
+          </div>
         </div>
       </div>
     </div>
