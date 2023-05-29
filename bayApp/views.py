@@ -179,7 +179,7 @@ def shopping_cart(request):
 def mis_ventas(request, user):
     context = db.child("products").child("product1").get().val()
 
-    context_list = [context] * 1
+    context_list = [context] * 6
 
     return render(
         request, "mis_ventas.html", {"context_list": context_list, "user": user}
