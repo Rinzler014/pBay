@@ -76,8 +76,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
             
-            form.cleaned_data["personalID"] = file_name
-            form.cleaned_data["personalID_filename"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(form.cleaned_data, default=str)
             
@@ -196,5 +195,7 @@ def bids(request, user_id):
 
     return render(request, "bids.html", context)
 
-def bids_state(request):
+def bids_state(request, user_id):
+    
+    
     return render(request, "bids_state.html")
