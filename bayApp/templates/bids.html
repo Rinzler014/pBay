@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'styles/bids.css' %}" />
   </head>
   <body>
+
     <div class="container-fluid w-75">
       <div class="row">
         <div class="col col-md-4">
@@ -19,107 +20,53 @@
         </div>
       </div>
       <div class="row">
-        <div class="col col-md-4 info">
-          <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-          />
-        </div>
-        <div class="col col-md-4 info">
-          <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-          />
-        </div>
-        <div class="col col-md-4 info">
-          <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-          />
-        </div>
+
+
+
+          <div class="auctions">
+
+            {% for key, value in bids.items %}
+
+            <div class="auction-info col col-md-3">
+              <img
+              src="{% static 'assets/img/laptop.jpg' %}"
+              alt="imagen de mi pablo"
+              class="img-fluid"
+              />
+              <div class="info-box">
+                <div class="row">
+                  <p class="center countdown bold">{{ value.remaining_time }}</p>
+                </div>
+                <div class="row">
+                  <p class="center time-for-auction">Time remaining for the auction</p>
+                </div>
+                <div class="row">
+                  <div class="col col-sm-5 offset-sm-1 right">
+                    <p class="bold">Start Price&nbsp;:</p>
+                  </div>
+                  <div class="col col-sm-6 left">
+                    <p>$&nbsp; {{ value.start_price }} MXN</p>
+                  </div>
+                </div>
+                <div class="row current-bid">
+                  <div class="col col-sm-5 offset-sm-1 right">
+                    <p class="bold">Highest Bid&nbsp;:</p>
+                  </div>
+                  <div class="col col-sm-6 left">
+                    <p>$&nbsp; {{ value.highest_bid }} MXN</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% endfor %}
+          
+          </div>
+
+        
+        
       </div>
-      <div class="row">
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center countdown bold">00:00:00</p>
-            </div>
-            <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center countdown bold">00:00:00</p>
-            </div>
-            <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center countdown bold">00:00:00</p>
-            </div>
-            <div class="row">
-              <p class="center time-for-auction">Time for the auction</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   </body>

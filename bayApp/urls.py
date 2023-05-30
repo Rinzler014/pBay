@@ -12,11 +12,8 @@ urlpatterns = [
     path("details/", views.details, name="details"),
     path("mis_ventas/<str:user>", views.mis_ventas, name="mis_ventas"),
     path("details/", views.details, name="details"),
-    path("bids/", views.bids, name="bids"),
     path("my_products/", views.my_products, name="my_products"),
-    path("details/", views.details, name="details"),
-    path("bids/", views.bids, name="bids"),
+    path("bids/<str:user_id>", views.auctions, name="bids"),
     path("bids_state/", views.bids_state, name="bids_state"),
-    path("my_products/", views.my_products, name="my_products"),
     path("new_product/",views.new_product, name="new_product")
 ]

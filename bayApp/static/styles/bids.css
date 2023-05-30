@@ -2,6 +2,18 @@ body {
   background-color: #f8f1f1;
 }
 
+.auctions {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.auction-info {
+  width: 23%;
+}
+
 .container-fluid {
   margin-top: 4%;
 }

@@ -190,17 +190,14 @@ def shopping_cart(request):
     return render(request, "shopping_cart.html")
 
 
-def auctions(request, user):
-    context = {"user": user}
+def auctions(request, user_id):
+    
+    context = {
+            "user": user_id,
+            "bids": dict(db.child("auctions").get().val()),
+        }
 
-    return render(request, "auctions.html", context)
-
-
-def bids(request):
-    return render(request, "bids.html")
-
-    return render(request, "my_products.html")
-
+    return render(request, "bids.html", context)
 
 def bids_state(request):
     return render(request, "bids_state.html")
