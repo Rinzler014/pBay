@@ -147,6 +147,8 @@ def signup_3(request):
     
     return render(request, "signup_3.html", context)
 
+
+
 def landing(request, user):
     context = db.child("products").child("product1").get().val()
 
@@ -159,10 +161,6 @@ def details(request):
     context = db.child("products").child("product1").get().val()
 
     return render(request, "details_prod.html", context)
-
-
-def shopping_cart(request):
-    return render(request, "shopping_cart.html")
 
 
 def mis_ventas(request, user):
@@ -195,5 +193,11 @@ def bids_state(request):
 def my_products(request):
     return render(request, "my_products.html")
 
+
 def new_product(request):
-    return render(request, "new_product.html")
+    form = formNewProduct()
+    context = {
+        "form": form
+    }
+
+    return render(request, "new_product.html", context)
