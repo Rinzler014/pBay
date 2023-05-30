@@ -107,7 +107,7 @@ def signup_3(request):
         if form.is_valid():
             
             data = form.cleaned_data
-            data["personalID_filename"] = location_info["personalID_filename"]
+            data["personalID_filename"] = location_info["personalID"]
             data.pop("password2")
             
             try:
