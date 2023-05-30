@@ -170,6 +170,7 @@ class SignUpForm(forms.Form):
                 messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
                 raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
             
+            return password
     
     def clean_password2(self):
         cleaned_data = super().clean()
@@ -178,6 +179,7 @@ class SignUpForm(forms.Form):
         if password != password2:
             messages.error(self.request, "Las contraseñas no coinciden")
             raise forms.ValidationError("Las contraseñas no coinciden")
+    
         return cleaned_data
     
 class EditInfoProductForm(forms.Form):
