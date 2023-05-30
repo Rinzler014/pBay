@@ -103,60 +103,49 @@ def signup_3(request):
 
 
 def signup_3(request):
-    form = SignUpForm(request=request)
-    context = {"form": form}
 
+    form = SignUpForm(request=request)
+    context = {
+        "form": form
+    }
+    
     if request.method == "POST":
+        
         personal_info = json.loads(request.session["personal_info"])
         location_info = json.loads(request.session["location_info"])
-
+        
         updated_data = request.POST.copy()
         updated_data.update(personal_info)
         updated_data.update(location_info)
-
+        
         form = SignUpForm(updated_data, request=request)
-
-        form = SignUpForm(updated_data, request=request)
-
-        form = SignUpForm(updated_data, request=request)
-
+        
         if form.is_valid():
+            
             data = form.cleaned_data
             data["personalID_filename"] = location_info["personalID_filename"]
             data.pop("password2")
-
+            
             try:
-                user = auth.create_user_with_email_and_password(
-                    data["email"], data["password"]
-                )
-                data.pop("password")
-
-                user = auth.create_user_with_email_and_password(
-                    data["email"], data["password"]
-                )
-                data.pop("password")
+                
+                user = auth.create_user_with_email_and_password(data["email"], data["password"])
+                data.pop("password")           
                 db.child("users").child(user["localId"]).set(data)
-                storage.child(f"users/{user['localId']}/personalID").put(
-                    f"temp/{data['personalID']}"
-                )
-
-                db.child("users").child(user["localId"]).set(data)
-                storage.child(f"users/{user['localId']}/personalID").put(
-                    f"temp/{data['personalID']}"
-                )
-
+                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID']}")
                 print("Usuario creado correctamente")
-
+                
                 os.remove(f"temp/{data['personalID_filename']}")
-
+                
                 return redirect("login")
-
+            
             except Exception as e:
+                
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-
+        
+        
+    
     return render(request, "signup_3.html", context)
-
 
 def landing(request, user):
     context = db.child("products").child("product1").get().val()
