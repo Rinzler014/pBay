@@ -1,5 +1,71 @@
-.row{
-    align-items: flex-end;
-    margin-left: 5%;
-    margin-right: 5%;
+:root {
+  --normal-font: 400;
+  --bold-font: 600;
+  --bolder-font: 900;
+  --primary-color: #0652dd;
+  --secondary-color: #ea2027;
+  --input-color: #eee4e4;
+  --line-height: 1.7rem;
+  --transition: 0.4s ease-in;
+  --color-bottom: #16C79A;
+}
+*,
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.title-new-product {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.container-new-product {
+  width: 1400px;
+  height: auto;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.new-product-part {
+  /* border: 1px solid black; */
+  padding: 20px;
+}
+
+.form-details-product {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+input,
+textarea {
+  border: none;
+  border-radius: 5px;
+  background-color: var(--input-color);
+  padding: 5px;
+}
+
+ul {
+  display: flex;
+  justify-content: flex-start;
+}
+
+form > div{
+    display: flex;
+    flex-direction: column;
+}
+
+.button-new-product{
+    background-color: var(--color-bottom);
+    padding: 20px 40px;
+    color: white;
+}
+
+.button-new-product:hover{
+    opacity: .6;
 }
