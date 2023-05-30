@@ -12,6 +12,11 @@ config = {
   "measurementId": "G-TC6V309YST"
 }
 
+def noquote(s):
+    return s
+
+pyrebase.pyrebase.quote = noquote
+
 firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
@@ -19,3 +24,13 @@ db = firebase.database()
 auth = firebase.auth()
 
 storage = firebase.storage()
+
+db.child("auctions").child("auction4").set({
+  "product_key": "product4",
+  "user_key": "user1",
+  "highest_bid": "5000",
+  "remaining_time": "50 Minutes",
+  "state": "active",
+  "start_price": "1000"
+})
+
