@@ -19,108 +19,45 @@
         </div>
       </div>
       <div class="row">
-        <div class="col col-md-4 info">
-          <img
+
+        <div class="auctions"></div>
+
+          {{ auctions }}
+
+          <div class="auction-info col col-md-3">
+            <img
             src="{% static 'assets/img/laptop.jpg' %}"
             alt="imagen de mi pablo"
             class="img-fluid"
-          />
-        </div>
-        <div class="col col-md-4 info">
-          <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-          />
-        </div>
-        <div class="col col-md-4 info">
-          <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center auction bold won">Auction Won</p>
-            </div>
-            <div class="row">
-              <p class="center message">Congratulations!</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
+            />
+            <div class="info-box">
+              <div class="row">
+                <p class="center auction bold won">Auction Won</p>
               </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
+              <div class="row">
+                <p class="center message">Congratulations!</p>
               </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
+              <div class="row">
+                <div class="col col-sm-5 offset-sm-1 right">
+                  <p class="bold">Start Price&nbsp;:</p>
+                </div>
+                <div class="col col-sm-6 left">
+                  <p>$&nbsp;000.000</p>
+                </div>
               </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
+              <div class="row current-bid">
+                <div class="col col-sm-5 offset-sm-1 right">
+                  <p class="bold">Current Bid&nbsp;:</p>
+                </div>
+                <div class="col col-sm-6 left">
+                  <p>$&nbsp;000.000</p>
+                </div>
               </div>
             </div>
           </div>
+      
         </div>
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center auction bold lost">Auction Lost</p>
-            </div>
-            <div class="row">
-              <p class="center message">Your bid was not accepted</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col col-md-4">
-          <div class="info-box">
-            <div class="row">
-              <p class="center auction bold finished">Auction Finished</p>
-            </div>
-            <div class="row">
-              <p class="center message">Time is up!</p>
-            </div>
-            <div class="row">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Start Price&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-            <div class="row current-bid">
-              <div class="col col-sm-5 offset-sm-1 right">
-                <p class="bold">Current Bid&nbsp;:</p>
-              </div>
-              <div class="col col-sm-6 left">
-                <p>$&nbsp;000.000</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </body>
 </html>

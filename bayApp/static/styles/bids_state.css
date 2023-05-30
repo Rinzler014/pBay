@@ -6,6 +6,19 @@ body {
   margin-top: 4%;
 }
 
+.auctions {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.auction-info {
+  width: 23%;
+}
+
 .bold {
   font-weight: bold;
 }

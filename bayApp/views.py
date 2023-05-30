@@ -157,6 +157,31 @@ def landing(request, user):
     return render(request, "landing.html", {"context_list": context_list, "user": user})
 
 
+def edit_info_prod(request):
+    form = EditInfoProductForm()
+    context = {
+        "form": form
+    }
+    
+    if request.method == "POST":
+        
+        form = EditInfoProductForm(request.POST)
+        
+        if form.is_valid():
+            
+            try:
+                print("Is valid")
+                
+                return redirect("login")
+            
+            except Exception as e:
+                
+                messages.error(request, f"Error al autenticar usuario: {e}")
+            
+    
+    return render(request, "edit_info_prod.html", context)
+
+
 def details(request):
     context = db.child("products").child("product1").get().val()
 
@@ -201,3 +226,12 @@ def new_product(request):
     }
 
     return render(request, "new_product.html", context)
+
+def bids_state(request, user_id):
+    
+    context = {
+            "user": user_id,
+            "auctions": dict(db.child("users").child(user_id).child("auctions").get().val()),
+        } 
+    
+    return render(request, "bids_state.html", context)
