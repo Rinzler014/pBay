@@ -201,3 +201,12 @@ def new_product(request):
     }
 
     return render(request, "new_product.html", context)
+
+def bids_state(request, user_id):
+    
+    context = {
+            "user": user_id,
+            "auctions": dict(db.child("users").child(user_id).child("auctions").get().val()),
+        } 
+    
+    return render(request, "bids_state.html", context)
