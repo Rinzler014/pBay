@@ -10,4 +10,5 @@ urlpatterns = [
     path("landing/<str:user>", views.landing, name="landing"),
     path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
     path("details/", views.details, name="details"), 
+    path("edit_info_prod/", views.edit_info_prod, name="edit_info_prod"),
 ]

@@ -179,3 +179,29 @@ class SignUpForm(forms.Form):
             messages.error(self.request, "Las contraseñas no coinciden")
             raise forms.ValidationError("Las contraseñas no coinciden")
         return cleaned_data
+    
+class EditInfoProductForm(forms.Form):
+    
+    productTitle = forms.CharField(required=True,
+            widget=forms.widgets.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Título del Producto'
+            }))
+    
+    productDescription = forms.CharField(required=True,
+            widget=forms.widgets.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Descripción del Producto'
+            }))
+    
+    productPrice = forms.CharField(required=True,
+            widget=forms.widgets.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '####',
+            }))
+    
+    productQuantity = forms.CharField(required=True,
+            widget=forms.widgets.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '##',
+            }))

@@ -19,7 +19,6 @@
         }
 
         .row2{
-            background-color: #DDDDDD;
             display: flex;
             margin-left: 5%;
             margin-right: 5%;
@@ -70,47 +69,48 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        <div class="row">
-            <div class="column">
-                <h1>Título del producto</h1>
-                <div class="row2"><h4>Título del producto</h4></div>
-                <h1>Detalles del producto</h1>
-                <div class="row">
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Condición</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Puma</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Textil</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Negro</h4></div>
+        <form method="POST" class = "form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="column">
+                    <h1>Título del producto</h1>
+                    <div class="row2">{{ form.productTitle }}</div>
+                    <h1>Detalles del producto</h1>
+                    <div class="row">
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Condición</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Puma</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Textil</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Negro</h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Alto</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Ancho</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Largo</h4></div>
+                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">TOC</h4></div>
+                    </div>
+                    <h1>Descripción del producto</h1>
+                    <div class="row2">{{ form.productDescription }}</div>
+                    <h1>Fotos del producto</h1>
+                    <div class="row">
+                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
+                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
+                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Alto</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Ancho</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Largo</h4></div>
-                    <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">TOC</h4></div>
-                </div>
-                <h1>Descripción del producto</h1>
-                <div class="row2"><h4>
-                    - Lorem ipsum dolor sit amet, consectetur adipiscing elit <br>
-                    - Otro Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                </h4></div>
-                <h1>Fotos del producto</h1>
-                <div class="row">
-                    <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
-                    <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
-                    <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
+                <div class="row"></div>
+                <div class="column">
+                    <h1>Precio por unidad</h1>
+                    <div class="row2">{{ form.productPrice }}</div>
+                    <h1>Unidades disponibles</h1>
+                    <div class="row2">{{  form.productQuantity  }}</div>
+                    <button class="mybutton" type="submit" style="width: 160px;">Guardar</button> <br>
+                    <button class="mybutton" type="reset" style="width: 160px; background: #B93535;">Eliminar Producto</button>
+                    <form method="POST", class="form">
+                    </form>
                 </div>
             </div>
-            <div class="row"></div>
-            <div class="column">
-                <h1>Precio por unidad</h1>
-                <div class="row2" style="width: 160px;"><h4>$ 1200</h4></div>
-                <h1>Unidades disponibles</h1>
-                <div class="row2" style="width: 160px;"><h4>3</h4></div>
-                <button class="mybutton" style="width: 160px;">Guardar</button> <br>
-                <button class="mybutton" style="width: 160px; background: #B93535;">Eliminar Producto</button>
-            </div>
-          </div>
+        </form>
     </body>
-
   </html>
 
 {% endblock %}
