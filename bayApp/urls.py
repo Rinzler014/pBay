@@ -9,6 +9,10 @@ urlpatterns = [
     path("signup/personal_info/account", views.signup_3, name="signup_3"),
     path("landing/<str:user>", views.landing, name="landing"),
     path("shopping_cart/", views.shopping_cart, name="shopping_cart"),
-    path("details/", views.details, name="details"), 
+    path("details/", views.details, name="details"),
+    path("my_products/", views.my_products, name="my_products"),
+    path("bids/<str:user_id>", views.auctions, name="bids"),
+    path("bids_state/", views.bids_state, name="bids_state"),
+    path("new_product/",views.new_product, name="new_product"),
     path("edit_info_prod/", views.edit_info_prod, name="edit_info_prod"),
 ]
