@@ -144,6 +144,15 @@ def details(request):
 
     return render(request, "details_prod.html", context)
 
+def mis_ventas(request, user):
+    context = db.child("products").child("product1").get().val()
+
+    context_list = [context] * 6
+
+    return render(
+        request, "mis_ventas.html", {"context_list": context_list, "user": user}
+    )
+
 def shopping_cart(request):
     return render(request, "shopping_cart.html")
 
@@ -170,3 +179,23 @@ def edit_info_prod(request):
             
     
     return render(request, "edit_info_prod.html", context)
+
+
+def bids_state(request):
+    return render(request, "bids_state.html")
+
+
+def my_products(request):
+    return render(request, "my_products.html")
+
+def new_product(request):
+    return render(request, "new_product.html")
+
+def auctions(request, user_id):
+    
+    context = {
+            "user": user_id,
+            "bids": dict(db.child("auctions").get().val()),
+        }
+
+    return render(request, "bids.html", context)
