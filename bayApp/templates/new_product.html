@@ -26,116 +26,59 @@
           }
         </script> -->
     <h2 class="title-new-product">Nuevo Producto</h2>
-    <section class="container-new-product">
-      <div class="new-product-part">
-        <div>
-          <h3>Título del producto</h3>
-          <form action="">
-            <textarea
-              name="title-product"
-              id="title-product"
-              cols="50"
-              rows="2"
-              resize:none
-              placeholder="Título del producto"
-            ></textarea>
-          </form>
-        </div>
-        <div>
-          <h3>Detalles del producto</h3>
+    <form action="">
+      <section class="container-new-product">
+        <div class="new-product-part">
           <div>
-            <form class="form-details-product" action="">
-              <div>
-                <label for="condicion">Condición:</label>
-                <input type="text" id="condicion" name="condicion" required />
-              </div>
-
-              <div>
-                <label for="marca">Marca:</label>
-                <input type="text" id="marca" name="marca" required />
-              </div>
-
-              <div>
-                <label for="material">Material:</label>
-                <input type="text" id="material" name="material" required />
-              </div>
-
-              <div>
-                <label for="color">Color:</label>
-                <input type="text" id="color" name="color" required />
-              </div>
-
-              <div>
-                <label for="alto">Alto:</label>
-                <input type="number" id="alto" name="alto" required />
-              </div>
-
-              <div>
-                <label for="ancho">Ancho:</label>
-                <input type="number" id="ancho" name="ancho" required />
-              </div>
-
-              <div>
-                <label for="largo">Largo:</label>
-                <input type="number" id="largo" name="largo" required />
-              </div>
-
-              <div>
-                <label for="toc">TOC:</label>
-                <input type="text" id="toc" name="toc" required />
-              </div>
+            <h3>Título del producto</h3>
+            {{form.title}}
+          </div>
+          <div>
+            <h3>Detalles del producto</h3>
+            <div class="form-details-product">
+              {% csrf_token %} {{ form.condition }} {{ form.brand }}
+              {{form.material }} {{ form.color }} {{ form.high }} {{form.width}}
+              {{ form.long }} {{ form.toc }}
+            </div>
+          </div>
+          <div>
+            <h3>Descripción del producto</h3>
+            {{form.description}}
             </form>
           </div>
-        </div>
-        <div>
-          <h3>Descripción del producto</h3>
-          <form action="">
-            <textarea
-              name="title-product"
-              id="title-product"
-              cols="50"
-              rows="5"
-              resize:none
-              placeholder="Descripción del producto"
-            ></textarea>
-          </form>
-        </div>
-        <div>
-          <h3>Adjuntar fotos del producto</h3>
           <div>
-            <input
-              type="file"
-              id="upload-btn"
-              accept="image/*"
-              style="display: none"
-            />
-            <button onclick="">Seleccionar imagenes</button>
-            <p>Archivos añadidos</p>
-            <ul>
-              <li>a.jpg,</li>
-              <li>b.jpg,</li>
-              <li>c.jpg,</li>
-            </ul>
+            <h3>Adjuntar fotos del producto</h3>
+            <div>
+              {{form.images}}
+              <p>Archivos añadidos</p>
+              <ul>
+                <li>a.jpg,</li>
+                <li>b.jpg,</li>
+                <li>c.jpg,</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="new-product-part">
-        <div>
-          <form action="">
-            <div>
-              <h3>Precio por unidad</h3>
-              <input type="number" id="largo" name="largo" required />
-            </div>
-            <div>
-              <h3>Unidades disponibles</h3>
-              <input type="number" id="largo" name="largo" required />
-            </div>
-            <br>
-            <input class="button-new-product" type="submit" value="Continuar">
-          </form>
+        <div class="new-product-part">
+          <div>
+              <div>
+                <h3>Precio por unidad</h3>
+                {{form.price}}
+              </div>
+              <div>
+                <h3>Unidades disponibles</h3>
+                {{form.stock}}
+              </div>
+              <br />
+              <input
+                class="button-new-product"
+                type="submit"
+                value="Continuar"
+              />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </form>
   </body>
 </html>
 

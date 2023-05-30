@@ -161,6 +161,19 @@ class SignUpForm(forms.Form):
                 'placeholder': 'Confirma tu contraseña',
             }))
     
+
+    def clean_password2(self):
+
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
+
+        if password != password2:
+            messages.error(self.request, "Las contraseñas no coinciden")
+            raise forms.ValidationError("Las contraseñas no coinciden")
+
+        return password2
+    
     def clean_password(self):
             
             password = self.cleaned_data.get('password')
@@ -169,41 +182,65 @@ class SignUpForm(forms.Form):
             if not regex.match(password):
                 messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
                 raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
-            
+        
             return password
-    
-    def clean_password2(self):
-        cleaned_data = super().clean()
-        password = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
-        if password != password2:
-            messages.error(self.request, "Las contraseñas no coinciden")
-            raise forms.ValidationError("Las contraseñas no coinciden")
-    
-        return cleaned_data
-    
-class EditInfoProductForm(forms.Form):
-    
-    productTitle = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Título del Producto'
-            }))
-    
-    productDescription = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Descripción del Producto'
-            }))
-    
-    productPrice = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '####',
-            }))
-    
-    productQuantity = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '##',
-            }))
+
+class formNewProduct(forms.Form):
+    title = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Título del producto',
+        "cols":"50",
+        "rows":"2",
+        "resize":"none"
+        }))
+    condition = forms.CharField(label='Condición',
+        widget=forms.widgets.TextInput(attrs={
+        'placeholder': 'Condición del producto',
+        }))
+    brand = forms.CharField(label='Marca',
+         widget=forms.widgets.TextInput(attrs={
+        'placeholder': 'Marca',
+        }))
+    material = forms.CharField(label='Material', 
+        widget=forms.widgets.TextInput(attrs={
+        'placeholder': 'Material',
+        }))
+    color = forms.CharField(label='Color', 
+        widget=forms.widgets.TextInput(attrs={
+        'placeholder': 'Color',
+        }))
+    high = forms.IntegerField(label='Alto', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Alto',
+        }))
+    width = forms.IntegerField(label='Ancho', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Ancho',
+        }))
+    long = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Largo',
+        }))
+    toc = forms.CharField(label='TOC', 
+        widget=forms.widgets.TextInput(attrs={
+        'placeholder': 'TOC',
+        }))
+    description = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Descripción del producto',
+        "cols":"50",
+        "rows":"5",
+        "resize":"none"
+        }))
+    images = forms.FileField(required=True,
+        widget=forms.widgets.FileInput(attrs={
+        'placeholder': 'Imágenes del producto',
+        }))
+    price = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio',
+        }))
+    stock = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Unidades disponibles',
+        }))
