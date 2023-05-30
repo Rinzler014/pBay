@@ -208,3 +208,6 @@ def bids_state(request):
 
 def my_products(request):
     return render(request, "my_products.html")
+
+def new_product(request):
+    return render(request, "new_product.html")

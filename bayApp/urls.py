@@ -18,4 +18,5 @@ urlpatterns = [
     path("bids/", views.bids, name="bids"),
     path("bids_state/", views.bids_state, name="bids_state"),
     path("my_products/", views.my_products, name="my_products"),
+    path("new_product/",views.new_product, name="new_product")
 ]
