@@ -158,6 +158,7 @@ def landing(request, user):
 
 
 def edit_info_prod(request):
+    
     form = EditInfoProductForm()
     context = {
         "form": form
@@ -189,13 +190,31 @@ def details(request):
 
 
 def mis_ventas(request, user):
-    context = db.child("products").child("product1").get().val()
+    prods = dict(db.child("products").get().val())
+    num_vendidos = 0
 
-    context_list = [context] * 6
+    for product_id, product_data in prods.items():
 
-    return render(
-        request, "mis_ventas.html", {"context_list": context_list, "user": user}
-    )
+        if product_data["availability"] == "Si":
+            num_vendidos += 1
+            
+    nonum_vendidos = 0
+
+    for product_id, product_data in prods.items():
+
+        if product_data["availability"] == "No":
+            nonum_vendidos += 1
+
+    prod_list = db.child("products").child("product1").get().val()
+
+    context = {
+        "user": user,
+        "num_vendidos": num_vendidos,
+        "context_list": [prod_list] * 6,
+        "nonum_vendidos": nonum_vendidos,
+    }
+
+    return render(request, "mis_ventas.html", context)
 
 
 def shopping_cart(request):
