@@ -181,17 +181,13 @@ def edit_info_prod(request):
     return render(request, "edit_info_prod.html", context)
 
 
-def bids_state(request):
-    return render(request, "bids_state.html")
-
-
 def my_products(request):
     return render(request, "my_products.html")
 
 def new_product(request):
     return render(request, "new_product.html")
 
-def auctions(request, user_id):
+def bids(request, user_id):
     
     context = {
             "user": user_id,
@@ -199,3 +195,6 @@ def auctions(request, user_id):
         }
 
     return render(request, "bids.html", context)
+
+def bids_state(request):
+    return render(request, "bids_state.html")
