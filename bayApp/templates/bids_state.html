@@ -22,7 +22,7 @@
 
         <div class="auctions"></div>
 
-          {{ auctions }}
+        {% for key, value in auctions.items %}
 
           <div class="auction-info col col-md-3">
             <img
@@ -32,7 +32,13 @@
             />
             <div class="info-box">
               <div class="row">
-                <p class="center auction bold won">Auction Won</p>
+                {% if value.status == 'won' %}
+                  <p class="center auction bold won">Auction Won</p>
+                {% elif value.status == 'lost' %}
+                  <p class="center auction bold lost">Auction Lost</p>
+                {% else %}
+                  <p class="center auction bold">Auction Finished</p>
+                {% endif %
               </div>
               <div class="row">
                 <p class="center message">Congratulations!</p>
@@ -56,7 +62,12 @@
             </div>
           </div>
       
+
+        {% endfor %}
+
         </div>
+
+        
       
     </div>
   </body>

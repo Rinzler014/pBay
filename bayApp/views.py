@@ -8,6 +8,16 @@ import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account.
+cred = credentials.Certificate('./serAccountKey.json')
+
+app = firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 def login(request):
     form = LoginForm()
@@ -103,50 +113,44 @@ def signup_3(request):
 
 
 def signup_3(request):
-
     form = SignUpForm(request=request)
-    context = {
-        "form": form
-    }
-    
+    context = {"form": form}
+
     if request.method == "POST":
-        
         personal_info = json.loads(request.session["personal_info"])
         location_info = json.loads(request.session["location_info"])
-        
+
         updated_data = request.POST.copy()
         updated_data.update(personal_info)
         updated_data.update(location_info)
-        
+
         form = SignUpForm(updated_data, request=request)
-        
+
         if form.is_valid():
-            
             data = form.cleaned_data
             data["personalID_filename"] = location_info["personalID_filename"]
             data.pop("password2")
-            
+
             try:
-                
-                user = auth.create_user_with_email_and_password(data["email"], data["password"])
-                data.pop("password")           
+                user = auth.create_user_with_email_and_password(
+                    data["email"], data["password"]
+                )
+                data.pop("password")
                 db.child("users").child(user["localId"]).set(data)
-                storage.child(f"users/{user['localId']}/personalID").put(f"temp/{data['personalID']}")
+                storage.child(f"users/{user['localId']}/personalID").put(
+                    f"temp/{data['personalID']}"
+                )
                 print("Usuario creado correctamente")
-                
+
                 os.remove(f"temp/{data['personalID_filename']}")
-                
+
                 return redirect("login")
-            
+
             except Exception as e:
-                
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-        
-        
-    
-    return render(request, "signup_3.html", context)
 
+    return render(request, "signup_3.html", context)
 
 
 def landing(request, user):
@@ -159,26 +163,20 @@ def landing(request, user):
 
 def edit_info_prod(request):
     form = EditInfoProductForm()
-    context = {
-        "form": form
-    }
-    
+    context = {"form": form}
+
     if request.method == "POST":
-        
         form = EditInfoProductForm(request.POST)
-        
+
         if form.is_valid():
-            
             try:
                 print("Is valid")
-                
+
                 return redirect("login")
-            
+
             except Exception as e:
-                
                 messages.error(request, f"Error al autenticar usuario: {e}")
-            
-    
+
     return render(request, "edit_info_prod.html", context)
 
 
@@ -189,13 +187,45 @@ def details(request):
 
 
 def mis_ventas(request, user):
-    context = db.child("products").child("product1").get().val()
+    prods = dict(db.child("products").get().val())
+    num_vendidos = 0
 
-    context_list = [context] * 6
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "Si":
+            num_vendidos += 1
 
-    return render(
-        request, "mis_ventas.html", {"context_list": context_list, "user": user}
-    )
+    nonum_vendidos = 0
+
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "No":
+            nonum_vendidos += 1
+
+    num_ventas = 0
+
+    for product_id, product_data in prods.items():
+        if product_data["num_ventas"] != 0:
+            num_ventas += product_data["num_ventas"]
+
+    tot_ventas = 0
+    subtot = 0
+
+    for product_id, product_data in prods.items():
+        if product_data["price"] != 0 and product_data["num_ventas"] != 0:
+            subtot += product_data["price"] * product_data["num_ventas"]
+            tot_ventas += subtot
+
+    prod_list = db.child("products").child("product1").get().val()
+
+    context = {
+        "user": user,
+        "num_vendidos": num_vendidos,
+        "context_list": [prod_list] * 6,
+        "nonum_vendidos": nonum_vendidos,
+        "num_ventas": num_ventas,
+        "tot_ventas": tot_ventas,
+    }
+
+    return render(request, "mis_ventas.html", context)
 
 
 def shopping_cart(request):
@@ -203,13 +233,13 @@ def shopping_cart(request):
 
 
 def auctions(request, user_id):
-    
     context = {
-            "user": user_id,
-            "bids": dict(db.child("auctions").get().val()),
-        }
+        "user": user_id,
+        "bids": dict(db.child("auctions").get().val()),
+    }
 
     return render(request, "bids.html", context)
+
 
 def bids_state(request):
     return render(request, "bids_state.html")
@@ -221,17 +251,18 @@ def my_products(request):
 
 def new_product(request):
     form = formNewProduct()
-    context = {
-        "form": form
-    }
+    context = {"form": form}
 
+    db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
 
+
 def bids_state(request, user_id):
-    
     context = {
-            "user": user_id,
-            "auctions": dict(db.child("users").child(user_id).child("auctions").get().val()),
-        } 
-    
+        "user": user_id,
+        "auctions": dict(
+            db.child("users").child(user_id).child("auctions").get().val()
+        ),
+    }
+
     return render(request, "bids_state.html", context)

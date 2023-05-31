@@ -32,8 +32,11 @@ body {
 }
 
 .new-product-part {
-  /* border: 1px solid black; */
   padding: 20px;
+}
+
+.new-product-part div{
+  margin-bottom: 20px;
 }
 
 .form-details-product {
@@ -58,6 +61,10 @@ ul {
 form > div{
     display: flex;
     flex-direction: column;
+}
+
+.checkbox-type-sale{
+display: flex;
 }
 
 .button-new-product{
