@@ -204,12 +204,21 @@ def mis_ventas(request, user):
             subtot += product_data["price"] * product_data["num_ventas"]
             tot_ventas += subtot
 
-    prod_list = db.child("products").child("product1").get().val()
+    prod_list = []
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "Si" and product_data["num_ventas"] != 0:
+            prod_list.append(product_data)
+
+    noprod_list = []
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "No" and product_data["num_ventas"] != 0:
+            noprod_list.append(product_data)
 
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
-        "context_list": [prod_list] * 6,
+        "context_list": prod_list,
+        "nocontext_list": noprod_list,
         "nonum_vendidos": nonum_vendidos,
         "num_ventas": num_ventas,
         "tot_ventas": tot_ventas,
