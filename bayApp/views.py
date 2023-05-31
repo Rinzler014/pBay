@@ -27,15 +27,9 @@ def login(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
+            
             try:
-                user = firebase.auth().sign_in_with_email_and_password(
-                    form.cleaned_data["email"], form.cleaned_data["password"]
-                )
-                messages.success(
-                    request, f"Usuario {user['localId']} autenticado correctamente"
-                )
-
-                user = firebase.auth().sign_in_with_email_and_password(
+                user = auth.sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
                 )
                 messages.success(
@@ -82,16 +76,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
 
-            form.cleaned_data["personalID"] = file_name
-            form.cleaned_data["personalID_filename"] = (
-                str(file_name) + "." + file_extension
-            )
-
-            request.session["location_info"] = json.dumps(
-                form.cleaned_data, default=str
-            )
-
-            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID_file"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
@@ -102,14 +87,6 @@ def signup_2(request):
         return render(request, "signup_2.html", context)
 
     return render(request, "signup_2.html", context)
-
-
-def signup_3(request):
-    form = SignUpForm(request=request)
-    context = {"form": form}
-
-    form = SignUpForm(request=request)
-    context = {"form": form}
 
 
 def signup_3(request):
@@ -128,7 +105,7 @@ def signup_3(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            data["personalID_filename"] = location_info["personalID_filename"]
+            data["personalID_file"] = location_info["personalID_file"]
             data.pop("password2")
 
             try:
@@ -136,7 +113,8 @@ def signup_3(request):
                     data["email"], data["password"]
                 )
                 data.pop("password")
-                db.child("users").child(user["localId"]).set(data)
+                data["type"] = "user"
+                db.collection("users").document(user["localId"]).set(data)
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )

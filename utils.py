@@ -19,20 +19,6 @@ pyrebase.pyrebase.quote = noquote
 
 firebase = pyrebase.initialize_app(config)
 
-db = firebase.database()
-
 auth = firebase.auth()
 
 storage = firebase.storage()
-
-prods = dict(db.child("products").get().val())
-numVendidos = 0
-
-for product_id, product_data in prods.items():
-  print(product_id)
-  print(product_data)
-  
-  if product_data["availability"] == "Si":
-    numVendidos += 1
-  
-print(numVendidos)
