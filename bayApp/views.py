@@ -8,6 +8,16 @@ import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account.
+cred = credentials.Certificate('./serAccountKey.json')
+
+app = firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 def login(request):
     form = LoginForm()
@@ -252,6 +262,7 @@ def new_product(request):
     form = formNewProduct()
     context = {"form": form}
 
+    db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
 
 

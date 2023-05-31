@@ -34,14 +34,6 @@
             {{form.title}}
           </div>
           <div>
-            <h3>Detalles del producto</h3>
-            <div class="form-details-product">
-              {% csrf_token %} {{ form.condition }} {{ form.brand }}
-              {{form.material }} {{ form.color }} {{ form.high }} {{form.width}}
-              {{ form.long }} {{ form.toc }}
-            </div>
-          </div>
-          <div>
             <h3>Descripción del producto</h3>
             {{form.description}}
             </form>
@@ -58,25 +50,39 @@
               </ul>
             </div>
           </div>
+          <div class="checkbox-type-sale">
+            <div><p>Venta Directa</p>{{form.directSale}}</div>
+            <div><p>Subasta</p>{{form.auction}}</div>
+          </div>
         </div>
         <div class="new-product-part">
           <div>
-              <div>
-                <h3>Precio por unidad</h3>
-                {{form.price}}
-              </div>
-              <div>
-                <h3>Unidades disponibles</h3>
-                {{form.stock}}
-              </div>
-              <br />
-              <input
-                class="button-new-product"
-                type="submit"
-                value="Continuar"
-              />
+            <h3>Precio por unidad</h3>
+            {{form.price}}
           </div>
+          <div>
+            <h3>Unidades disponibles</h3>
+            {{form.stock}}
+          </div>
+          <div>
+            <h3>Precio de Inicio</h3>
+            {{form.startingPrice}}
+          </div>
+          <div>
+            <h3>Duración en días</h3>
+            {{form.durationDays}}
         </div>
+          <div>
+            <h3>Precio de C/I</h3>
+            {{form.priceCI}}
+        </div>
+          <br />
+          <input
+            class="button-new-product"
+            type="submit"
+            value="Continuar"
+          />
+         </div>
       </section>
     </form>
   </body>

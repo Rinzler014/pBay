@@ -218,38 +218,6 @@ class formNewProduct(forms.Form):
         "rows":"2",
         "resize":"none"
         }))
-    condition = forms.CharField(label='Condición',
-        widget=forms.widgets.TextInput(attrs={
-        'placeholder': 'Condición del producto',
-        }))
-    brand = forms.CharField(label='Marca',
-         widget=forms.widgets.TextInput(attrs={
-        'placeholder': 'Marca',
-        }))
-    material = forms.CharField(label='Material', 
-        widget=forms.widgets.TextInput(attrs={
-        'placeholder': 'Material',
-        }))
-    color = forms.CharField(label='Color', 
-        widget=forms.widgets.TextInput(attrs={
-        'placeholder': 'Color',
-        }))
-    high = forms.IntegerField(label='Alto', 
-        widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Alto',
-        }))
-    width = forms.IntegerField(label='Ancho', 
-        widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Ancho',
-        }))
-    long = forms.IntegerField(label='Largo', 
-        widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Largo',
-        }))
-    toc = forms.CharField(label='TOC', 
-        widget=forms.widgets.TextInput(attrs={
-        'placeholder': 'TOC',
-        }))
     description = forms.CharField(label='Condición',
         widget=forms.widgets.Textarea(attrs={
         'placeholder': 'Descripción del producto',
@@ -268,4 +236,24 @@ class formNewProduct(forms.Form):
     stock = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Unidades disponibles',
+        }))
+    directSale = forms.BooleanField(label='Venta Directa', required=False,
+        widget=forms.widgets.CheckboxInput(attrs={
+        'placeholder': 'Venta Directa',
+        }))
+    auction = forms.BooleanField(label='Subasta', required=False, 
+        widget=forms.widgets.CheckboxInput(attrs={
+        'placeholder': 'Venta Directa',
+        }))
+    startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de Inicio',
+        }))
+    durationDays = forms.IntegerField(label='Campo Adicional 2', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Duración en días',
+        }))
+    priceCI = forms.IntegerField(label='Campo Adicional 3', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de C/I',
         }))
