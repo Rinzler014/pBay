@@ -22,23 +22,30 @@
       <h2 class="text-center">Menu Productos</h2>
 
 
-      {% for context in context_list %}
-      <div class="food-menu-box">
-          <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+      {% for product in products %}
+
+        {% for key, value in product.items %}
+
+          <div class="food-menu-box">
+              <div class="food-menu-img">
+                  <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+              </div>
+        
+              <div class="food-menu-desc">
+                  <h4 class="food-title">{{ value.productName }}</h4>
+                  <p class="food-price">${{ value.price }}</p>
+                  <p class="food-detail">
+                    {{ value.productDescription }}
+                  </p>
+                  <br>
+        
+                  <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
+              </div>
           </div>
-    
-          <div class="food-menu-desc">
-              <h4 class="food-title">{{ context.title }}</h4>
-              <p class="food-price">${{ context.price }}</p>
-              <p class="food-detail">
-                {{ context.description }}
-              </p>
-              <br>
-    
-              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
-          </div>
-      </div>
+        
+        {% endfor %}
+
+
     {% endfor %}
     
       

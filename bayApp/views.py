@@ -133,11 +133,15 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    products = db.collection("products").document("product1").get().to_dict()
+    platform_products = db.collection("products").stream()
+    
+    products = [{product.id : product.to_dict()} for product in platform_products]
+    
+    print(products)
     
     context = {
         "user": user_id,
-        "context_list": [products] * 10,
+        "products": products * 10,
     }
 
     return render(request, "landing.html", context)
