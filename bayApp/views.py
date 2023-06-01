@@ -17,7 +17,7 @@ cred = credentials.Certificate('./serAccountKey.json')
 
 app = firebase_admin.initialize_app(cred)
 
-dbf = firestore.client()
+db = firestore.client()
 
 def login(request):
     form = LoginForm()
@@ -133,22 +133,24 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    products = dbf.collection("products").document("product1").get().to_dict()
+    platform_products = db.collection("products").stream()
+    
+    products = [{product.id : product.to_dict()} for product in platform_products]
     
     context = {
         "user": user_id,
-        "context_list": [products] * 10,
+        "products": products * 10,
     }
 
     return render(request, "landing.html", context)
 
 
 def edit_info_prod(request):
-    form = formEditInfoProduct()
+    form = EditInfoProductForm()
     context = {"form": form}
 
     if request.method == "POST":
-        form = formEditInfoProduct(request.POST)
+        form = EditInfoProductForm(request.POST)
 
         if form.is_valid():
             try:
@@ -268,7 +270,7 @@ def new_product(request, user_id):
         "form": form,
     }
 
-    dbf.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
+    db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
 
 
