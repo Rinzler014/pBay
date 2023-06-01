@@ -137,8 +137,6 @@ def landing(request, user_id):
     
     products = [{product.id : product.to_dict()} for product in platform_products]
     
-    print(products)
-    
     context = {
         "user": user_id,
         "products": products * 10,
