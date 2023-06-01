@@ -77,32 +77,6 @@ class CacheSignUpFormP2(forms.Form):
                 'placeholder': 'Identificacion Personal',
             }))
 
-class EditInfoProductForm(forms.Form):
-    
-    productTitle = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Título del Producto'
-            }))
-    
-    productDescription = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Descripción del Producto'
-            }))
-    
-    productPrice = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '####',
-            }))
-    
-    productQuantity = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '##',
-            }))
-
 class SignUpForm(forms.Form):
         
     def __init__(self, *args, **kwargs): 

@@ -133,7 +133,7 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    products = db.collection("products").document("product1").get().to_dict()
+    products = dbf.collection("products").document("product1").get().to_dict()
     
     context = {
         "user": user_id,
@@ -148,7 +148,7 @@ def edit_info_prod(request):
     context = {"form": form}
 
     if request.method == "POST":
-        form = EditInfoProductForm(request.POST)
+        form = formEditInfoProduct(request.POST)
 
         if form.is_valid():
             try:
@@ -268,7 +268,7 @@ def new_product(request, user_id):
         "form": form,
     }
 
-    db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
+    dbf.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
 
 
