@@ -12,7 +12,7 @@
     <div class="container-fluid w-75">
       <div class="row">
         <div class="col col-md-4">
-          <button class="btn left-btn">My Bids</button>
+          <button onclick="link_to_view('{{ user }}')" class="btn left-btn">All Bids</button>
         </div>
         <div class="col-md-4 offset-md-4">
           <button class="btn right-btn">My Auctions</button>
@@ -20,47 +20,106 @@
       </div>
       <div class="row">
 
-        <div class="auctions"></div>
+        <div class="auctions">
 
-        {% for key, value in auctions.items %}
+        {% for bid in bids %}
 
-          <div class="auction-info col col-md-3">
-            <img
-            src="{% static 'assets/img/laptop.jpg' %}"
-            alt="imagen de mi pablo"
-            class="img-fluid"
-            />
-            <div class="info-box">
-              <div class="row">
-                {% if value.status == 'won' %}
-                  <p class="center auction bold won">Auction Won</p>
-                {% elif value.status == 'lost' %}
-                  <p class="center auction bold lost">Auction Lost</p>
-                {% else %}
-                  <p class="center auction bold">Auction Finished</p>
-                {% endif %
-              </div>
-              <div class="row">
-                <p class="center message">Congratulations!</p>
-              </div>
-              <div class="row">
-                <div class="col col-sm-5 offset-sm-1 right">
-                  <p class="bold">Start Price&nbsp;:</p>
+          {% for key, value in bid.items %}
+
+            <div class="auction-info col col-md-3">
+              <img
+              src="{% static 'assets/img/laptop.jpg' %}"
+              alt="imagen de mi pablo"
+              class="img-fluid"
+              />
+
+              {% if value.status == "won" %}
+
+                <div class="info-box">
+                  <div class="row">
+                      <p class="center auction bold won">Subasta Ganada</p>
+                  </div>
+                  <div class="row">
+                    <p class="center message">Felicidades!</p>
+                  </div>
+                  <div class="row">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Precio Inical&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.startPrice }} MXN</p>
+                    </div>
+                  </div>
+                  <div class="row current-bid">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Oferta Actual&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.currentBid }} MXN</p>
+                    </div>
+                  </div>
                 </div>
-                <div class="col col-sm-6 left">
-                  <p>$&nbsp;000.000</p>
+
+              {% endif %}
+              {% if value.status == "lost" %}
+
+                <div class="info-box">
+                  <div class="row">
+                      <p class="center auction bold lost">Subasta Perdida</p>
+                  </div>
+                  <div class="row">
+                    <p class="center message">Tu oferta no fue ganadora</p>
+                  </div>
+                  <div class="row">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Precio Inicial&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.startPrice }}</p>
+                    </div>
+                  </div>
+                  <div class="row current-bid">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Oferta Actual&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.currentBid }}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="row current-bid">
-                <div class="col col-sm-5 offset-sm-1 right">
-                  <p class="bold">Current Bid&nbsp;:</p>
+
+              {% endif %}
+              {% if value.status == "active" %}
+
+                <div class="info-box">
+                  <div class="row">
+                      <p class="center auction bold finished">Subasta Finalizada</p>
+                  </div>
+                  <div class="row">
+                    <p class="center message">Retiraste tus fondos</p>
+                  </div>
+                  <div class="row">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Precio Inicial&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.startPrice }}</p>
+                    </div>
+                  </div>
+                  <div class="row current-bid">
+                    <div class="col col-sm-5 offset-sm-1 right">
+                      <p class="bold">Oferta Actual&nbsp;:</p>
+                    </div>
+                    <div class="col col-sm-6 left">
+                      <p>$&nbsp;{{ value.currentBid }}</p>
+                    </div>
+                  </div>
                 </div>
-                <div class="col col-sm-6 left">
-                  <p>$&nbsp;000.000</p>
-                </div>
-              </div>
+
+              {% endif %}
             </div>
-          </div>
+
+          {% endfor %}
       
 
         {% endfor %}
@@ -70,6 +129,13 @@
         
       
     </div>
+
+    <script>
+      function link_to_view(user_id) {
+        window.location.href = "{% url 'bids' user_id='temp' %}".replace("temp", user_id);
+      }
+    </script>
+
   </body>
 </html>
 

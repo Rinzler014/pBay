@@ -13,10 +13,10 @@
     <div class="container-fluid w-75">
       <div class="row">
         <div class="col col-md-4">
-          <button class="btn left-btn">My Bids</button>
+          <button class="btn left-btn">All Bids</button>
         </div>
         <div class="col-md-4 offset-md-4">
-          <button class="btn right-btn">My Auctions</button>
+          <button onclick="link_to_view('{{ user }}')" class="btn right-btn">My Auctions</button>
         </div>
       </div>
       <div class="row">
@@ -25,39 +25,43 @@
 
           <div class="auctions">
 
-            {% for key, value in bids.items %}
+            {% for bid in bids %}
 
-              <div class="auction-info col col-md-3">
-                <img
-                src="{% static 'assets/img/laptop.jpg' %}"
-                alt="imagen de mi pablo"
-                class="img-fluid"
-                />
-                <div class="info-box">
-                  <div class="row">
-                    <p class="center countdown bold">{{ value.remaining_time }}</p>
-                  </div>
-                  <div class="row">
-                    <p class="center time-for-auction">Time remaining for the auction</p>
-                  </div>
-                  <div class="row">
-                    <div class="col col-sm-5 offset-sm-1 right">
-                      <p class="bold">Start Price&nbsp;:</p>
+              {% for key, value in bid.items %}
+
+                <div class="auction-info col col-md-3">
+                  <img
+                  src="{% static 'assets/img/laptop.jpg' %}"
+                  alt="imagen de mi pablo"
+                  class="img-fluid"
+                  />
+                  <div class="info-box">
+                    <div class="row">
+                      <p class="center countdown bold">{{ value.timeRemaining }}</p>
                     </div>
-                    <div class="col col-sm-6 left">
-                      <p>$&nbsp; {{ value.start_price }} MXN</p>
+                    <div class="row">
+                      <p class="center time-for-auction">Tiempo Restante de la Subasta</p>
                     </div>
-                  </div>
-                  <div class="row current-bid">
-                    <div class="col col-sm-5 offset-sm-1 right">
-                      <p class="bold">Highest Bid&nbsp;:</p>
+                    <div class="row">
+                      <div class="col col-sm-5 offset-sm-1 right">
+                        <p class="bold">Precio Inicial&nbsp;:</p>
+                      </div>
+                      <div class="col col-sm-6 left">
+                        <p>$&nbsp; {{ value.startPrice }} MXN</p>
+                      </div>
                     </div>
-                    <div class="col col-sm-6 left">
-                      <p>$&nbsp; {{ value.highest_bid }} MXN</p>
+                    <div class="row current-bid">
+                      <div class="col col-sm-5 offset-sm-1 right">
+                        <p class="bold">Oferta Mas Alta&nbsp;:</p>
+                      </div>
+                      <div class="col col-sm-6 left">
+                        <p>$&nbsp; {{ value.highestBid }} MXN</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              
+              {% endfor %}
 
             {% endfor %}
           
@@ -69,6 +73,13 @@
 
       </div>
     </div>
+
+    <script>
+      function link_to_view(user_id) {
+        window.location.href = "{% url 'bids_state' user_id='temp' %}".replace("temp", user_id);
+      }
+    </script>
+
   </body>
 </html>
 

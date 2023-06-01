@@ -27,22 +27,16 @@ def login(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
+            
             try:
-                user = firebase.auth().sign_in_with_email_and_password(
+                user = auth.sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
                 )
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
 
-                user = firebase.auth().sign_in_with_email_and_password(
-                    form.cleaned_data["email"], form.cleaned_data["password"]
-                )
-                messages.success(
-                    request, f"Usuario {user['localId']} autenticado correctamente"
-                )
-
-                return redirect("landing", user=user["localId"])
+                return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
@@ -82,16 +76,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
 
-            form.cleaned_data["personalID"] = file_name
-            form.cleaned_data["personalID_filename"] = (
-                str(file_name) + "." + file_extension
-            )
-
-            request.session["location_info"] = json.dumps(
-                form.cleaned_data, default=str
-            )
-
-            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID_file"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
@@ -102,14 +87,6 @@ def signup_2(request):
         return render(request, "signup_2.html", context)
 
     return render(request, "signup_2.html", context)
-
-
-def signup_3(request):
-    form = SignUpForm(request=request)
-    context = {"form": form}
-
-    form = SignUpForm(request=request)
-    context = {"form": form}
 
 
 def signup_3(request):
@@ -128,7 +105,7 @@ def signup_3(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            data["personalID_filename"] = location_info["personalID_filename"]
+            data["personalID_file"] = location_info["personalID_file"]
             data.pop("password2")
 
             try:
@@ -136,7 +113,8 @@ def signup_3(request):
                     data["email"], data["password"]
                 )
                 data.pop("password")
-                db.child("users").child(user["localId"]).set(data)
+                data["type"] = "user"
+                db.collection("users").document(user["localId"]).set(data)
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
@@ -153,12 +131,16 @@ def signup_3(request):
     return render(request, "signup_3.html", context)
 
 
-def landing(request, user):
-    context = db.child("products").child("5zSNGRaS8BFVOgpkDHhw").get().val()
+def landing(request, user_id):
+    
+    products = db.collection("products").document("product1").get().to_dict()
+    
+    context = {
+        "user": user_id,
+        "context_list": [products] * 10,
+    }
 
-    context_list = [context] * 10
-
-    return render(request, "landing.html", {"context_list": context_list, "user": user})
+    return render(request, "landing.html", context)
 
 
 def edit_info_prod(request):
@@ -214,12 +196,21 @@ def mis_ventas(request, user):
             subtot += product_data["price"] * product_data["num_ventas"]
             tot_ventas += subtot
 
-    prod_list = db.child("products").child("product1").get().val()
+    prod_list = []
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "Si" and product_data["num_ventas"] != 0:
+            prod_list.append(product_data)
+
+    noprod_list = []
+    for product_id, product_data in prods.items():
+        if product_data["availability"] == "No" and product_data["num_ventas"] != 0:
+            noprod_list.append(product_data)
 
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
-        "context_list": [prod_list] * 6,
+        "context_list": prod_list,
+        "nocontext_list": noprod_list,
         "nonum_vendidos": nonum_vendidos,
         "num_ventas": num_ventas,
         "tot_ventas": tot_ventas,
@@ -228,41 +219,57 @@ def mis_ventas(request, user):
     return render(request, "mis_ventas.html", context)
 
 
-def shopping_cart(request):
-    return render(request, "shopping_cart.html")
+def shopping_cart(request, user_id):
+    
+    context = {
+        "user": user_id,
+    }
+    
+    return render(request, "shopping_cart.html", context)
 
 
 def auctions(request, user_id):
+    
+    platform_bids = db.collection("subasta").stream()
+    
+    bids = [{bid.id : bid.to_dict()} for bid in platform_bids]
+    
     context = {
         "user": user_id,
-        "bids": dict(db.child("auctions").get().val()),
+        "bids": bids,
     }
 
     return render(request, "bids.html", context)
 
 
-def bids_state(request):
-    return render(request, "bids_state.html")
+def bids_state(request, user_id):
+    
+    user_bids = db.collection(u"users").document(user_id).collection("bids").stream()
+    
+    bids = [{bid.id : bid.to_dict()} for bid in user_bids]
+    
+    
+    context = {
+        "user": user_id,
+        "bids": bids,
+    }
+
+    return render(request, "bids_state.html", context)
 
 
 def my_products(request):
     return render(request, "my_products.html")
 
 
-def new_product(request):
+def new_product(request, user_id):
     form = formNewProduct()
-    context = {"form": form}
+    context = {
+        "user": user_id,
+        "form": form,
+    }
 
     db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
 
 
-def bids_state(request, user_id):
-    context = {
-        "user": user_id,
-        "auctions": dict(
-            db.child("users").child(user_id).child("auctions").get().val()
-        ),
-    }
 
-    return render(request, "bids_state.html", context)
