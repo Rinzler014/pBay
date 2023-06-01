@@ -220,16 +220,32 @@ def shopping_cart(request):
 
 
 def auctions(request, user_id):
+    
+    platform_bids = db.collection("subasta").stream()
+    
+    bids = [{bid.id : bid.to_dict()} for bid in platform_bids]
+    
     context = {
         "user": user_id,
-        "bids": dict(db.child("auctions").get().val()),
+        "bids": bids,
     }
 
     return render(request, "bids.html", context)
 
 
-def bids_state(request):
-    return render(request, "bids_state.html")
+def bids_state(request, user_id):
+    
+    user_bids = db.collection(u"users").document(user_id).collection("bids").stream()
+    
+    bids = [{bid.id : bid.to_dict()} for bid in user_bids]
+    
+    
+    context = {
+        "user": user_id,
+        "bids": bids,
+    }
+
+    return render(request, "bids_state.html", context)
 
 
 def my_products(request):
@@ -244,12 +260,4 @@ def new_product(request):
     return render(request, "new_product.html", context)
 
 
-def bids_state(request, user_id):
-    context = {
-        "user": user_id,
-        "auctions": dict(
-            db.child("users").child(user_id).child("auctions").get().val()
-        ),
-    }
 
-    return render(request, "bids_state.html", context)
