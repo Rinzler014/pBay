@@ -1,7 +1,8 @@
 
-
-
   {% load static %}
+
+  {% load bootstrap_icons %}
+
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -34,23 +35,26 @@
 
     <div class="search">
         <div class="logo">
-          <a href=""><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
+          <a href="{% url 'landing' user_id=user %}"><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
         </div>
         <form class="search-box">
           <input type="text" placeholder="Buscar...">
           <button type="submit">
-            <img style="width: 30px;" src="{% static 'assets/img/search-img.png' %}">
+            {% bs_icon 'search' color='black'%}
           </button>
         </form>
         <div class="buttons">
           <button class="user-btn" style="margin-right: 20px;">
-            <a href="{% url 'new_product' %}">Alta Producto</a>
+            <a href="{% url 'bids' user_id=user %}">{% bs_icon 'megaphone-fill' color='white'%}</a>
           </button>
           <button class="user-btn" style="margin-right: 20px;">
-            <img style="width: 30px;" src="{% static 'assets/img/user.png' %}" alt="">
+            <a href="{% url 'new_product' %}">{% bs_icon 'plus-circle-fill' color='white'%}</a>
+          </button>
+          <button class="user-btn" style="margin-right: 20px;">
+            {% bs_icon 'person-fill' color='white'%}
           </button>
           <button class="car-btn">
-            <a href="{% url 'shopping_cart' %}"><img style="width: 30px;" src="{% static 'assets/img/shopping-cart.jpg' %}" alt=""></a>
+            <a href="{% url 'shopping_cart' %}">{% bs_icon 'cart-fill' color='white'%}</a>
           </button>
         </div>
       </div>

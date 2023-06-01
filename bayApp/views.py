@@ -36,7 +36,7 @@ def login(request):
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
 
-                return redirect("landing", user=user["localId"])
+                return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
@@ -131,12 +131,16 @@ def signup_3(request):
     return render(request, "signup_3.html", context)
 
 
-def landing(request, user):
-    context = db.child("products").child("product1").get().val()
+def landing(request, user_id):
+    
+    products = db.collection("products").document("product1").get().to_dict()
+    
+    context = {
+        "user": user_id,
+        "context_list": [products] * 10,
+    }
 
-    context_list = [context] * 10
-
-    return render(request, "landing.html", {"context_list": context_list, "user": user})
+    return render(request, "landing.html", context)
 
 
 def edit_info_prod(request):
