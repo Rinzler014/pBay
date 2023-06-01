@@ -1,116 +1,91 @@
-{% extends "layouts/header2.html"%}
-
-{% block content %}
-
-  {% load static %}
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Edit Product Info</title>
-      <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
-    </head>
-
-    <style>
-        .row{
-            display: flex;
-        }
-
-        .row2{
-            display: flex;
-            margin-left: 5%;
-            margin-right: 5%;
-            margin-top: 5%;
-        }
-
-        .column{
-          flex: 50%;
-          border-color: #000000;
-          text-align: left;
-        }
-        
-        .mybutton{
-            width: inherit;
-            height: 60px;
-            border: none;
-            background: #16C79A;
-            color: white;
-            border-radius: 57px;
-            margin-left: 5%;
-            margin-top: 5%;
-        }
-
-        .p{
-          font-size: large;
-        }
-
-        h1{
-            color: #858585;
-            margin-left: 5%;
-            margin-right: 5%;
-            margin-top: 5%;
-        }
-
-        h4{
-            color: #363636;
-            margin-bottom: 5%;
-            margin-left: 5%;
-            margin-right: 5%;
-            margin-top: 5%;
-        }
-
-        </style>
-
-    <body style="background-color:#F8f1f1;">
-
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+{% extends "layouts/header2.html"%} {% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New product</title>
+    <link rel="stylesheet" href="{% static 'styles/global.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/new_product.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body style="background-color: #f8f1f1">
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-        <form method="POST" class = "form">
-            {% csrf_token %}
-            <div class="row">
-                <div class="column">
-                    <h1>Título del producto</h1>
-                    <div class="row2">{{ form.productTitle }}</div>
-                    <h1>Detalles del producto</h1>
-                    <div class="row">
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Condición</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Puma</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Textil</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Negro</h4></div>
-                    </div>
-                    <div class="row">
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Alto</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Ancho</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">Largo</h4></div>
-                        <div class="column"><h4 style="margin-left: 20%; background-color: #DDDDDD;">TOC</h4></div>
-                    </div>
-                    <h1>Descripción del producto</h1>
-                    <div class="row2">{{ form.productDescription }}</div>
-                    <h1>Fotos del producto</h1>
-                    <div class="row">
-                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
-                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
-                        <div class="column"><img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 80%!important;" alt="imagen1"></div>
-                    </div>
-                </div>
-                <div class="row"></div>
-                <div class="column">
-                    <h1>Precio por unidad</h1>
-                    <div class="row2">{{ form.productPrice }}</div>
-                    <h1>Unidades disponibles</h1>
-                    <div class="row2">{{  form.productQuantity  }}</div>
-                    <button class="mybutton" type="submit" style="width: 160px;">Guardar</button> <br>
-                    <button class="mybutton" type="reset" style="width: 160px; background: #B93535;">Eliminar Producto</button>
-                    <form method="POST", class="form">
-                    </form>
-                </div>
+        <script>
+          function changemainimg(imagen) {
+            var imagenPrincipal = document.getElementById("imagenPrincipal");
+            imagenPrincipal.src = imagen.src;
+          }
+        </script> -->
+    <h2 class="title-new-product">Nuevo Producto</h2>
+    <form action="">
+      <section class="container-new-product">
+        <div class="new-product-part">
+          <div>
+            <h3>Título del producto</h3>
+            {{form.title}}
+          </div>
+          <div>
+            <h3>Descripción del producto</h3>
+            {{form.description}}
+            </form>
+          </div>
+          <div>
+            <h3>Adjuntar fotos del producto</h3>
+            <div>
+              {{form.images}}
+              <p>Archivos añadidos</p>
+              <ul>
+                <li>a.jpg,</li>
+                <li>b.jpg,</li>
+                <li>c.jpg,</li>
+              </ul>
             </div>
-        </form>
-    </body>
-  </html>
+          </div>
+          <div class="checkbox-type-sale">
+            <div><p>Venta Directa</p>{{form.directSale}}</div>
+            <div><p>Subasta</p>{{form.auction}}</div>
+          </div>
+        </div>
+        <div class="new-product-part">
+          <div>
+            <h3>Precio por unidad</h3>
+            {{form.price}}
+          </div>
+          <div>
+            <h3>Unidades disponibles</h3>
+            {{form.stock}}
+          </div>
+          <div>
+            <h3>Precio de Inicio</h3>
+            {{form.startingPrice}}
+          </div>
+          <div>
+            <h3>Duración en días</h3>
+            {{form.durationDays}}
+        </div>
+          <div>
+            <h3>Precio de C/I</h3>
+            {{form.priceCI}}
+        </div>
+          <br />
+          <input
+            class="button-new-product"
+            type="submit"
+            value="Continuar"
+          />
+         </div>
+      </section>
+    </form>
+  </body>
+</html>
 
 {% endblock %}

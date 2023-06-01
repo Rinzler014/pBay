@@ -257,3 +257,51 @@ class formNewProduct(forms.Form):
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de C/I',
         }))
+    
+class formEditInfoProduct(forms.Form):
+    title = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Título del producto',
+        "cols":"50",
+        "rows":"2",
+        "resize":"none"
+        }))
+    description = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Descripción del producto',
+        "cols":"50",
+        "rows":"5",
+        "resize":"none"
+        }))
+    images = forms.FileField(required=True,
+        widget=forms.widgets.FileInput(attrs={
+        'placeholder': 'Imágenes del producto',
+        }))
+    price = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio',
+        }))
+    stock = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Unidades disponibles',
+        }))
+    directSale = forms.BooleanField(label='Venta Directa', required=False,
+        widget=forms.widgets.CheckboxInput(attrs={
+        'placeholder': 'Venta Directa',
+        }))
+    auction = forms.BooleanField(label='Subasta', required=False, 
+        widget=forms.widgets.CheckboxInput(attrs={
+        'placeholder': 'Venta Directa',
+        }))
+    startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de Inicio',
+        }))
+    durationDays = forms.IntegerField(label='Campo Adicional 2', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Duración en días',
+        }))
+    priceCI = forms.IntegerField(label='Campo Adicional 3', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de C/I',
+        }))

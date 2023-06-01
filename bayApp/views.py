@@ -17,7 +17,7 @@ cred = credentials.Certificate('./serAccountKey.json')
 
 app = firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+dbf = firestore.client()
 
 def login(request):
     form = LoginForm()
@@ -154,7 +154,7 @@ def signup_3(request):
 
 
 def landing(request, user):
-    context = db.child("products").child("product1").get().val()
+    context = db.child("products").child("5zSNGRaS8BFVOgpkDHhw").get().val()
 
     context_list = [context] * 10
 
@@ -162,7 +162,7 @@ def landing(request, user):
 
 
 def edit_info_prod(request):
-    form = EditInfoProductForm()
+    form = formEditInfoProduct()
     context = {"form": form}
 
     if request.method == "POST":
