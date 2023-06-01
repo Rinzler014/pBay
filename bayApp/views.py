@@ -145,21 +145,25 @@ def landing(request, user_id):
     return render(request, "landing.html", context)
 
 
-def edit_info_prod(request):
-    form = EditInfoProductForm()
-    context = {"form": form}
+def edit_info_prod(request, user_id):
+    form = formEditInfoProduct()
+
+    productID = "pruebaOmar"
+
+    context = {
+        "user": user_id,
+        "form": form,
+    }
 
     if request.method == "POST":
-        form = EditInfoProductForm(request.POST)
-
+        # print(request)
+        form = formEditInfoProduct(request.POST, request.FILES)
+        print(form.is_valid())
+        print(form.errors)
+        print(request.FILES)
         if form.is_valid():
-            try:
-                print("Is valid")
-
-                return redirect("login")
-
-            except Exception as e:
-                messages.error(request, f"Error al autenticar usuario: {e}")
+            data = form.cleaned_data
+            db.collection('products').document(productID).set({"title": "Está jalando"})
 
     return render(request, "edit_info_prod.html", context)
 
