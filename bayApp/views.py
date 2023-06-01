@@ -219,8 +219,13 @@ def mis_ventas(request, user):
     return render(request, "mis_ventas.html", context)
 
 
-def shopping_cart(request):
-    return render(request, "shopping_cart.html")
+def shopping_cart(request, user_id):
+    
+    context = {
+        "user": user_id,
+    }
+    
+    return render(request, "shopping_cart.html", context)
 
 
 def auctions(request, user_id):
@@ -256,9 +261,12 @@ def my_products(request):
     return render(request, "my_products.html")
 
 
-def new_product(request):
+def new_product(request, user_id):
     form = formNewProduct()
-    context = {"form": form}
+    context = {
+        "user": user_id,
+        "form": form,
+    }
 
     db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
     return render(request, "new_product.html", context)
