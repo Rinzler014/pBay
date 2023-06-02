@@ -199,10 +199,10 @@ class formNewProduct(forms.Form):
         "rows":"5",
         "resize":"none"
         }))
-    images = forms.FileField(required=True,
-        widget=forms.widgets.FileInput(attrs={
-        'placeholder': 'Imágenes del producto',
-        }))
+    image = forms.FileField(required=True,
+            widget=forms.widgets.FileInput(attrs={
+                'placeholder': 'Identificacion Personal',
+            }))
     price = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio',

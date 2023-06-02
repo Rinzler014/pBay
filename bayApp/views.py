@@ -156,7 +156,7 @@ def edit_info_prod(request, user_id):
     }
 
     if request.method == "POST":
-        # print(request)
+        
         form = formEditInfoProduct(request.POST, request.FILES)
         print(form.is_valid())
         print(form.errors)
