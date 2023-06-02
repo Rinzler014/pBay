@@ -12,13 +12,13 @@ config = {
   "measurementId": "G-TC6V309YST"
 }
 
-def noquote(s):
-    return s
-
-pyrebase.pyrebase.quote = noquote
 
 firebase = pyrebase.initialize_app(config)
 
 auth = firebase.auth()
 
 storage = firebase.storage()
+
+#Get image from firebase storage
+
+print(storage.child("users/4K0Q36jhUtORhc0eiaMAYMCw2CE3/personalID").get_url("2"))
