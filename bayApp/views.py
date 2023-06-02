@@ -148,7 +148,7 @@ def landing(request, user_id):
 def edit_info_prod(request, user_id):
     form = formEditInfoProduct()
 
-    productID = "pruebaOmar"
+    productID = "Esteesuniddeproducto"
 
     context = {
         "user": user_id,
@@ -158,9 +158,6 @@ def edit_info_prod(request, user_id):
     if request.method == "POST":
         
         form = formEditInfoProduct(request.POST, request.FILES)
-        print(form.is_valid())
-        print(form.errors)
-        print(request.FILES)
         if form.is_valid():
             data = form.cleaned_data
             file = request.FILES["images"]
@@ -168,6 +165,9 @@ def edit_info_prod(request, user_id):
             file_extension = file.name.split(".")[-1]
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
+            
+            storage.child(f"products/{productID}/{file_name}").put(file_path)
+            
             db.collection('products').document(productID).set({
                 "title": data['title'],
                 "description": data['description'],
@@ -180,6 +180,8 @@ def edit_info_prod(request, user_id):
                 "durationDays": data['durationDays'],
                 "priceCI": data['priceCI']
                 })
+            
+            os.remove(file_path)
 
     return render(request, "edit_info_prod.html", context)
 
