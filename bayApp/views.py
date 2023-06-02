@@ -303,7 +303,8 @@ def my_products(request, user_id):
 def new_product(request, user_id):
     form = formNewProduct()
 
-    productID = "pruebaChris"
+    productName = str(bson.ObjectId())
+
 
     context = {
         "user": user_id,
@@ -317,22 +318,22 @@ def new_product(request, user_id):
             
             urlImages = []
             # urlImagestemp = []
-            for imagen in request.FILES.getlist('images'):
-                nombre_imagen = imagen.name
+            for image in request.FILES.getlist('images'):
+                nombre_imagen = image.name
                 # Guardar la imagen en el default_storage
                 # ruta_guardadotemp = default_storage.save(f'temp/' + imagen.name, imagen)
                 # # Agregar la ruta o URL de la imagen a la lista urlImagestemps
                 # urlImagestemp.append(ruta_guardadotemp)
                 
                 # Lee los datos de la imagen como bytes
-                datos_imagen = imagen.read()
+                datos_imagen = image.read()
 
                 # Guarda la imagen en el almacenamiento de Firebase
-                ruta_guardado = f"products/{user_id}/{nombre_imagen}"
+                ruta_guardado = f"products/{productName}/{nombre_imagen}"
                 storage.child(ruta_guardado).put(datos_imagen)
 
                 # Obtiene la URL de la imagen guardada
-                url_imagen = storage.child(user_id).get_url(None)
+                # url_imagen = storage.child(productName).get_url(None)
 
                 # Agrega la URL de la imagen a la lista
                 urlImages.append(ruta_guardado)
@@ -352,7 +353,7 @@ def new_product(request, user_id):
                     u"durationDays": data['durationDays'],
                     u"priceCI": data['priceCI']
                     }
-                db.collection('products').document(user_id).set(dataP)
+                db.collection('products').document(productName).set(dataP)
 
             else:
                 dataP = {
@@ -363,7 +364,7 @@ def new_product(request, user_id):
                     u"stock": data['stock'],
                     u"optionSale": data['option'],
                     }
-                db.collection('products').document(user_id).set(dataP)
+                db.collection('products').document(productName).set(dataP)
 
     return render(request, "new_product.html", context)
 
