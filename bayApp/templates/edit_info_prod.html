@@ -15,6 +15,21 @@
       crossorigin="anonymous"
     />
   </head>
+
+  <style>
+    .btn-sig {
+      transition: all 0.3s;
+      margin-top: 1rem;
+      grid-column: 1/4;
+      height: 3rem;
+      background-color: #11698e;
+      border: transparent;
+      border-radius: 1rem;
+      color: #f8f1f1;
+      font-size: 1.3rem;
+      font-weight: bold;
+}
+  </style>
   <body style="background-color: #f8f1f1">
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -26,7 +41,7 @@
           }
         </script> -->
     <h2 class="title-new-product">Editar Información del Producto</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <section class="container-new-product">
         <div class="new-product-part">
@@ -42,12 +57,6 @@
             <h3>Adjuntar fotos del producto</h3>
             <div>
               {{form.images}}
-              <p>Archivos añadidos</p>
-              <ul>
-                <li>a.jpg,</li>
-                <li>b.jpg,</li>
-                <li>c.jpg,</li>
-              </ul>
             </div>
           </div>
           <div class="checkbox-type-sale">
@@ -76,8 +85,8 @@
             <h3>Precio de C/I</h3>
             {{form.priceCI}}
         </div>
-          <br />
-          <button>Hola</button>
+          <br/>
+          <button class="btn-sig">Guardar</button>
          </div>
       </section>
     </form>
