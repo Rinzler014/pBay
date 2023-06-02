@@ -1,6 +1,8 @@
 from django import forms
 import re
 from django.contrib import messages
+
+
 class LoginForm(forms.Form):
     
     email = forms.EmailField(widget=forms.widgets.TextInput(attrs={
@@ -199,10 +201,11 @@ class formNewProduct(forms.Form):
         "rows":"5",
         "resize":"none"
         }))
-    image = forms.FileField(required=True,
-            widget=forms.widgets.FileInput(attrs={
-                'placeholder': 'Identificacion Personal',
-            }))
+    # images = forms.FileField(required=True,
+    #     widget=forms.widgets.FileInput(attrs={
+    #     'placeholder': 'Imágenes del producto',
+    #     }))
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     price = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio',
@@ -211,26 +214,23 @@ class formNewProduct(forms.Form):
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Unidades disponibles',
         }))
-    directSale = forms.BooleanField(label='Venta Directa', required=False,
-        widget=forms.widgets.CheckboxInput(attrs={
-        'placeholder': 'Venta Directa',
-        }))
-    auction = forms.BooleanField(label='Subasta', required=False, 
-        widget=forms.widgets.CheckboxInput(attrs={
-        'placeholder': 'Venta Directa',
-        }))
+    option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
     startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
         widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Precio de Inicio',
+        'placeholder': 'Precio de Inicio'
         }))
     durationDays = forms.IntegerField(label='Campo Adicional 2', required=False, 
         widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Duración en días',
+        'placeholder': 'Duración en días'
         }))
     priceCI = forms.IntegerField(label='Campo Adicional 3', required=False, 
         widget=forms.widgets.NumberInput(attrs={
-        'placeholder': 'Precio de C/I',
+        'placeholder': 'Precio de C/I'
         }))
+    
+
+
+    
     
 class formEditInfoProduct(forms.Form):
     title = forms.CharField(label='Condición',

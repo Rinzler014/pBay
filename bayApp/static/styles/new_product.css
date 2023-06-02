@@ -7,7 +7,7 @@
   --input-color: #eee4e4;
   --line-height: 1.7rem;
   --transition: 0.4s ease-in;
-  --color-bottom: #16C79A;
+  --color-bottom: #16c79a;
 }
 *,
 html,
@@ -35,7 +35,7 @@ body {
   padding: 20px;
 }
 
-.new-product-part div{
+.new-product-part div {
   margin-bottom: 20px;
 }
 
@@ -58,21 +58,30 @@ ul {
   justify-content: flex-start;
 }
 
-form > div{
-    display: flex;
-    flex-direction: column;
+form > div {
+  display: flex;
+  flex-direction: column;
 }
 
-.checkbox-type-sale{
-display: flex;
+.checkbox-type-sale {
+  display: flex;
+  flex-direction: row;
 }
 
-.button-new-product{
-    background-color: var(--color-bottom);
-    padding: 20px 40px;
-    color: white;
+.checkbox-type-sale div {
+  display: flex;
 }
 
-.button-new-product:hover{
-    opacity: .6;
+.checkbox-type-sale div:first-child {
+  margin-right: 40px;
+}
+
+.button-new-product {
+  background-color: var(--color-bottom);
+  padding: 20px 40px;
+  color: white;
+}
+
+.button-new-product:hover {
+  opacity: 0.6;
 }

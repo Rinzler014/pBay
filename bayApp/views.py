@@ -285,12 +285,69 @@ def my_products(request):
 
 def new_product(request, user_id):
     form = formNewProduct()
+
+    productID = "pruebaChris"
+
     context = {
         "user": user_id,
         "form": form,
     }
 
-    db.collection(u'products').document(u'5zSNGRaS8BFVOgpkDHhw').update({u'Estado': 'Nuevo'})
+    if request.method == "POST":
+        form = formNewProduct(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            
+            urlImages = []
+            # urlImagestemp = []
+            for imagen in request.FILES.getlist('images'):
+                nombre_imagen = imagen.name
+                # Guardar la imagen en el default_storage
+                # ruta_guardadotemp = default_storage.save(f'temp/' + imagen.name, imagen)
+                # # Agregar la ruta o URL de la imagen a la lista urlImagestemps
+                # urlImagestemp.append(ruta_guardadotemp)
+                
+                # Lee los datos de la imagen como bytes
+                datos_imagen = imagen.read()
+
+                # Guarda la imagen en el almacenamiento de Firebase
+                ruta_guardado = f"products/{user_id}/{nombre_imagen}"
+                storage.child(ruta_guardado).put(datos_imagen)
+
+                # Obtiene la URL de la imagen guardada
+                url_imagen = storage.child(user_id).get_url(None)
+
+                # Agrega la URL de la imagen a la lista
+                urlImages.append(ruta_guardado)
+
+                # db.collection('products').document(productID).set({'images':ruta_guardado})
+
+            optionSale = form.cleaned_data['option']
+            if optionSale == 'subasta':
+                dataP = {
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    u"startingPrice": data['startingPrice'],
+                    u"durationDays": data['durationDays'],
+                    u"priceCI": data['priceCI']
+                    }
+                db.collection('products').document(user_id).set(dataP)
+
+            else:
+                dataP = {
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    }
+                db.collection('products').document(user_id).set(dataP)
+
     return render(request, "new_product.html", context)
 
 
