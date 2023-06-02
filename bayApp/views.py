@@ -163,7 +163,23 @@ def edit_info_prod(request, user_id):
         print(request.FILES)
         if form.is_valid():
             data = form.cleaned_data
-            db.collection('products').document(productID).set({"title": "Está jalando"})
+            file = request.FILES["images"]
+            file_name = bson.ObjectId()
+            file_extension = file.name.split(".")[-1]
+            file_path = f"temp/{file_name}.{file_extension}"
+            default_storage.save(file_path, file)
+            db.collection('products').document(productID).set({
+                "title": data['title'],
+                "description": data['description'],
+                "images": file_path,
+                "price": data['price'],
+                "stock": data['stock'],
+                "directSale": data['directSale'],
+                "auction": data['auction'],
+                "startingPrice": data['startingPrice'],
+                "durationDays": data['durationDays'],
+                "priceCI": data['priceCI']
+                })
 
     return render(request, "edit_info_prod.html", context)
 
