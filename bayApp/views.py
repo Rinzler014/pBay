@@ -148,7 +148,7 @@ def landing(request, user_id):
 def edit_info_prod(request, user_id):
     form = formEditInfoProduct()
 
-    productID = "Esteesuniddeproducto"
+    productID = "pruebaRICARDO"
 
     context = {
         "user": user_id,
@@ -269,6 +269,7 @@ def auctions(request, user_id):
 def bids_state(request, user_id):
     
     user_bids = db.collection(u"users").document(user_id).collection("bids").stream()
+
     
     bids = [{bid.id : bid.to_dict()} for bid in user_bids]
     
@@ -281,8 +282,22 @@ def bids_state(request, user_id):
     return render(request, "bids_state.html", context)
 
 
-def my_products(request):
-    return render(request, "my_products.html")
+def my_products(request, user_id):
+
+    print(user_id)
+    print(user_id)
+    print(user_id)
+    platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
+    products = [{product.id: product.to_dict()} for product in platform_products]
+
+    print(products)
+
+    context = {
+        "user": user_id,
+        "products": products,
+    }
+    return render(request, "my_products.html", context)
+
 
 
 def new_product(request, user_id):
