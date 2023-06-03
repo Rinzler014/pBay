@@ -146,9 +146,33 @@ def landing(request, user_id):
 
 
 def edit_info_prod(request, user_id):
-    form = formEditInfoProduct()
+    productID = "647acec5a0325689e66ceacf"
+    doc_ref = db.collection("products").document(productID)
+    doc = doc_ref.get()
+    initialData = doc.to_dict()
+    
+    if initialData["optionSale"] == "subasta":
+        initial = {
+            "title": initialData["title"],
+            "description": initialData["description"],
+            "price": initialData["price"],
+            "stock": initialData["stock"],
+            "startingPrice": initialData["startingPrice"],
+            "durationDays": initialData["durationDays"],
+            "priceCI": initialData["priceCI"],
+            #"option": initialData["optionSale"]
+            }
+    else:
+        initial = {
+            "title": initialData["title"],
+            "description": initialData["description"],
+            "price": initialData["price"],
+            "stock": initialData["stock"],
+            #"option": initialData["optionSale"]
+        }
+    
+    form = formEditInfoProduct(initial=initial)
 
-    productID = "pruebaOmar"
 
     context = {
         "user": user_id,
