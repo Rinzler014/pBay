@@ -148,7 +148,7 @@ def landing(request, user_id):
 def edit_info_prod(request, user_id):
     form = formEditInfoProduct()
 
-    productID = "pruebaOmarSubasta"
+    productID = "pruebaOmar"
 
     context = {
         "user": user_id,
@@ -186,18 +186,6 @@ def edit_info_prod(request, user_id):
         
                     urlImages.append(storage_path)
                     os.remove(file_path)
-            
-            db.collection('products').document(productID).set({
-                "title": data['title'],
-                "description": data['description'],
-                "urlImages": urlImages,
-                "price": data['price'],
-                "stock": data['stock'],
-                "auction": data['auction'],
-                "startingPrice": data['startingPrice'],
-                "durationDays": data['durationDays'],
-                "priceCI": data['priceCI']
-                })
             
             optionSale = form.cleaned_data['option']
             
