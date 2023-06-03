@@ -238,7 +238,7 @@ class formEditInfoProduct(forms.Form):
         'placeholder': 'Título del producto',
         "cols":"50",
         "rows":"2",
-        "resize":"none"
+        "resize":"none",
         }))
     description = forms.CharField(label='Condición',
         widget=forms.widgets.Textarea(attrs={
