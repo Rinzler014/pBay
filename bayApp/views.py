@@ -268,9 +268,11 @@ def details(request):
 
 def mis_ventas(request, user):
     prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
+    # Productos tienen diferentes campos, hasta que se normalizen solo usar un producto
+    # prods = [prod.to_dict() for prod in db.collection("products").get()]
 
 
-    print(prods)
+    # print(prods)
     num_vendidos = 0
 
     nonum_vendidos = 0
