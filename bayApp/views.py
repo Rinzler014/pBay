@@ -187,7 +187,25 @@ def edit_info_prod(request, user_id):
 
 
 def details(request):
-    context = db.child("products").child("product1").get().val()
+    prodDetails = db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()
+    context =  prodDetails
+    # prodDetails["prodDetailsEstado"],
+    # prodDetails["Images"],
+    # prodDetails["category"],
+    # prodDetails["condition"],
+    # prodDetails["featured"],
+    # prodDetails["isAuction"],
+    # prodDetails["manufacturer"],
+    # prodDetails["model"],
+    # prodDetails["price"],
+    # prodDetails["productDescription"],
+    # prodDetails["productName"],
+    # prodDetails["publicationTime"],
+    # prodDetails["quantity"],
+    # prodDetails["sellerID"],
+    # prodDetails["subcategory"],
+    # prodDetails["totalSales"],
+    # prodDetails["visits"],
 
     return render(request, "details_prod.html", context)
 
