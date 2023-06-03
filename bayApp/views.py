@@ -243,7 +243,7 @@ def edit_info_prod(request, user_id):
 
 
 def details(request):
-    prodDetails = db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()
+    prodDetails = db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()
     context =  prodDetails
     # PARA VENTA
     # prodDetails["description"],
