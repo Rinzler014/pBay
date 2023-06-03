@@ -16,9 +16,9 @@
             <div class="item">
                 <img src="https://www.lenovo.com/medias/?context=bWFzdGVyfHJvb3R8MjAyMjE5fGltYWdlL3BuZ3xoY2YvaDEyLzE0NzMwMTY4MDc0MjcwLnBuZ3w1NzFhNmVlYjQ0ODFmMDgxYzA3NWQ2YWQ5ZDZlOWQ2ODFmOTA5YTYxYTVjZGIyMTRmNzI2ZWI3MGMzOTNlZjE4" alt="Product Image">
                 <div>
-                    <div class="title">Product Title {{ value.productName }}</div>
-                    <div class="price">Precio por unidad {{ value.price }}</div>
-                    <div class="inventory">Unidades disponibles {{ value.quantity }}</div>
+                    <div class="title">{{ value.productName }}</div>
+                    <div class="price">Precio por unidad <p class="price" style="margin-left: 70px;">$ <p class="areaColor"> {{ value.price }}</p></p></div> 
+                    <div class="inventory">Unidades disponibles <p class="areaColor" style="margin-left: 80px;"> {{ value.quantity }}</p></div> 
                 </div>
             </div>
         
@@ -27,8 +27,12 @@
     {% endfor %}
 
 
+    
+
     <div class="bar-button">
-        <button>Add Product</button>
+        <button>
+            <a href="{% url 'new_product' user_id=user %}">Add Product</a>
+        </button>
     </div>
 </body>
 </html>

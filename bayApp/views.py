@@ -267,9 +267,14 @@ def details(request):
 
 
 def mis_ventas(request, user):
-    prods = dict(db.child("products").get().val())
+    prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
+
+
+    print(prods)
     num_vendidos = 0
 
+    nonum_vendidos = 0
+    """
     for product_id, product_data in prods.items():
         if product_data["availability"] == "Si":
             num_vendidos += 1
@@ -279,38 +284,45 @@ def mis_ventas(request, user):
     for product_id, product_data in prods.items():
         if product_data["availability"] == "No":
             nonum_vendidos += 1
+    """
 
-    num_ventas = 0
+    totalSales = 0
 
-    for product_id, product_data in prods.items():
-        if product_data["num_ventas"] != 0:
-            num_ventas += product_data["num_ventas"]
+    for product_data in prods:
+        if product_data["totalSales"] != 0:
+            totalSales += product_data["totalSales"]
 
     tot_ventas = 0
     subtot = 0
 
-    for product_id, product_data in prods.items():
-        if product_data["price"] != 0 and product_data["num_ventas"] != 0:
-            subtot += product_data["price"] * product_data["num_ventas"]
+    for product_data in prods:
+        if product_data["price"] != 0 and product_data["totalSales"] != 0:
+            subtot += product_data["price"] * product_data["totalSales"]
             tot_ventas += subtot
 
     prod_list = []
-    for product_id, product_data in prods.items():
-        if product_data["availability"] == "Si" and product_data["num_ventas"] != 0:
+    for product_data in prods:
+        if product_data["totalSales"] != 0:
             prod_list.append(product_data)
+    """
+    for product_data in prods:
+        if product_data["availability"] == "Si" and  product_data["totalSales"] != 0:
+            prod_list.append(product_data)
+    """
 
     noprod_list = []
-    for product_id, product_data in prods.items():
-        if product_data["availability"] == "No" and product_data["num_ventas"] != 0:
+    """
+    for product_data in prods:
+        if product_data["availability"] == "No" and product_data["totalSales"] != 0:
             noprod_list.append(product_data)
-
+    """
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
         "context_list": prod_list,
         "nocontext_list": noprod_list,
         "nonum_vendidos": nonum_vendidos,
-        "num_ventas": num_ventas,
+        "totalSales": totalSales,
         "tot_ventas": tot_ventas,
     }
 

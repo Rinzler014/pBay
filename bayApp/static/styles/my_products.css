@@ -71,3 +71,24 @@ body {
     border: none;
     font-size: 25px;
 }
+
+.bar-button button a {
+    text-decoration: none;
+    color: white;
+}
+
+.bar-button button.hover {
+    color: red;
+}
+
+.areaColor {
+    border: none;
+    border-radius: 5px;
+    background-color: #eee4ee;
+    padding: 5px;
+  }
+
+  p {
+    display: inline;
+  }
+  
