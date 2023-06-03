@@ -148,7 +148,7 @@ def landing(request, user_id):
 def edit_info_prod(request, user_id):
     form = formEditInfoProduct()
 
-    productID = str(bson.ObjectID())
+    productID = "pruebaOmarSubasta"
 
     context = {
         "user": user_id,
@@ -167,21 +167,65 @@ def edit_info_prod(request, user_id):
             default_storage.save(file_path, file)
             
             storage.child(f"products/{productID}/{file_name}").put(file_path)
+
+            urlImages = []
+
+            for image in request.FILES.getlist('images'):
+                    
+                    nombre_imagen = image.name
+                    
+                    file_extension = nombre_imagen.split(".")[-1]
+                    file_path = f"temp/{nombre_imagen}.{file_extension}"
+                    
+                    default_storage.save(file_path, image)
+                    
+                    ruta_guardado = f"products/{productID}/{nombre_imagen}"
+                    storage.child(ruta_guardado).put(file_path)
+
+                    storage_path = storage.child(ruta_guardado).get_url("2")
+        
+                    urlImages.append(storage_path)
+                    os.remove(file_path)
             
             db.collection('products').document(productID).set({
                 "title": data['title'],
                 "description": data['description'],
-                "images": file_path,
+                "urlImages": urlImages,
                 "price": data['price'],
                 "stock": data['stock'],
-                "directSale": data['directSale'],
                 "auction": data['auction'],
                 "startingPrice": data['startingPrice'],
                 "durationDays": data['durationDays'],
                 "priceCI": data['priceCI']
                 })
             
-            os.remove(file_path)
+            optionSale = form.cleaned_data['option']
+            
+            if optionSale == 'subasta':
+                dataP = {
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    u"startingPrice": data['startingPrice'],
+                    u"durationDays": data['durationDays'],
+                    u"priceCI": data['priceCI']
+                    }
+                db.collection('products').document(productID).set(dataP)
+
+            else:
+                dataP = {
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    }
+                db.collection('products').document(productID).set(dataP)
+            
 
     return render(request, "edit_info_prod.html", context)
 

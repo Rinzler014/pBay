@@ -247,10 +247,7 @@ class formEditInfoProduct(forms.Form):
         "rows":"5",
         "resize":"none"
         }))
-    images = forms.FileField(required=True,
-        widget=forms.widgets.FileInput(attrs={
-        'placeholder': 'Imágenes del producto',
-        }))
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     price = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio',
@@ -267,6 +264,7 @@ class formEditInfoProduct(forms.Form):
         widget=forms.widgets.CheckboxInput(attrs={
         'placeholder': 'Venta Directa',
         }))
+    option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
     startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de Inicio',
