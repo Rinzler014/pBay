@@ -245,23 +245,17 @@ def edit_info_prod(request, user_id):
 def details(request):
     prodDetails = db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()
     context =  prodDetails
-    # prodDetails["prodDetailsEstado"],
-    # prodDetails["Images"],
-    # prodDetails["category"],
-    # prodDetails["condition"],
-    # prodDetails["featured"],
-    # prodDetails["isAuction"],
-    # prodDetails["manufacturer"],
-    # prodDetails["model"],
+    # PARA VENTA
+    # prodDetails["description"],
+    # prodDetails["optionSale"],
     # prodDetails["price"],
-    # prodDetails["productDescription"],
-    # prodDetails["productName"],
-    # prodDetails["publicationTime"],
-    # prodDetails["quantity"],
-    # prodDetails["sellerID"],
-    # prodDetails["subcategory"],
-    # prodDetails["totalSales"],
-    # prodDetails["visits"],
+    # prodDetails["stock"],
+    # prodDetails["title"],
+    # prodDetails["urlImages"],
+    # PARA SUBASTA
+    # prodDetails["priceCI"],
+    # prodDetails["startingPrice"],
+    # prodDetails["durationDays"],
 
     return render(request, "details_prod.html", context)
 
