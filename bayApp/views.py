@@ -139,7 +139,7 @@ def landing(request, user_id):
     
     context = {
         "user": user_id,
-        "products": products * 10,
+        "products": products,
     }
 
     return render(request, "landing.html", context)
@@ -312,7 +312,9 @@ def new_product(request, user_id):
     }
 
     if request.method == "POST":
+        
         form = formNewProduct(request.POST, request.FILES)
+        
         if form.is_valid():
             
             data = form.cleaned_data
