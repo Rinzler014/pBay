@@ -148,7 +148,7 @@ def landing(request, user_id):
 def edit_info_prod(request, user_id):
     form = formEditInfoProduct()
 
-    productID = "pruebaRICARDO"
+    productID = str(bson.ObjectID())
 
     context = {
         "user": user_id,
@@ -314,58 +314,64 @@ def new_product(request, user_id):
     if request.method == "POST":
         form = formNewProduct(request.POST, request.FILES)
         if form.is_valid():
+            
             data = form.cleaned_data
             
             urlImages = []
-            # urlImagestemp = []
-            for image in request.FILES.getlist('images'):
-                nombre_imagen = image.name
-                # Guardar la imagen en el default_storage
-                # ruta_guardadotemp = default_storage.save(f'temp/' + imagen.name, imagen)
-                # # Agregar la ruta o URL de la imagen a la lista urlImagestemps
-                # urlImagestemp.append(ruta_guardadotemp)
+            
+            try: 
+        
+                for image in request.FILES.getlist('images'):
+                    
+                    nombre_imagen = image.name
+                    
+                    file_extension = nombre_imagen.split(".")[-1]
+                    file_path = f"temp/{nombre_imagen}.{file_extension}"
+                    
+                    default_storage.save(file_path, image)
+                    
+                    ruta_guardado = f"products/{productName}/{nombre_imagen}"
+                    storage.child(ruta_guardado).put(file_path)
+
+                    storage_path = storage.child(ruta_guardado).get_url("2")
+        
+                    urlImages.append(storage_path)
+                    os.remove(file_path)
+
+                optionSale = form.cleaned_data['option']
                 
-                # Lee los datos de la imagen como bytes
-                datos_imagen = image.read()
+                if optionSale == 'subasta':
+                    dataP = {
+                        u"title": data['title'],
+                        u"description": data['description'],
+                        u"urlImages": urlImages,
+                        u"price": data['price'],
+                        u"stock": data['stock'],
+                        u"optionSale": data['option'],
+                        u"startingPrice": data['startingPrice'],
+                        u"durationDays": data['durationDays'],
+                        u"priceCI": data['priceCI']
+                        }
+                    db.collection('products').document(productName).set(dataP)
 
-                # Guarda la imagen en el almacenamiento de Firebase
-                ruta_guardado = f"products/{productName}/{nombre_imagen}"
-                storage.child(ruta_guardado).put(datos_imagen)
+                else:
+                    dataP = {
+                        u"title": data['title'],
+                        u"description": data['description'],
+                        u"urlImages": urlImages,
+                        u"price": data['price'],
+                        u"stock": data['stock'],
+                        u"optionSale": data['option'],
+                        }
+                    db.collection('products').document(productName).set(dataP)
 
-                # Obtiene la URL de la imagen guardada
-                # url_imagen = storage.child(productName).get_url(None)
-
-                # Agrega la URL de la imagen a la lista
-                urlImages.append(ruta_guardado)
-
-                # db.collection('products').document(productID).set({'images':ruta_guardado})
-
-            optionSale = form.cleaned_data['option']
-            if optionSale == 'subasta':
-                dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
-                    u"startingPrice": data['startingPrice'],
-                    u"durationDays": data['durationDays'],
-                    u"priceCI": data['priceCI']
-                    }
-                db.collection('products').document(productName).set(dataP)
-
-            else:
-                dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
-                    }
-                db.collection('products').document(productName).set(dataP)
-
+                messages.success(request, "Producto guardado correctamente")
+                
+            except Exception as e:
+                
+                print(e)
+                messages.error(request, "Error al guardar la información")
+            
     return render(request, "new_product.html", context)
 
 
