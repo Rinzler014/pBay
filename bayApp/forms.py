@@ -1,6 +1,8 @@
 from django import forms
 import re
 from django.contrib import messages
+
+
 class LoginForm(forms.Form):
     
     email = forms.EmailField(widget=forms.widgets.TextInput(attrs={
@@ -75,32 +77,6 @@ class CacheSignUpFormP2(forms.Form):
     personalID = forms.FileField(required=True,
             widget=forms.widgets.FileInput(attrs={
                 'placeholder': 'Identificacion Personal',
-            }))
-
-class EditInfoProductForm(forms.Form):
-    
-    productTitle = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Título del Producto'
-            }))
-    
-    productDescription = forms.CharField(required=True,
-            widget=forms.widgets.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Descripción del Producto'
-            }))
-    
-    productPrice = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '####',
-            }))
-    
-    productQuantity = forms.CharField(required=True,
-            widget=forms.widgets.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '##',
             }))
 
 class SignUpForm(forms.Form):
@@ -225,10 +201,53 @@ class formNewProduct(forms.Form):
         "rows":"5",
         "resize":"none"
         }))
-    images = forms.FileField(required=True,
-        widget=forms.widgets.FileInput(attrs={
-        'placeholder': 'Imágenes del producto',
+    # images = forms.FileField(required=True,
+    #     widget=forms.widgets.FileInput(attrs={
+    #     'placeholder': 'Imágenes del producto',
+    #     }))
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    price = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio',
         }))
+    stock = forms.IntegerField(label='Largo', 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Unidades disponibles',
+        }))
+    option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
+    startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de Inicio'
+        }))
+    durationDays = forms.IntegerField(label='Campo Adicional 2', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Duración en días'
+        }))
+    priceCI = forms.IntegerField(label='Campo Adicional 3', required=False, 
+        widget=forms.widgets.NumberInput(attrs={
+        'placeholder': 'Precio de C/I'
+        }))
+    
+
+
+    
+    
+class formEditInfoProduct(forms.Form):
+    title = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Título del producto',
+        "cols":"50",
+        "rows":"2",
+        "resize":"none",
+        }))
+    description = forms.CharField(label='Condición',
+        widget=forms.widgets.Textarea(attrs={
+        'placeholder': 'Descripción del producto',
+        "cols":"50",
+        "rows":"5",
+        "resize":"none"
+        }))
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     price = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio',
@@ -245,6 +264,7 @@ class formNewProduct(forms.Form):
         widget=forms.widgets.CheckboxInput(attrs={
         'placeholder': 'Venta Directa',
         }))
+    option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
     startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de Inicio',
