@@ -37,7 +37,7 @@
           font-size: large;
         }
 
-        </style>
+    </style>
 
         
 
@@ -53,50 +53,42 @@
             imagenPrincipal.src = imagen.src;
           }
         </script>
-
-        <div class="row">
+        <form action="{% url 'addProductShoppingCart' user_id=user %}" method="post">
+          {% csrf_token %}
+          <div class="row">
             <div class="col-sm-8">
-                <h1 style=" text-align:right; margin-top: 5%; color: #858585;margin-right: 5%;">Detalles del producto</h1>
+              <h1 style=" text-align:right; margin-top: 5%; color: #858585;margin-right: 5%;">Detalles del producto</h1>
             </div>
             <div class="col-sm-4">
-                <button class="mybutton" style="width: 160px;">Agregar a carrito</button>
+              <button class="mybutton" style="width: 160px;" type="submit" name="btnAdd">Agregar a carrito</button>
             </div>
           </div>
-
-        
-          
-        <div class="row" style="margin-top: 5%; align-items: flex-start;">
-                <div class="col-sm">
-
-                    <div class="text-center">
-                        <img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen1" onclick="changemainimg(this)">
-
-                      <div class="text-center">
-                        <img src="{% static 'images/prod_3.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen2" onclick="changemainimg(this)">
-                      </div>
-                      <div class="text-center">
-                        <img src="{% static 'images/prod_4.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen3" onclick="changemainimg(this)">
-                      </div>
-                    </div> 
+          <div class="row" style="margin-top: 5%; align-items: flex-start;">
+            <div class="col-sm">
+              <div class="text-center">
+                <img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen1" onclick="changemainimg(this)">
+                <div class="text-center">
+                  <img src="{% static 'images/prod_3.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen2" onclick="changemainimg(this)">
                 </div>
-                <div class="col-sm">
-                    <img id="imagenPrincipal" src="{% static 'images/prod_4.jpg' %}" class="w-75 p-3" alt="Imagen Principal">
-                    <p style="margin-top: 5%;">{{ description }}</p>
+                <div class="text-center">
+                  <img src="{% static 'images/prod_4.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen3" onclick="changemainimg(this)">
                 </div>
-                <div class="col-sm">
-                    <p>Titulo: {{ title }}</p>
-                    <p>Precio: $ {{ price }}</p>
-                    <p>Tipo: {{ optionSale }}</p>
-                    <p>Disponibilidad: {{ stock }}</p>
-                    <button  class="mybutton" style="background: #11698E;">Notificarme cuando este disponible</button>
-                </div>
-              
-        </div>
-        
-
+              </div> 
+            </div>
+            <div class="col-sm">
+              <img id="imagenPrincipal" src="{% static 'images/prod_4.jpg' %}" class="w-75 p-3" alt="Imagen Principal">
+              <p style="margin-top: 5%;">{{ prodDetails.description }}</p>
+            </div>
+            <div class="col-sm">
+              <p>Titulo: {{ prodDetails.title }}</p>
+              <p>Precio: $ {{ prodDetails.price }}</p>
+              <p>Tipo: {{ prodDetails.optionSale }}</p>
+              <p>Disponibilidad: {{ prodDetails.stock }}</p>
+              <button  class="mybutton" style="background: #11698E;">Notificarme cuando este disponible</button>
+            </div> 
+          </div>
+        </form>
     </body>
-
-
-    </html>
+</html>
 
 {% endblock %}

@@ -26,35 +26,36 @@
   </style>
   <body style="background-color: #f8f1f1;">
     <div class="titulo">
-      <h1 style=" text-align:center; color: #858585;">Detalles del producto</h1>
+      <h1 style=" text-align:center; color: #858585;">Carrito de compras</h1>
     </div>
     <div class="shopping-cart d-flex justify-content-center">
       <div class="products">
         <ul class="product d-flex flex-column">
-          {% for producto in arregloProductos %}
-          <li class="card d-flex flex-row" style="width: 1000px; padding: 30px; margin: 20px; border-radius: 10px;">
-            <div class="imagen-nombre flex-fill product-element">
-              <h3 style="font-weight: bold; font-size: 20px; margin-bottom: 30px;">
-                {{producto.nombre}}
-              </h3>
-              <img src="{{img}}" alt="" id="image-product" style="width: 250px;">
+          {% for product in arrayProducts %}
+          <li class="card d-flex flex-row" style="width: 1000px; height: 250px; padding: 30px; margin: 20px; border-radius: 10px;">
+            <div class="imagen-nombre product-element d-flex flex-column" style="width: 200px;">
+              <div class="align-self-center">
+                <h3 style="font-weight: bold; font-size: 20px; margin-bottom: 15px;">
+                  {{product.nameModel}}
+                </h3>
+                <img src="{{product.imgModel}}" alt="" id="image-product" style="width: 150px;" class="align-self-center">
+              </div>
             </div>
             <div class="descripcion d-flex flex-fill product-element">
               <div class="align-self-center">
                 <span style="font-weight: bold;">Descripción</span>
-                <p>{{producto.descripcion}}</p>
+                <p>{{product.descriptionModel}}</p>
               </div>
-              
             </div>
-            <div class="precio-mas-menos d-flex flex-fill product-element justify-content-center">
-              <div class="align-self-center" style="width: max-content;">
+            <div class="precio-mas-menos d-flex product-element justify-content-center" style="width: 200px;">
+              <div class="align-self-center">
                 <span style="font-weight: bold;" class="d-flex justify-content-center">
-                  ${{producto.precio}} MXN
-                 </span>
-                 <div class="mas-menos d-flex flex-row align-self-center justify-content-center">
-                  <button>{% bs_icon 'plus' color='white'%}</button>
-                  <p style="margin-bottom: 0px; margin: auto;">{{producto.totalProducto}}</p>
+                  ${{product.priceModel}} MXN
+                </span>
+                <div class="mas-menos d-flex flex-row align-self-center justify-content-center">
                   <button>{% bs_icon 'dash' color='white'%}</button>
+                  <p style="margin-bottom: 0px; margin: auto;">{{product.totalProductModel}}</p>
+                  <button>{% bs_icon 'plus' color='white'%}</button>
                 </div>
               </div>
               
@@ -63,8 +64,21 @@
           {% endfor %}
         </ul>
       </div>
-      <div class="payment">
-        
+      <div class="payment card" style="margin: 20px; width: 400px; height: 250px; padding: 20px;">
+        <button style="background-color: #11698E; height: 40px; border-radius: 20px; margin-bottom: 15px;">
+          <span style="color: white; font-weight: bold;">Completar Transacción</span></button>
+        <div class="articulos-precioInicial d-flex flex-row">
+          <span style="font-weight: bold; width: 50%;">Artículos ({{totalShoppingCartProducts}})</span>
+          <p style="width: 50%; text-align: right;">MXN ${{totalShoppingCartPrice}}</p>
+        </div>
+        <div class="articulos-precioInicial d-flex flex-row" style="margin-bottom: 20px;">
+          <span style="font-weight: bold; width: 50%;">Envío</span>
+          <p style="width: 50%; text-align: right;">Gratis</p>
+        </div>
+        <div class="articulos-precioInicial d-flex flex-row" style="font-size: 20px;">
+          <span style="font-weight: bold; width: 50%;">Subtotal</span>
+          <p style="width: 50%; text-align: right;">MXN ${{totalShoppingCartPrice}}</p>
+        </div>
       </div>
     </div>    
     

@@ -36,7 +36,6 @@ def login(request):
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
-
                 return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
@@ -123,12 +122,21 @@ def signup_3(request):
 
                 os.remove(f"temp/{data['personalID_filename']}")
 
+                productos = []
+
+                data = {
+                    u'UIDUsuario': user["localId"],
+                    u'Productos' : productos
+                }
+
+                db.collection(u'carritos').add(data)
+
                 return redirect("login")
 
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-
+    
     return render(request, "signup_3.html", context)
 
 
@@ -137,6 +145,7 @@ def landing(request, user_id):
     platform_products = db.collection("products").stream()
     
     products = [{product.id : product.to_dict()} for product in platform_products]
+
     
     context = {
         "user": user_id,
@@ -243,9 +252,12 @@ def edit_info_prod(request, user_id):
     return render(request, "edit_info_prod.html", context)
 
 
-def details(request):
-    prodDetails = db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()
-    context =  prodDetails
+def details(request, user_id, product_id):
+    prodDetails = db.collection("products").document(product_id).get().to_dict()
+    context =  {
+        "user" : user_id,
+        "prodDetails" : prodDetails
+        }
     # PARA VENTA
     # prodDetails["description"],
     # prodDetails["optionSale"],
@@ -260,6 +272,12 @@ def details(request):
 
     return render(request, "details_prod.html", context)
 
+def addProductShoppingCart(request, user_id):
+    context = {
+        "user" : user_id
+    }
+
+    return redirect("shopping_cart", context)
 
 def mis_ventas(request, user):
     prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
@@ -326,47 +344,64 @@ def mis_ventas(request, user):
     return render(request, "mis_ventas.html", context)
 
 
+#def addProductShoppingCart(request):
+    
+    #return render(request, 'shopping_cart.html')
+
 def shopping_cart(request, user_id):
-    docShoppingCart = db.collection(u'carritos').where(u'TotalProductos', u'==',5).get()
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).get()
 
     for doc in docShoppingCart:
         docID = doc.id
 
-    arregloProductos=[]
+    arrayProducts=[]
 
     docs = db.collection('carritos').document(docID)
     doc = docs.get()
     
     datos = doc.to_dict()
 
-    productos = datos['Productos']
+    products = datos['Productos']
 
-    cantidadProductos = []
-
-    for producto in productos:
+    for product in products:
         n = 0
         totalProductoNum = 0
-        while n != len(productos):
-            if producto == productos[n]:
+        while n != len(products):
+            if product == products[n]:
                 totalProductoNum += 1
             n += 1
 
-        docs = db.collection('products').document(producto)
+        
+        docs = db.collection('products').document(product)
         doc = docs.get()
         datos = doc.to_dict()
-        prod = pr(id = producto ,nombre=datos['title'], descripcion=datos['description'], 
-                    precio=datos['price'], img=datos['stock'], totalProducto=totalProductoNum)
+        prue = datos['urlImages']
+        imgPro = storage.child(prue[0]).get_url("2")
+        productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
+                    priceModel=datos['price'], imgModel=imgPro, totalProductModel=totalProductoNum)
            
-        if prod not in arregloProductos:
-            arregloProductos.append(prod)
+        if productObject not in arrayProducts:
+            arrayProducts.append(productObject)
+
+    totalShoppingCartProducts = 0
+    totalShoppingCartPrice = 0
+
+    for product in arrayProducts:
+        totalShoppingCartPrice += product.priceModel * product.totalProductModel
+        totalShoppingCartProducts += product.totalProductModel
+
 
     context = {
-        "arregloProductos": arregloProductos,
-        "img" : storage.child("products/647a8692e94984c0bb799bfd/JPEG image.jpeg").get_url("2"),
-        "pro" : arregloProductos
+        "arrayProducts": arrayProducts,
+        "user" : user_id,
+        "totalShoppingCartPrice" : totalShoppingCartPrice,
+        "totalShoppingCartProducts" : totalShoppingCartProducts
     }
+
+    
     
     return render(request, "shopping_cart.html", context)
+
 
 
 def auctions(request, user_id):
