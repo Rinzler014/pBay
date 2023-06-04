@@ -436,13 +436,9 @@ def bids_state(request, user_id):
 
 def my_products(request, user_id):
 
-    print(user_id)
-    print(user_id)
-    print(user_id)
+
     platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
     products = [{product.id: product.to_dict()} for product in platform_products]
-
-    print(products)
 
     context = {
         "user": user_id,
@@ -528,5 +524,19 @@ def new_product(request, user_id):
             
     return render(request, "new_product.html", context)
 
+def search_products(request, user_id):
+    search_name = request.GET.get('q')  
+    platform_products = db.collection("products").where("title", "==", search_name).stream()
+    products = [{product.id : product.to_dict()} for product in platform_products]
 
+    platform_products = db.collection("products").stream()
+    
+    
+
+    context = {
+        "user": user_id,
+        "products": products,
+    }
+
+    return render(request, "search_results.html", context)
 
