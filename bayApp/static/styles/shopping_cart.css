@@ -1,4 +1,4 @@
-:root {
+  :root {
   --normal-font: 400;
   --bold-font: 600;
   --bolder-font: 900;
@@ -16,24 +16,13 @@ body {
   box-sizing: border-box;
 }
 
-.container-shopping {
-  width: 1400px;
-  height: auto;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-around;
+#image-product {
+  width: 100px;
 }
 
-.title-shopping {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
+/*
 
-.container-products {
-  display: flex;
-  flex-direction: column;
-}
+
 
 .container-details-buy {
   display: flex;
@@ -166,3 +155,4 @@ body {
 button:hover {
   opacity: 0.8;
 }
+ */

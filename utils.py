@@ -12,11 +12,6 @@ config = {
   "measurementId": "G-TC6V309YST"
 }
 
-def noquote(s):
-    return s
-
-pyrebase.pyrebase.quote = noquote
-
 firebase = pyrebase.initialize_app(config)
 
 auth = firebase.auth()

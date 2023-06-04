@@ -1,4 +1,5 @@
 {% extends "layouts/header2.html"%} {% block content %} {% load static %}
+{% load bootstrap_icons %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,96 +8,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing</title>
     <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'styles/shopping_cart.css' %}" />
   </head>
-  <body>
-    <h2 class="title-shopping">Carro de compras</h2>
-    <section class="container-shopping">
-      <div class="container-products">
-        <div class="container-product">
-          <div class="container-img-title">
-            <h2 class="seller">
-              Vendedor:
-              <p>Acer</p>
-            </h2>
-            <img src="../static//images//prod_2.jpg" alt="" />
-          </div>
-          <p class="product-description">
-            Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
-            - nueva y sellada ...
-          </p>
-          <div class="substract-add">
-            <button class="buttons-product">-</button>
-            <p>1</p>
-            <button class="buttons-product">+</button>
-          </div>
-          <div class="info">
-            <p class="price">MX $11,000</p>
-            <p class="shipping-method">Gratis</p>
-            <button class="button-info">Eliminar</button>
-          </div>
-        </div>
+  <style>
+    .product-element {
+      margin: 0px 15px;
+    }
 
-        <div class="container-product">
-          <div class="container-img-title">
-            <h2 class="seller">
-              Vendedor:
-              <p>Acer</p>
-            </h2>
-            <img src="../static//images//prod_2.jpg" alt="" />
-          </div>
-          <p class="product-description">
-            Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
-            - nueva y sellada ...
-          </p>
-          <div class="substract-add">
-            <button class="buttons-product">-</button>
-            <p>1</p>
-            <button class="buttons-product">+</button>
-          </div>
-          <div class="info">
-            <p class="price">MX $11,000</p>
-            <p class="shipping-method">Gratis</p>
-            <button class="button-info">Eliminar</button>
-          </div>
-        </div>
-
-        <div class="container-product">
-            <div class="container-img-title">
-              <h2 class="seller">
-                Vendedor:
-                <p>Acer</p>
-              </h2>
-              <img src="../static//images//prod_2.jpg" alt="" />
+    .mas-menos button {
+      border: none;
+      background-color: #11698E;
+      margin: 10px;
+      width: 40px;
+      border-radius: 20px;
+    }
+  </style>
+  <body style="background-color: #f8f1f1;">
+    <div class="titulo">
+      <h1 style=" text-align:center; color: #858585;">Detalles del producto</h1>
+    </div>
+    <div class="shopping-cart d-flex justify-content-center">
+      <div class="products">
+        <ul class="product d-flex flex-column">
+          {% for producto in arregloProductos %}
+          <li class="card d-flex flex-row" style="width: 1000px; padding: 30px; margin: 20px; border-radius: 10px;">
+            <div class="imagen-nombre flex-fill product-element">
+              <h3 style="font-weight: bold; font-size: 20px; margin-bottom: 30px;">
+                {{producto.nombre}}
+              </h3>
+              <img src="{{img}}" alt="" id="image-product" style="width: 250px;">
             </div>
-            <p class="product-description">
-              Computadora portátil Acer Aspire 3 15.6 in i3 8GB 0256GB - plateada
-              - nueva y sellada ...
-            </p>
-            <div class="substract-add">
-              <button class="buttons-product">-</button>
-              <p>1</p>
-              <button class="buttons-product">+</button>
+            <div class="descripcion d-flex flex-fill product-element">
+              <div class="align-self-center">
+                <span style="font-weight: bold;">Descripción</span>
+                <p>{{producto.descripcion}}</p>
+              </div>
+              
             </div>
-            <div class="info">
-              <p class="price">MX $11,000</p>
-              <p class="shipping-method">Gratis</p>
-              <button class="button-info">Eliminar</button>
+            <div class="precio-mas-menos d-flex flex-fill product-element justify-content-center">
+              <div class="align-self-center" style="width: max-content;">
+                <span style="font-weight: bold;" class="d-flex justify-content-center">
+                  ${{producto.precio}} MXN
+                 </span>
+                 <div class="mas-menos d-flex flex-row align-self-center justify-content-center">
+                  <button>{% bs_icon 'plus' color='white'%}</button>
+                  <p style="margin-bottom: 0px; margin: auto;">{{producto.totalProducto}}</p>
+                  <button>{% bs_icon 'dash' color='white'%}</button>
+                </div>
+              </div>
+              
             </div>
-          </div>
-        </div>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
-      
-
-      <div class="container-details-buy">
-          <button class="button-details-buy">Completar Transacción</button>
-          <div class="container-info">
-            <div><p>Articulos:</p><sapan>MX $26,000</sapan></div>
-            <div><p>Envio:</p><sapan>Gratis</sapan></div>
-            <div><p>Subtotal:</p><sapan>MX $26,000</sapan></div>
-        </div>
+      <div class="payment">
+        
       </div>
-    </section>
+    </div>    
+    
+    
   </body>
 </html>
 

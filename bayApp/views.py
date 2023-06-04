@@ -7,6 +7,7 @@ import json
 import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
+from .models import producto as pr
 
 import firebase_admin
 from firebase_admin import credentials
@@ -222,9 +223,43 @@ def mis_ventas(request, user):
 
 
 def shopping_cart(request, user_id):
+    docShoppingCart = db.collection(u'carritos').where(u'TotalProductos', u'==',5).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    arregloProductos=[]
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
     
+    datos = doc.to_dict()
+
+    productos = datos['Productos']
+
+    cantidadProductos = []
+
+    for producto in productos:
+        n = 0
+        totalProductoNum = 0
+        while n != len(productos):
+            if producto == productos[n]:
+                totalProductoNum += 1
+            n += 1
+
+        docs = db.collection('products').document(producto)
+        doc = docs.get()
+        datos = doc.to_dict()
+        prod = pr(id = producto ,nombre=datos['title'], descripcion=datos['description'], 
+                    precio=datos['price'], img=datos['stock'], totalProducto=totalProductoNum)
+           
+        if prod not in arregloProductos:
+            arregloProductos.append(prod)
+
     context = {
-        "user": user_id,
+        "arregloProductos": arregloProductos,
+        "img" : storage.child("products/647a8692e94984c0bb799bfd/JPEG image.jpeg").get_url("2"),
+        "pro" : arregloProductos
     }
     
     return render(request, "shopping_cart.html", context)
