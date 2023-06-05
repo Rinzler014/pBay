@@ -591,6 +591,7 @@ def new_product(request, user_id):
                         u"stock": data['stock'],
                         u"totalSales": 0,
                         u"optionSale": data['option'],
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
