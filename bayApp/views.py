@@ -13,6 +13,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+from django.http import HttpResponse
+
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
 
@@ -256,7 +258,8 @@ def details(request, user_id, product_id):
     prodDetails = db.collection("products").document(product_id).get().to_dict()
     context =  {
         "user" : user_id,
-        "prodDetails" : prodDetails
+        "prodDetails" : prodDetails,
+        "producto_id" : product_id
         }
     # PARA VENTA
     # prodDetails["description"],
@@ -272,12 +275,12 @@ def details(request, user_id, product_id):
 
     return render(request, "details_prod.html", context)
 
-def addProductShoppingCart(request, user_id):
-    context = {
-        "user" : user_id
-    }
+def addProductShoppingCart(request):
+    idProducto = request.GET.get('idProducto')
+    idUsuario = request.GET.get('idUsuario')
 
-    return redirect("shopping_cart", context)
+
+    return HttpResponse(status = 200)
 
 def mis_ventas(request, user):
     prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
