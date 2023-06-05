@@ -1,13 +1,20 @@
-{% load static %}
+{% include "layouts/messaging.html"%}
 
+<!--  -->
+{% block content %}
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing</title>
+    <title>Registro</title>
     <link rel="stylesheet" href="{% static 'styles/signup_2.css' %}" />
+
+    
+
   </head>
   <body>
     <div class="container">
@@ -21,27 +28,20 @@
               png, jpg o jpeg
             </p>
           </div>
-          <form action="">
-            <button class="img-btn">Cargar imagen</button>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.personalID }}
             <h1 class="subtitle">Dirección</h1>
             <div class="grid">
-              <input type="text" class="form-input" placeholder="País" />
-              <input type="text" class="form-input" placeholder="Estado" />
-              <input type="text" class="form-input" placeholder="Ciudad" />
-              <input
-                type="text"
-                class="form-input calle-grid"
-                placeholder="Calle"
-              />
-              <input
-                type="text"
-                placeholder="CP"
-                class="form-input"
-                pattern="[0-9]{1,10}"
-                name=""
-                id=""
-              />
+              
+              {{ form.country }}
+              {{ form.state }}
+              {{ form.city }}
+              {{ form.street }}
+              {{ form.zipcode }}
+
               <button class="btn-sig">Siguiente</button>
+
             </div>
           </form>
         </div>
@@ -49,3 +49,5 @@
     </div>
   </body>
 </html>
+
+{% endblock %}

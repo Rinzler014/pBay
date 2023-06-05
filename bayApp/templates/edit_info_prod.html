@@ -1,0 +1,90 @@
+{% extends "layouts/header2.html"%} {% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Producto</title>
+    <link rel="stylesheet" href="{% static 'styles/global.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles/new_product.css' %}" />
+  </head>
+  <body style="background-color: #f8f1f1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $("#auction").hide();
+        $("input[name='option']").change(function() {
+          if ($(this).val() === 'subasta') {
+            $("#auction").show();
+            $("#id_startingPrice").prop('required', true);
+            $("#id_durationDays").prop('required', true);
+            $("#id_priceCI").prop('required', true);
+          } else {
+            $("#auction").hide();
+            $("#id_startingPrice").prop('required', false);
+            $("#id_durationDays").prop('required', false);
+            $("#id_priceCI").prop('required', false);
+          }
+        });
+      });
+    </script>
+    <h2 class="title-new-product">Nuevo Producto</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <section class="container-new-product">
+        <div class="new-product-part">
+          <div>
+            <h3>Título del producto</h3>
+            {{form.title}}
+          </div>
+          <div>
+            <h3>Descripción del producto</h3>
+            {{form.description}}
+          </div>
+          <div>
+            <h3>Adjuntar fotos del producto</h3>
+            <div>
+              {{form.images}}
+            </div>
+          </div>
+          <div class="checkbox-type-sale">
+            {{form.option}}
+          </div>
+        </div>
+        <div class="new-product-part">
+          <div>
+            <h3>Precio por unidad</h3>
+            {{form.price}}
+          </div>
+          <div>
+            <h3>Unidades disponibles</h3>
+            {{form.stock}}
+          </div>
+          <div id="auction">
+            <div>
+              <h3>Precio de Inicio</h3>
+              {{form.startingPrice}}
+            </div>
+            <div>
+              <h3>Duración en días</h3>
+              {{form.durationDays}}
+          </div>
+            <div>
+              <h3>Precio de C/I</h3>
+              {{form.priceCI}}
+          </div>
+          </div>
+          <br />
+          <input
+            class="button-new-product"
+            type="submit"
+            value="Continuar"
+          />
+         </div>
+      </section>
+    </form>
+  </body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "layouts/header2.html"%}
+
+
+{% block content %}
+
+  {% load static %}
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>pBay</title>
+      <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    </head>
+    <body>
+
+        <h2 class="text-center">Menu Productos</h2>
+
+        <!-- fOOD MEnu Section Starts Here -->
+        <div class="food-menu">
+          <div class="container">
+
+            {% if products %}
+
+                {% for product in products %}
+
+                    {% for key, value in product.items %}
+
+                    <div class="food-menu-box">
+                        <div class="food-menu-img">
+                            <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+                        </div>
+                    
+                        <div class="food-menu-desc">
+                            <h4 class="food-title">{{ value.title }}</h4>
+                            <p class="food-price">${{ value.price }}</p>
+                            <p class="food-detail">
+                                {{ value.description }}
+                            </p>
+                            <br>
+                    
+                            <a href="{% url 'details' user_id=user product_id=key %}" class="btn btn-primary">Ver producto</a>
+                        </div>
+                    </div>
+                    
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+            <div class="container">
+                <img src="../static/assets/img/no-product.png" alt="No Results">
+                <h1>Lo sentimos, no se encontraron resultados relevantes.</>
+            </div>
+            {% endif %}
+              
+              
+              
+
+          </div>
+
+        </div>
+        <!-- fOOD Menu Section Ends Here -->
+
+    </body>
+    </html>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% include "layouts/messaging.html"%}
+
+<!--  -->
+{% block content %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing</title>
+    <link rel="stylesheet" href="{% static 'styles/signup_3.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">
+        Solo unos datos mas $user y tendras tu cuenta lista !
+      </h1>
+      <div class="flex-box">
+        <form method="POST" class="flex-form">
+          {% csrf_token %}
+          
+          {{ form.email }}
+          {{ form.password }}
+          <div class="list">
+            <p>Para una mejor seguridad tu contraseña debe tener :</p>
+            <ul>
+              <li>8 Caracteres</li>
+              <li>Letras MAYUSCULAS</li>
+              <li>Letras minusculas</li>
+              <li>Alguno de estos simbolos especiales (@#$!%*?&)</li>
+              <li>Digitos</li>
+            </ul>
+          </div>
+          {{ form.password2 }}
+          <div class="flex-2">
+            <input class="form-check" type="checkbox" />
+            <p class="terminos">Acepto terminos y condiciones.</p>
+          </div>
+          <button class="btn-sig" onclick="return checked()">Crear mi cuenta</button>
+        </form>
+        <img
+          class="logo"
+          src="{% static 'assets/img/Logo.png' %}"
+          alt="Logo image"
+        />
+      </div>
+    </div>
+  </body>
+
+  <script>
+
+    function checked(){
+
+      const check = document.querySelector(".form-check");
+
+      if (check.checked === false) {
+        alert("Debes Aceptar Terminos y Condiciones");
+        return false;
+      }
+
+      else{
+        return true;
+      }
+      
+    }
+
+  </script>
+
+</html>
+
+{% endblock %}

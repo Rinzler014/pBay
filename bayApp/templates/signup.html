@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing</title>
     <link rel="stylesheet" href="{% static 'styles/signup_1.css' %}" />
+
+    
   </head>
   <body>
     <div class="container">
@@ -18,6 +20,7 @@
           <h1 class="tittle">Primer Paso, Conocerte Mejor</h1>
         <div class="flex-2">
           <form method="POST" class = "form">
+            {% csrf_token %}
             {{ form.name }}
             {{ form.last_name }}
             {{ form.mom_last_name }}
@@ -26,9 +29,6 @@
           </form>
           <img class="img" src="{% static 'assets/img/Logo.png' %}" alt="Logo image">
         </div>
-        <div class="flex-2">
-          <button class="btn-sig">Siguiente</button>
-          <div class="spacer"></div>
         </div> 
         </div>
         </div>

@@ -1,0 +1,214 @@
+
+.text-right{
+    text-align: right;
+}
+.text-center{
+    text-align: center;
+}
+.text-left{
+    text-align: left;
+}
+
+.container {
+    display: grid;
+    grid-auto-flow: row;
+    width: 90%;
+    margin: 0 auto;
+    padding: 1%;
+    background-color: rgba(236, 236, 236, 1);
+    margin-top: 1%;
+  }
+  
+  .counters {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-rows: auto;
+    justify-content: start;
+    column-gap: 20px;
+    row-gap: 20px;
+    /* justify-content: space-around; */
+    /* align-items: center; */
+  }
+  
+  .counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .counter-label {
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+  }
+  
+  .counter-value {
+    font-size: 28px;
+    margin-top: 5px;
+    text-align: center;
+  }
+  
+  .total-counter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    margin-right: 20px;
+  }
+  
+  .sell-button {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-left: auto;
+  }
+  
+
+.divgrande{
+    width: 90%;
+    margin: 0 auto;
+    padding: 1%;
+    background-color: rgba(236, 236, 236, 1);
+    margin-top: 1%;
+}
+
+/* CSS for Food Menu */
+.food-menu{
+    background-color: #F8F1F1;
+    padding: 0;
+}
+.food-menu-box{
+    width: 150px;
+    grid-row: 1;
+    margin: 1%;
+    padding: 1.5%;
+    float: left;
+    background-color: white;
+    border-radius: 15px;
+    
+}
+
+.food-menu-img{
+    float: left;
+    display: flex;
+    align-items: center;
+    width: 65%;
+    float: left;
+}
+
+.food-menu-desc{
+    width: 70%;
+    float: left;
+    margin-left: 8%;
+}
+
+.food-title{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+}
+
+.food-price{
+    font-size: 1.2rem;
+    margin: 2% 0;
+}
+.food-detail{
+    font-size: 1rem;
+    color: #747d8c;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 设置你想要的行数 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    
+}
+
+
+/* CSS for Social */
+.social ul{
+    list-style-type: none;
+}
+.social ul li{
+    display: inline;
+    padding: 1%;
+}
+
+/* for Order Section */
+.order{
+    width: 50%;
+    margin: 0 auto;
+}
+.input-responsive{
+    width: 96%;
+    padding: 1%;
+    margin-bottom: 3%;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+.order-label{
+    margin-bottom: 1%; 
+    font-weight: bold;
+}
+
+
+
+/* CSS for Mobile Size or Smaller Screen */
+
+@media only screen and (max-width:768px){
+    .logo{
+        width: 80%;
+        float: none;
+        margin: 1% auto;
+    }
+
+    .menu ul{
+        text-align: center;
+    }
+
+    .food-search input[type="search"]{
+        width: 90%;
+        padding: 2%;
+        margin-bottom: 3%;
+    }
+
+    .btn{
+        width: 91%;
+        padding: 2%;
+    }
+
+    .food-search{
+        padding: 10% 0;
+    }
+
+    .categories{
+        padding: 20% 0;
+    }
+    h2{
+        margin-bottom: 10%;
+    }
+    .box-3{
+        width: 100%;
+        margin: 4% auto;
+    }
+
+    .food-menu{
+        padding: 20% 0;
+    }
+
+    .food-menu-box{
+        width: 90%;
+        padding: 5%;
+        margin-bottom: 5%;
+    }
+    .social{
+        padding: 5% 0;
+    }
+    .order{
+        width: 100%;
+    }
+}

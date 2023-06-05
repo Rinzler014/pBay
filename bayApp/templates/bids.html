@@ -1,0 +1,86 @@
+{% extends "layouts/header2.html"%} {% block content %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="{% static 'styles/bids.css' %}" />
+  </head>
+  <body>
+
+    <div class="container-fluid w-75">
+      <div class="row">
+        <div class="col col-md-4">
+          <button class="btn left-btn">All Bids</button>
+        </div>
+        <div class="col-md-4 offset-md-4">
+          <button onclick="link_to_view('{{ user }}')" class="btn right-btn">My Auctions</button>
+        </div>
+      </div>
+      <div class="row">
+
+
+
+          <div class="auctions">
+
+            {% for bid in bids %}
+
+              {% for key, value in bid.items %}
+
+                <div class="auction-info col col-md-3">
+                  <img
+                  src="{% static 'assets/img/laptop.jpg' %}"
+                  alt="imagen de mi pablo"
+                  class="img-fluid"
+                  />
+                  <div class="info-box">
+                    <div class="row">
+                      <p class="center countdown bold">{{ value.timeRemaining }}</p>
+                    </div>
+                    <div class="row">
+                      <p class="center time-for-auction">Tiempo Restante de la Subasta</p>
+                    </div>
+                    <div class="row">
+                      <div class="col col-sm-5 offset-sm-1 right">
+                        <p class="bold">Precio Inicial&nbsp;:</p>
+                      </div>
+                      <div class="col col-sm-6 left">
+                        <p>$&nbsp; {{ value.startPrice }} MXN</p>
+                      </div>
+                    </div>
+                    <div class="row current-bid">
+                      <div class="col col-sm-5 offset-sm-1 right">
+                        <p class="bold">Oferta Mas Alta&nbsp;:</p>
+                      </div>
+                      <div class="col col-sm-6 left">
+                        <p>$&nbsp; {{ value.highestBid }} MXN</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              
+              {% endfor %}
+
+            {% endfor %}
+          
+          </div>
+
+        
+        
+      </div>
+
+      </div>
+    </div>
+
+    <script>
+      function link_to_view(user_id) {
+        window.location.href = "{% url 'bids_state' user_id='temp' %}".replace("temp", user_id);
+      }
+    </script>
+
+  </body>
+</html>
+
+{% endblock %}
