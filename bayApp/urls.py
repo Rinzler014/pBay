@@ -18,4 +18,5 @@ urlpatterns = [
     path("mis_ventas/<str:user>", views.mis_ventas, name="mis_ventas"),
     #path("shopping_cart/<str:user_id>", views.addProductShoppingCart, name="addProductShoppingCart")
     path("addProductShoppingCart/", views.addProductShoppingCart, name="addProductShoppingCart"),
+    path('search/<str:user_id>', views.search_products, name='search_products'),
 ]
