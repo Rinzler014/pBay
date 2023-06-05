@@ -573,14 +573,14 @@ def new_product(request, user_id):
 
                 else:
                     dataP = {
-                        u"title": data['title'],
-                        u"description": data['description'],
-                        u"urlImages": urlImages,
-                        u"price": data['price'],
-                        u"stock": data['stock'],
-                        u"totalSales": 0,
-                        u"optionSale": data['option'],
-                        u"sellerID": user_id,
+                            u"title": data['title'],
+                            u"description": data['description'],
+                            u"urlImages": urlImages,
+                            u"price": data['price'],
+                            u"stock": data['stock'],
+                            u"totalSales": 0,
+                            u"optionSale": data['option'],
+                            u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
