@@ -21,6 +21,7 @@
                     <div class="inventory">Unidades disponibles <p class="areaColor" style="margin-left: 50px;"> {{ value.stock }}</p></div> 
                 </div>
             </div>
+            <a class="btn btn-primary" style="margin-top: 5px;" href="{% url 'edit_info_prod' user_id=user product_id=key %}">Editar</a>
         </div>
         {% endfor %}
     {% endfor %}

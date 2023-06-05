@@ -421,8 +421,9 @@ def mis_ventas(request, user):
     return render(request, "mis_ventas.html", context)
 
 def shopping_cart(request, user_id):
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).get()
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
 
+    docID = ''    
     for doc in docShoppingCart:
         docID = doc.id
 
@@ -448,9 +449,8 @@ def shopping_cart(request, user_id):
         doc = docs.get()
         datos = doc.to_dict()
         prue = datos['urlImages']
-        imgPro = storage.child(prue[0]).get_url("2")
         productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
-                    priceModel=datos['price'], imgModel=imgPro, totalProductModel=totalProductoNum)
+                    priceModel=datos['price'], imgModel=prue[0], totalProductModel=totalProductoNum)
            
         if productObject not in arrayProducts:
             arrayProducts.append(productObject)
