@@ -181,7 +181,7 @@ def edit_info_prod(request, user_id, product_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSale": initialData["totalSale"],
+            "totalSales": initialData["totalSales"],
             "startingPrice": initialData["startingPrice"],
             "durationDays": initialData["durationDays"],
             "priceCI": initialData["priceCI"],
@@ -193,7 +193,7 @@ def edit_info_prod(request, user_id, product_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSale": initialData["totalSale"],
+            "totalSales": initialData["totalSales"],
             #"option": initialData["optionSale"]
         }
     
@@ -247,7 +247,7 @@ def edit_info_prod(request, user_id, product_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSale": data['totalSale'],
+                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     u"startingPrice": data['startingPrice'],
                     u"durationDays": data['durationDays'],
@@ -262,7 +262,7 @@ def edit_info_prod(request, user_id, product_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSale": data['totalSale'],
+                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     }
                 db.collection('products').document(productID).set(dataP)
@@ -574,7 +574,7 @@ def new_product(request, user_id):
                         u"urlImages": urlImages,
                         u"price": data['price'],
                         u"stock": data['stock'],
-                        u"totalSale": 0,
+                        u"totalSales": 0,
                         u"optionSale": data['option'],
                         u"startingPrice": data['startingPrice'],
                         u"durationDays": data['durationDays'],
@@ -589,7 +589,7 @@ def new_product(request, user_id):
                         u"urlImages": urlImages,
                         u"price": data['price'],
                         u"stock": data['stock'],
-                        u"totalSale": 0,
+                        u"totalSales": 0,
                         u"optionSale": data['option'],
                         }
                     db.collection('products').document(productName).set(dataP)
