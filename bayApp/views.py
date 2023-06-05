@@ -608,6 +608,7 @@ def search_products(request, user_id):
     context = {
         "user": user_id,
         "products": products,
+        "search_name": search_name,
     }
 
     return render(request, "search_results.html", context)
