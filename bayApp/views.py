@@ -8,6 +8,8 @@ import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
 from .models import producto as pr
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 import firebase_admin
 from firebase_admin import credentials
@@ -304,6 +306,7 @@ def addProductShoppingCart(request):
     }
     
     db.collection('carritos').document(docID).set(data)
+    messages.success(request, 'Producto agregado al carrito')
 
     return HttpResponse(status = 200)
 
