@@ -65,6 +65,7 @@ def signup(request):
 
 
 def signup_2(request):
+    
     form = CacheSignUpFormP2()
     context = {"form": form}
 
@@ -78,7 +79,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
 
-            form.cleaned_data["personalID_file"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
@@ -92,6 +93,7 @@ def signup_2(request):
 
 
 def signup_3(request):
+    
     form = SignUpForm(request=request)
     context = {"form": form}
 
@@ -107,22 +109,30 @@ def signup_3(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            data["personalID_file"] = location_info["personalID_file"]
             data.pop("password2")
 
             try:
+                
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
+                
                 data.pop("password")
                 data["type"] = "user"
-                db.collection("users").document(user["localId"]).set(data)
+                
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
+                
+                temp_file = data["personalID"]
+                
+                data["personalID"] = storage.child(f"users/{user['localId']}/personalID").get_url(None)
+                
+                db.collection("users").document(user["localId"]).set(data)
+                
                 print("Usuario creado correctamente")
 
-                os.remove(f"temp/{data['personalID_filename']}")
+                os.remove(f"temp/{temp_file}")
 
                 productos = []
 
@@ -132,6 +142,8 @@ def signup_3(request):
                 }
 
                 db.collection(u'carritos').add(data)
+                
+                messages.success(request, f"Usuario creado correctamente")
 
                 return redirect("login")
 
@@ -157,8 +169,8 @@ def landing(request, user_id):
     return render(request, "landing.html", context)
 
 
-def edit_info_prod(request, user_id):
-    productID = "647acec5a0325689e66ceacf"
+def edit_info_prod(request, user_id, product_id):
+    productID = product_id
     doc_ref = db.collection("products").document(productID)
     doc = doc_ref.get()
     initialData = doc.to_dict()
@@ -188,6 +200,7 @@ def edit_info_prod(request, user_id):
 
     context = {
         "user": user_id,
+        "product": productID,
         "form": form,
     }
 
@@ -439,13 +452,9 @@ def bids_state(request, user_id):
 
 def my_products(request, user_id):
 
-    print(user_id)
-    print(user_id)
-    print(user_id)
+
     platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
     products = [{product.id: product.to_dict()} for product in platform_products]
-
-    print(products)
 
     context = {
         "user": user_id,
@@ -531,5 +540,19 @@ def new_product(request, user_id):
             
     return render(request, "new_product.html", context)
 
+def search_products(request, user_id):
+    search_name = request.GET.get('q')  
+    platform_products = db.collection("products").where("title", "==", search_name).stream()
+    products = [{product.id : product.to_dict()} for product in platform_products]
 
+    platform_products = db.collection("products").stream()
+    
+    
+
+    context = {
+        "user": user_id,
+        "products": products,
+    }
+
+    return render(request, "search_results.html", context)
 

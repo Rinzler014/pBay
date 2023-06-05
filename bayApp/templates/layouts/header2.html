@@ -38,8 +38,8 @@
         <div class="logo">
           <a href="{% url 'landing' user_id=user %}"><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
         </div>
-        <form class="search-box">
-          <input type="text" placeholder="Buscar...">
+        <form class="search-box" action="{% url 'search_products' user_id=user %}" method="GET">
+          <input type="text" name="q" placeholder="Buscar...">
           <button type="submit">
             {% bs_icon 'search' color='black'%}
           </button>
