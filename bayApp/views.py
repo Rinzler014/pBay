@@ -292,8 +292,63 @@ def addProductShoppingCart(request):
     idProducto = request.GET.get('idProducto')
     idUsuario = request.GET.get('idUsuario')
 
-    print(idProducto)
-    print(idUsuario)
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
+    
+    datos = doc.to_dict()
+
+    products = datos['Productos']
+
+    products.append(idProducto)
+
+    data = {
+        u'UIDUsuario': idUsuario,
+        u'Productos' : products
+    }
+    
+    db.collection('carritos').document(docID).set(data)
+
+    return HttpResponse(status = 200)
+
+def eraseProductShoppingCart(request):
+    idProducto = request.GET.get('idProducto')
+    idUsuario = request.GET.get('idUsuario')
+
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
+    
+    datos = doc.to_dict()
+
+    products = datos['Productos']
+
+    print(products)
+
+    n = 0
+    while n != len(products):
+        if idProducto == products[n]:
+            del products[n]
+            break
+        else:
+            n += 1
+
+    print(products)
+
+    data = {
+        u'UIDUsuario': idUsuario,
+        u'Productos' : products
+    }
+    
+    db.collection('carritos').document(docID).set(data)
 
     return HttpResponse(status = 200)
 

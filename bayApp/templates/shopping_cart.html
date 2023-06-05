@@ -25,6 +25,48 @@
     }
   </style>
   <body style="background-color: #f8f1f1;">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      function clickMinus(iddelproducto,idUsuario) {
+        $.ajax({
+          type: "GET",
+          url: "/eraseProductShoppingCart",
+          async: false,
+          data: {
+              "idProducto" : iddelproducto,
+              "idUsuario": idUsuario
+          },
+          success: function (data) {
+              location.reload()
+          },
+          failure: function (data) {
+              alert("Failed to send data to server");
+          }
+        })
+
+        }
+      
+      function clickPlus(iddelproducto,idUsuario) {
+
+        $.ajax({
+          type: "GET",
+          url: "/addProductShoppingCart",
+          async: false,
+          data: {
+              "idProducto" : iddelproducto,
+              "idUsuario": idUsuario
+          },
+          success: function (data) {
+              location.reload()
+          },
+          failure: function (data) {
+              alert("Failed to send data to server");
+          }
+        })
+
+      }
+
+    </script>
     <div class="titulo">
       <h1 style=" text-align:center; color: #858585;">Carrito de compras</h1>
     </div>
@@ -41,7 +83,7 @@
                 <img src="{{product.imgModel}}" alt="" id="image-product" style="width: 150px;" class="align-self-center">
               </div>
             </div>
-            <div class="descripcion d-flex flex-fill product-element">
+            <div class="descripcion d-flex  product-element" style="width: 600px;"">
               <div class="align-self-center">
                 <span style="font-weight: bold;">Descripción</span>
                 <p>{{product.descriptionModel}}</p>
@@ -53,9 +95,9 @@
                   ${{product.priceModel}} MXN
                 </span>
                 <div class="mas-menos d-flex flex-row align-self-center justify-content-center">
-                  <button>{% bs_icon 'dash' color='white'%}</button>
+                  <button onclick="clickMinus('{{ product.id }}', '{{ user }}')">{% bs_icon 'dash' color='white'%}</button>
                   <p style="margin-bottom: 0px; margin: auto;">{{product.totalProductModel}}</p>
-                  <button>{% bs_icon 'plus' color='white'%}</button>
+                  <button onclick="clickPlus('{{ product.id }}', '{{ user }}')">{% bs_icon 'plus' color='white'%}</button>
                 </div>
               </div>
               
