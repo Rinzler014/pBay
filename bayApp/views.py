@@ -158,9 +158,11 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    platform_products = db.collection("products").stream()
-    
-    products = [{product.id : product.to_dict()} for product in platform_products]
+
+    queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
+    results = queryset.get()
+    products = [{product.id : product.to_dict()} for product in results]
+   
 
     
     context = {
