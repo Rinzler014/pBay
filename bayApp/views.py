@@ -270,7 +270,6 @@ def edit_info_prod(request, user_id, product_id):
 
     return render(request, "edit_info_prod.html", context)
 
-
 def details(request, user_id, product_id):
     prodDetails = db.collection("products").document(product_id).get().to_dict()
     context =  {
@@ -420,11 +419,6 @@ def mis_ventas(request, user):
 
     return render(request, "mis_ventas.html", context)
 
-
-#def addProductShoppingCart(request):
-    
-    #return render(request, 'shopping_cart.html')
-
 def shopping_cart(request, user_id):
     docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).get()
 
@@ -479,8 +473,6 @@ def shopping_cart(request, user_id):
     
     return render(request, "shopping_cart.html", context)
 
-
-
 def auctions(request, user_id):
     
     platform_bids = db.collection("subasta").stream()
@@ -493,7 +485,6 @@ def auctions(request, user_id):
     }
 
     return render(request, "bids.html", context)
-
 
 def bids_state(request, user_id):
     
@@ -510,7 +501,6 @@ def bids_state(request, user_id):
 
     return render(request, "bids_state.html", context)
 
-
 def my_products(request, user_id):
 
 
@@ -522,8 +512,6 @@ def my_products(request, user_id):
         "products": products,
     }
     return render(request, "my_products.html", context)
-
-
 
 def new_product(request, user_id):
     form = formNewProduct()
