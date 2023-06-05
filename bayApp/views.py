@@ -7,10 +7,13 @@ import json
 import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
+from .models import producto as pr
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+
+from django.http import HttpResponse
 
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
@@ -35,7 +38,6 @@ def login(request):
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
-
                 return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
@@ -63,6 +65,7 @@ def signup(request):
 
 
 def signup_2(request):
+    
     form = CacheSignUpFormP2()
     context = {"form": form}
 
@@ -76,7 +79,7 @@ def signup_2(request):
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
 
-            form.cleaned_data["personalID_file"] = str(file_name) + "." + file_extension
+            form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
@@ -90,6 +93,7 @@ def signup_2(request):
 
 
 def signup_3(request):
+    
     form = SignUpForm(request=request)
     context = {"form": form}
 
@@ -105,29 +109,48 @@ def signup_3(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            data["personalID_file"] = location_info["personalID_file"]
             data.pop("password2")
 
             try:
+                
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
+                
                 data.pop("password")
                 data["type"] = "user"
-                db.collection("users").document(user["localId"]).set(data)
+                
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
+                
+                temp_file = data["personalID"]
+                
+                data["personalID"] = storage.child(f"users/{user['localId']}/personalID").get_url(None)
+                
+                db.collection("users").document(user["localId"]).set(data)
+                
                 print("Usuario creado correctamente")
 
-                os.remove(f"temp/{data['personalID_filename']}")
+                os.remove(f"temp/{temp_file}")
+
+                productos = []
+
+                data = {
+                    u'UIDUsuario': user["localId"],
+                    u'Productos' : productos
+                }
+
+                db.collection(u'carritos').add(data)
+                
+                messages.success(request, f"Usuario creado correctamente")
 
                 return redirect("login")
 
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-
+    
     return render(request, "signup_3.html", context)
 
 
@@ -136,6 +159,7 @@ def landing(request, user_id):
     platform_products = db.collection("products").stream()
     
     products = [{product.id : product.to_dict()} for product in platform_products]
+
     
     context = {
         "user": user_id,
@@ -145,8 +169,8 @@ def landing(request, user_id):
     return render(request, "landing.html", context)
 
 
-def edit_info_prod(request, user_id):
-    productID = "647acec5a0325689e66ceacf"
+def edit_info_prod(request, user_id, product_id):
+    productID = product_id
     doc_ref = db.collection("products").document(productID)
     doc = doc_ref.get()
     initialData = doc.to_dict()
@@ -157,6 +181,7 @@ def edit_info_prod(request, user_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
+            "totalSales": initialData["totalSales"],
             "startingPrice": initialData["startingPrice"],
             "durationDays": initialData["durationDays"],
             "priceCI": initialData["priceCI"],
@@ -168,6 +193,7 @@ def edit_info_prod(request, user_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
+            "totalSales": initialData["totalSales"],
             #"option": initialData["optionSale"]
         }
     
@@ -176,6 +202,7 @@ def edit_info_prod(request, user_id):
 
     context = {
         "user": user_id,
+        "product": productID,
         "form": form,
     }
 
@@ -220,6 +247,7 @@ def edit_info_prod(request, user_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
+                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     u"startingPrice": data['startingPrice'],
                     u"durationDays": data['durationDays'],
@@ -234,6 +262,7 @@ def edit_info_prod(request, user_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
+                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     }
                 db.collection('products').document(productID).set(dataP)
@@ -242,9 +271,13 @@ def edit_info_prod(request, user_id):
     return render(request, "edit_info_prod.html", context)
 
 
-def details(request):
-    prodDetails = db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()
-    context =  prodDetails
+def details(request, user_id, product_id):
+    prodDetails = db.collection("products").document(product_id).get().to_dict()
+    context =  {
+        "user" : user_id,
+        "prodDetails" : prodDetails,
+        "producto_id" : product_id
+        }
     # PARA VENTA
     # prodDetails["description"],
     # prodDetails["optionSale"],
@@ -259,6 +292,69 @@ def details(request):
 
     return render(request, "details_prod.html", context)
 
+def addProductShoppingCart(request):
+    idProducto = request.GET.get('idProducto')
+    idUsuario = request.GET.get('idUsuario')
+
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
+    
+    datos = doc.to_dict()
+
+    products = datos['Productos']
+
+    products.append(idProducto)
+
+    data = {
+        u'UIDUsuario': idUsuario,
+        u'Productos' : products
+    }
+    
+    db.collection('carritos').document(docID).set(data)
+
+    return HttpResponse(status = 200)
+
+def eraseProductShoppingCart(request):
+    idProducto = request.GET.get('idProducto')
+    idUsuario = request.GET.get('idUsuario')
+
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
+    
+    datos = doc.to_dict()
+
+    products = datos['Productos']
+
+    print(products)
+
+    n = 0
+    while n != len(products):
+        if idProducto == products[n]:
+            del products[n]
+            break
+        else:
+            n += 1
+
+    print(products)
+
+    data = {
+        u'UIDUsuario': idUsuario,
+        u'Productos' : products
+    }
+    
+    db.collection('carritos').document(docID).set(data)
+
+    return HttpResponse(status = 200)
 
 def mis_ventas(request, user):
     prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
@@ -325,13 +421,64 @@ def mis_ventas(request, user):
     return render(request, "mis_ventas.html", context)
 
 
-def shopping_cart(request, user_id):
+#def addProductShoppingCart(request):
     
+    #return render(request, 'shopping_cart.html')
+
+def shopping_cart(request, user_id):
+    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).get()
+
+    for doc in docShoppingCart:
+        docID = doc.id
+
+    arrayProducts=[]
+
+    docs = db.collection('carritos').document(docID)
+    doc = docs.get()
+    
+    datos = doc.to_dict()
+
+    products = datos['Productos']
+
+    for product in products:
+        n = 0
+        totalProductoNum = 0
+        while n != len(products):
+            if product == products[n]:
+                totalProductoNum += 1
+            n += 1
+
+        
+        docs = db.collection('products').document(product)
+        doc = docs.get()
+        datos = doc.to_dict()
+        prue = datos['urlImages']
+        imgPro = storage.child(prue[0]).get_url("2")
+        productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
+                    priceModel=datos['price'], imgModel=imgPro, totalProductModel=totalProductoNum)
+           
+        if productObject not in arrayProducts:
+            arrayProducts.append(productObject)
+
+    totalShoppingCartProducts = 0
+    totalShoppingCartPrice = 0
+
+    for product in arrayProducts:
+        totalShoppingCartPrice += product.priceModel * product.totalProductModel
+        totalShoppingCartProducts += product.totalProductModel
+
+
     context = {
-        "user": user_id,
+        "arrayProducts": arrayProducts,
+        "user" : user_id,
+        "totalShoppingCartPrice" : totalShoppingCartPrice,
+        "totalShoppingCartProducts" : totalShoppingCartProducts
     }
+
+    
     
     return render(request, "shopping_cart.html", context)
+
 
 
 def auctions(request, user_id):
@@ -366,13 +513,9 @@ def bids_state(request, user_id):
 
 def my_products(request, user_id):
 
-    print(user_id)
-    print(user_id)
-    print(user_id)
+
     platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
     products = [{product.id: product.to_dict()} for product in platform_products]
-
-    print(products)
 
     context = {
         "user": user_id,
@@ -431,6 +574,7 @@ def new_product(request, user_id):
                         u"urlImages": urlImages,
                         u"price": data['price'],
                         u"stock": data['stock'],
+                        u"totalSales": 0,
                         u"optionSale": data['option'],
                         u"startingPrice": data['startingPrice'],
                         u"durationDays": data['durationDays'],
@@ -445,7 +589,9 @@ def new_product(request, user_id):
                         u"urlImages": urlImages,
                         u"price": data['price'],
                         u"stock": data['stock'],
+                        u"totalSales": 0,
                         u"optionSale": data['option'],
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
@@ -458,5 +604,19 @@ def new_product(request, user_id):
             
     return render(request, "new_product.html", context)
 
+def search_products(request, user_id):
+    search_name = request.GET.get('q')  
+    platform_products = db.collection("products").where("title", "==", search_name).stream()
+    products = [{product.id : product.to_dict()} for product in platform_products]
 
+    platform_products = db.collection("products").stream()
+    
+    
+
+    context = {
+        "user": user_id,
+        "products": products,
+    }
+
+    return render(request, "search_results.html", context)
 

@@ -26,6 +26,8 @@
     
     <!-- Jquery Library -->
     <script src="https://code.jquery.com/jquery-3.6.2.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+    
+    
 
     </head>
     <body>
@@ -36,8 +38,8 @@
         <div class="logo">
           <a href="{% url 'landing' user_id=user %}"><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
         </div>
-        <form class="search-box">
-          <input type="text" placeholder="Buscar...">
+        <form class="search-box" action="{% url 'search_products' user_id=user %}" method="GET">
+          <input type="text" name="q" placeholder="Buscar...">
           <button type="submit">
             {% bs_icon 'search' color='black'%}
           </button>
