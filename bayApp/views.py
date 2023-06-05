@@ -292,6 +292,8 @@ def addProductShoppingCart(request):
     idProducto = request.GET.get('idProducto')
     idUsuario = request.GET.get('idUsuario')
 
+    print(idProducto)
+    print(idUsuario)
 
     return HttpResponse(status = 200)
 
