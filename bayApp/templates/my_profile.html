@@ -32,14 +32,14 @@
             font-size: 18px;
         }
 
-        .element-column input {
+        /* .element-column input {
             height: 40px;
             border-radius: 10px;
             padding: 10px;
             background-color: #eee4e4;
             border-width: 0px;
             
-        }
+        } */
 
         .personal-info {
             text-align: center;
@@ -63,57 +63,78 @@
             font-size: 18px;
         }
 
+        input,
+        textarea {
+            height: 40px;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #eee4e4;
+            border-width: 0px;
+        }
+
     </style>
     <body style="background-color: #f8f1f1;">
+        <script>
+            
+        </script>
+        
         <h2 class="title-new-product">Información personal</h2>
         <div class="d-flex justify-content-center">
-            
             <div class="d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-evenly">
                     <div class="column d-flex flex-column">
                         <div class="element-column d-flex flex-column">
                             <p>Nombre</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.name}}" name="new_name">
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Apellido Materno</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.mom_last_name}}" name="new_mom_last_name">
+                                
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Celular</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.cellular}}" name="new_phone">
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Correo</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.email}}" name="new_email">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Contraseña</p>
+                            <input type="text" placeholder="******">
                         </div>
                     </div>
                     <div class="column d-flex flex-column">
                         <div class="element-column d-flex flex-column">
                             <p>Apellido Paterno</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.last_name}}" name="new_last_name">
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Código postal</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.zipcode}}" name="new_zipCode">
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Calle</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.street}}" name="new_street">
                         </div>
                         <div class="element-column d-flex flex-column">
                             <p>Estado</p>
-                            <input type="text">
+                            <input type="text" placeholder="{{doc.state}}" name="new_state">
                         </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>País</p>
+                            <input type="text" placeholder="{{doc.country}}" name="new_country">
+                        </div>
+                            
                     </div>
                 </div>
                 
                 <div class="update-button d-flex justify-content-center">
-                    <button>Actualizar información</button>
+                    <button onclick="updateInfo('{{user}}')">Actualizar información</button>
                 </div>
             </div>
-        </div>
-        
+        </div>  
     </body>
     </html>
 

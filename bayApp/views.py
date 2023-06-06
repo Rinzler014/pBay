@@ -17,6 +17,9 @@ from firebase_admin import firestore
 
 from django.http import HttpResponse
 
+from datetime import datetime, timedelta
+
+
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
 
@@ -177,13 +180,30 @@ def myProfile(request, user_id):
     docRef = db.collection("users").document(user_id).get()
 
     doc = docRef.to_dict()
-    
 
     context = {
         "user": user_id,
         "doc": doc
     }
     return render(request, "my_profile.html", context)
+
+""" def updatePersonalInfo(request):
+    name = request.GET.get('name')
+    mom_last_name = request.GET.get('mom_last_name')
+    phone = request.GET.get('phone')
+    email = request.GET.get('email')
+    last_name = request.GET.get('last_name')
+    zipCode = request.GET.get('zipCode')
+    street = request.GET.get('street')
+    country = request.GET.get('country')
+    state = request.GET.get('state')
+    user = request.GET.get('user')
+
+    print(user)
+
+    #docRef = db.collection("users").
+    
+    return HttpResponse(status = 200) """
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
@@ -554,6 +574,8 @@ def new_product(request, user_id):
                 optionSale = form.cleaned_data['option']
                 
                 if optionSale == 'subasta':
+                    creationDate = datetime.now()
+                    deletionDate = creationDate + timedelta(days= data['durationDays'] )
                     dataP = {
                         u"title": data['title'],
                         u"description": data['description'],
@@ -562,22 +584,27 @@ def new_product(request, user_id):
                         u"stock": data['stock'],
                         u"totalSales": 0,
                         u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
                         u"startingPrice": data['startingPrice'],
                         u"durationDays": data['durationDays'],
-                        u"priceCI": data['priceCI']
+                        u"priceCI": data['priceCI'],
+                        u"auctionAvailable": True,
+                        u"deletionDate": deletionDate,
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
-                else:
+                if optionSale == 'venta_directa':
                     dataP = {
-                            u"title": data['title'],
-                            u"description": data['description'],
-                            u"urlImages": urlImages,
-                            u"price": data['price'],
-                            u"stock": data['stock'],
-                            u"totalSales": 0,
-                            u"optionSale": data['option'],
-                            u"sellerID": user_id,
+                        u"title": data['title'],
+                        u"description": data['description'],
+                        u"urlImages": urlImages,
+                        u"price": data['price'],
+                        u"stock": data['stock'],
+                        u"totalSales": 0,
+                        u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
