@@ -158,9 +158,11 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    platform_products = db.collection("products").stream()
-    
-    products = [{product.id : product.to_dict()} for product in platform_products]
+
+    queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
+    results = queryset.get()
+    products = [{product.id : product.to_dict()} for product in results]
+   
 
     
     context = {
@@ -371,19 +373,18 @@ def mis_ventas(request, user):
     # prodDetails["startingPrice"],
     # prodDetails["durationDays"],
 
-    # print(prods)
     num_vendidos = 0
 
     nonum_vendidos = 0
-    # for product_id, product_data in prods.items():
-    #     if product_data["availability"] == "Si":
-    #         num_vendidos += 1
+    for product_data in prods:
+        if product_data["stock"] > 0:
+            num_vendidos += 1
 
-    # nonum_vendidos = 0
+    nonum_vendidos = 0
 
-    # for product_id, product_data in prods.items():
-    #     if product_data["availability"] == "No":
-    #         nonum_vendidos += 1
+    for product_data in prods:
+        if product_data["stock"] <= 0:
+            nonum_vendidos += 1
 
     totalSales = 0
 
@@ -400,17 +401,17 @@ def mis_ventas(request, user):
             tot_ventas += subtot
 
     prod_list = []
-    for product_data in prods:
-        if product_data["totalSales"] != 0:
-            prod_list.append(product_data)
     # for product_data in prods:
-    #     if product_data["availability"] == "Si" and  product_data["totalSales"] != 0:
+    #     if product_data["totalSales"] != 0:
     #         prod_list.append(product_data)
+    for product_data in prods:
+        if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
+            prod_list.append(product_data)
 
     noprod_list = []
-    # for product_data in prods:
-    #     if product_data["availability"] == "No" and product_data["totalSales"] != 0:
-    #         noprod_list.append(product_data)
+    for product_data in prods:
+        if product_data["stock"] <= 0 and product_data["totalSales"] != 0:
+            noprod_list.append(product_data)
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
@@ -608,6 +609,7 @@ def search_products(request, user_id):
     context = {
         "user": user_id,
         "products": products,
+        "search_name": search_name,
     }
 
     return render(request, "search_results.html", context)
