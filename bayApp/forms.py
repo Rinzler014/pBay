@@ -205,7 +205,6 @@ class formNewProduct(forms.Form):
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Unidades disponibles',
         }))
-    option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
     standOut = forms.BooleanField(required=False)
     startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
         widget=forms.widgets.NumberInput(attrs={
