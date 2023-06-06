@@ -88,14 +88,12 @@
         <p class="description">{{ description }}</p>
       </div>
       <div class="col-sm">
-        <p>Titulo: {{ title }}</p>
-        <p>Precio: $ {{ price }}</p>
-        <p>Tipo: {{ optionSale }}</p>
-        <p>Disponibilidad: {{ stock }}</p>
-        <button class="mybutton notify">
-          Notificarme cuando este disponible
-        </button>
-      </div>
+        <p>Titulo: {{ prodDetails.title }}</p>
+        <p>Precio: $ {{ prodDetails.price }}</p>
+        <p>Tipo: {{ prodDetails.optionSale }}</p>
+        <p>Disponibilidad: {{ prodDetails.stock }}</p>
+        <button  class="mybutton" style="background: #11698E;">Notificarme cuando este disponible</button>
+      </div> 
     </div>
   </body>
 </html>
