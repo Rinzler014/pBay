@@ -365,28 +365,12 @@ def eraseProductShoppingCart(request):
     return HttpResponse(status = 200)
 
 def mis_ventas(request, user):
-    # prods = [db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()]
-    # Productos tienen diferentes campos, hasta que se normalizen solo usar un producto
     prods = [prod.to_dict() for prod in db.collection("products").get()]
     prod_id = [prod.id for prod in db.collection("products").get()]
 
     for prod in prods:
         prod["product_id"] = prod_id[0]
         prod_id.pop(0)
-
-
-    # PARA VENTA
-    # prodDetails["description"],
-    # prodDetails["optionSale"],
-    # prodDetails["price"],
-    # prodDetails["stock"],
-    # prodDetails["title"],
-    # prodDetails["urlImages"],
-    # prodDetails["totalSales"],
-    # PARA SUBASTA
-    # prodDetails["priceCI"],
-    # prodDetails["startingPrice"],
-    # prodDetails["durationDays"],
 
     num_vendidos = 0
 
@@ -416,9 +400,6 @@ def mis_ventas(request, user):
             tot_ventas += subtot
 
     prod_list = []
-    # for product_data in prods:
-    #     if product_data["totalSales"] != 0:
-    #         prod_list.append(product_data)
     for product_data in prods:
         if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
             prod_list.append(product_data)

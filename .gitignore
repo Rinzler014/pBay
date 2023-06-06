@@ -1,3 +1,4 @@
 # Ignore all pyc files
-*.pyc
+*.py[cod]
+*$py.class
 **/__pycache__/
