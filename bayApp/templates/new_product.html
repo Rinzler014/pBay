@@ -32,7 +32,7 @@
             $("#id_priceCI").prop('required', false);
           }
         });
-        $("input[name='category']").change(function() {
+        $("#id_category").change(function() {
           if ($(this).val() === 'tecnologia') {
             $("#technology").show();
             $("#entertainment").hide();
@@ -150,8 +150,8 @@
             {{form.category}}
           </div>
           <!-- <div id="categories"> -->
-          <div id="tecnology">
-            {{form.tecnology}}
+          <div id="technology">
+            {{form.technology}}
           </div>
           <div id="entertainment">
             {{form.entertainment}}
