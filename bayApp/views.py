@@ -19,6 +19,8 @@ from django.http import HttpResponse
 
 from datetime import datetime, timedelta
 
+from django.utils import timezone
+
 
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
@@ -43,11 +45,11 @@ def login(request):
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
+                checkAuctions()
                 return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
-
     return render(request, "login.html", context)
 
 
@@ -634,3 +636,17 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
+def checkAuctions():
+    col = db.collection('products').stream()
+
+    for document in col:
+        dic = document.to_dict()
+
+        if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
+            date = timezone.now()
+
+            if date > dic["deletionDate"]:
+                docId = document.id
+                db.collection("products").document(docId).update({
+                    "auctionAvailable": False
+                })
