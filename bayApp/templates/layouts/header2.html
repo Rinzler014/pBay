@@ -34,7 +34,7 @@
     </head>
     <body>
 
-<nav>
+<nav> 
 
     <div class="search">
         <div class="logo">
@@ -47,6 +47,9 @@
           </button>
         </form>
         <div class="buttons">
+          <button class="user-btn" style="margin-right: 20px;">
+            <a href="{% url 'my_products' user_id=user %}">{% bs_icon 'box-seam-fill' color='white'%}</a>
+          </button>
           <button class="user-btn" style="margin-right: 20px;">
             <a href="{% url 'sales' user=user %}">{% bs_icon 'credit-card-2-back-fill' color='white'%}</a>
           </button>
