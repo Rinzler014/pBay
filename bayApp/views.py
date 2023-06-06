@@ -559,6 +559,7 @@ def new_product(request, user_id):
                 if optionSale == 'subasta':
                     creationDate = datetime.now()
                     deletionDate = creationDate + timedelta(days= data['durationDays'] )
+                    print(deletionDate)
                     dataP = {
                         u"title": data['title'],
                         u"description": data['description'],
