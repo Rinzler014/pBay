@@ -21,4 +21,5 @@ urlpatterns = [
     path("eraseProductShoppingCart/", views.eraseProductShoppingCart, name="eraseProductShoppingCart"),
     path("my_profile/<str:user_id>", views.myProfile, name="my_profile"),
     path('search/<str:user_id>', views.search_products, name='search_products'),
+    #path("updatePersonalInfo/", views.updatePersonalInfo, name="updatePersonalInfo")
 ]
