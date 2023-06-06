@@ -19,6 +19,6 @@ urlpatterns = [
     #path("shopping_cart/<str:user_id>", views.addProductShoppingCart, name="addProductShoppingCart")
     path("addProductShoppingCart/", views.addProductShoppingCart, name="addProductShoppingCart"),
     path("eraseProductShoppingCart/", views.eraseProductShoppingCart, name="eraseProductShoppingCart"),
-    
+    path("my_profile/<str:user_id>", views.myProfile, name="my_profile"),
     path('search/<str:user_id>', views.search_products, name='search_products'),
 ]

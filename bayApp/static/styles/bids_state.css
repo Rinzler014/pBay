@@ -84,6 +84,29 @@ p {
   margin-left: 1rem;
 }
 
+.mail-to {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.send {
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.2rem;
+}
+
+.mail-to-button {
+  width: fit-content;
+  padding: 10px 30px;
+  margin-bottom: 1rem;
+}
+
 .message {
   font-size: 1.2rem;
   margin-left: 0;

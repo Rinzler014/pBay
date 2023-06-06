@@ -18,6 +18,17 @@
     background-color: rgba(236, 236, 236, 1);
     margin-top: 1%;
   }
+
+  .container2 {
+    display: grid;
+    grid-auto-flow: row;
+    width: 90%;
+    margin: 0 auto;
+    padding: 1%;
+    background-color: rgba(236, 236, 236, 1);
+    margin-top: 1%;
+    overflow-x: scroll;
+  }
   
   .counters {
     display: grid;
@@ -83,13 +94,16 @@
 }
 .food-menu-box{
     width: 150px;
+    height: 290px;
     grid-row: 1;
     margin: 1%;
     padding: 1.5%;
     float: left;
     background-color: white;
     border-radius: 15px;
-    
+    justify-content: space-between;
+    flex-direction: column;
+    display: flex;
 }
 
 .food-menu-img{

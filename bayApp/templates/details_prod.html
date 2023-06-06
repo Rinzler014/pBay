@@ -56,45 +56,45 @@
     <div class="row main_row">
       <div class="col-sm">
         <div class="text-center">
-          <img
-            src="{% static 'images/prod_2.jpg' %}"
-            alt="imagen1"
-            onclick="changemainimg(this)"
-          />
-
+          {% for product in prodDetails.urlImages %}
           <div class="text-center">
             <img
-              src="{% static 'images/prod_3.jpg' %}"
-              alt="imagen2"
+              src="{{ product }}"
+              alt="imagen1"
               onclick="changemainimg(this)"
             />
           </div>
-          <div class="text-center">
-            <img
-              src="{% static 'images/prod_4.jpg' %}"
-              alt="imagen3"
-              onclick="changemainimg(this)"
-            />
-          </div>
+          {% endfor %}
         </div>
       </div>
       <div class="col-sm">
         <img
           id="imagenPrincipal"
-          src="{% static 'images/prod_4.jpg' %}"
+          src="{{  prodDetails.urlImages.0 }}"
           class="w-75 p-3"
           alt="Imagen Principal"
         />
         <p class="description">{{ description }}</p>
       </div>
       <div class="col-sm">
-        <p>Titulo: {{ title }}</p>
-        <p>Precio: $ {{ price }}</p>
-        <p>Tipo: {{ optionSale }}</p>
-        <p>Disponibilidad: {{ stock }}</p>
-        <button class="mybutton notify">
+        <p>Titulo: {{ prodDetails.title }}</p>
+        <p>Precio: $ {{ prodDetails.price }}</p>
+        <p>Tipo: {{ prodDetails.optionSale }}</p>
+        <p>Disponibilidad: {{ prodDetails.stock }}</p>
+        <button
+          class="mybutton"
+          style="background: #11698e"
+          onclick="enviarMail()"
+        >
           Notificarme cuando este disponible
         </button>
+        <script>
+          function enviarMail() {
+            window.location.href =
+              "mailto:pablogpp88@gmail.com?subject=Restock%20de%20Producto&body=Me%20gustaría%20que%20me%20notifiques%20cuando%20este%20disponible%20el%20siguiente%20producto: " +
+              "{{ prodDetails.title }}";
+          }
+        </script>
       </div>
     </div>
   </body>

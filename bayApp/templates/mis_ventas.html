@@ -42,26 +42,28 @@
     <!-- Contadores -->
 
     <!-- Sección 1 -->
-    <div class="container">
+    <div class="container2">
       <h2 class="text-left">Objetos Vendidos</h2>
       <div class="counters">
         {% for context in context_list %}
         <div>
           <div class="food-menu-box">
-            <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+            <div>
+              <div class="food-menu-img">
+                <img src="{{ context.urlImages.0 }}" class="img-responsive img-curve">
+              </div>
+    
+              <div class="food-menu-desc">
+                <h4 class="food-title">{{ context.title }}</h4>
+                <p class="food-price">${{ context.price }}</p>
+                <p class="food-detail">
+                  {{ context.description }}
+                </p>
+                <!-- <br> -->
+    
+              </div>
             </div>
-  
-            <div class="food-menu-desc">
-              <h4 class="food-title">{{ context.title }}</h4>
-              <p class="food-price">${{ context.price }}</p>
-              <p class="food-detail">
-                {{ context.description }}
-              </p>
-              <br>
-  
-              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
-            </div>
+            <a href="{% url 'details' user_id=user product_id=context.product_id %}" class="btn btn-primary">Ver producto</a>
           </div>
         </div>
         {% endfor %}
@@ -70,14 +72,14 @@
     <!-- Fin Sección 1 -->
 
     <!-- Sección 2 -->
-    <div class="container">
+    <div class="container2">
       <h2 class="text-left">Objetos Vendidos</h2>
       <div class="counters">
-        {% for context in nocontext_list %}
-        <div>
-          <div class="food-menu-box">
+        {% for nocontext in nocontext_list %}
+        <div class="food-menu-box">
+          <div>
             <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+              <img src="{{ nocontext.urlImages.0 }}" class="img-responsive img-curve">
             </div>
   
             <div class="food-menu-desc">
@@ -86,12 +88,13 @@
               <p class="food-detail">
                 {{ nocontext.description }}
               </p>
-              <br>
+              <!-- <br> -->
   
-              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
             </div>
           </div>
+          <a href="{% url 'details' user_id=user product_id=nocontext.product_id %}" class="btn btn-primary">Ver producto</a>
         </div>
+      </div>
         {% endfor %}
       </div>
     </div>
