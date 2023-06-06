@@ -70,10 +70,16 @@ form > div {
 
 .checkbox-type-sale div {
   display: flex;
+  margin-bottom: 0;
 }
 
 .checkbox-type-sale div:first-child {
   margin-right: 40px;
+}
+
+.checkbox-type-standOut{
+  display: flex;
+  flex-direction: row;
 }
 
 .button-new-product {

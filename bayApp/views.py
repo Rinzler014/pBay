@@ -17,6 +17,9 @@ from firebase_admin import firestore
 
 from django.http import HttpResponse
 
+from datetime import datetime, timedelta
+
+
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
 
@@ -573,6 +576,8 @@ def new_product(request, user_id):
                 optionSale = form.cleaned_data['option']
                 
                 if optionSale == 'subasta':
+                    creationDate = datetime.now()
+                    deletionDate = creationDate + timedelta(days= data['durationDays'] )
                     dataP = {
                         u"title": data['title'],
                         u"description": data['description'],
@@ -581,22 +586,27 @@ def new_product(request, user_id):
                         u"stock": data['stock'],
                         u"totalSales": 0,
                         u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
                         u"startingPrice": data['startingPrice'],
                         u"durationDays": data['durationDays'],
-                        u"priceCI": data['priceCI']
+                        u"priceCI": data['priceCI'],
+                        u"auctionAvailable": True,
+                        u"deletionDate": deletionDate,
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
-                else:
+                if optionSale == 'venta_directa':
                     dataP = {
-                            u"title": data['title'],
-                            u"description": data['description'],
-                            u"urlImages": urlImages,
-                            u"price": data['price'],
-                            u"stock": data['stock'],
-                            u"totalSales": 0,
-                            u"optionSale": data['option'],
-                            u"sellerID": user_id,
+                        u"title": data['title'],
+                        u"description": data['description'],
+                        u"urlImages": urlImages,
+                        u"price": data['price'],
+                        u"stock": data['stock'],
+                        u"totalSales": 0,
+                        u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
+                        u"sellerID": user_id,
                         }
                     db.collection('products').document(productName).set(dataP)
 
