@@ -58,6 +58,10 @@
                       <p>$&nbsp;{{ value.currentBid }} MXN</p>
                     </div>
                   </div>
+                  <div class="row mail-to">
+                    <p class="send">Enviar correo al vendedor</p>
+                    <button class="btn btn-primary mail-to-button" onclick="enviarMail()">Enviar</button>
+                  </div>
                 </div>
 
               {% endif %}
@@ -86,6 +90,7 @@
                       <p>$&nbsp;{{ value.currentBid }}</p>
                     </div>
                   </div>
+                  
                 </div>
 
               {% endif %}
@@ -133,6 +138,10 @@
     <script>
       function link_to_view(user_id) {
         window.location.href = "{% url 'bids' user_id='temp' %}".replace("temp", user_id);
+      }
+
+      function enviarMail() {
+        window.location.href = "mailto:pablogpp88@gmail.com";
       }
     </script>
 
