@@ -23,7 +23,7 @@
             <span class="counter-label">Activo</span>
           </div>
           <div class="counter">
-            <span class="counter-value">{{ num_ventas }}</span>
+            <span class="counter-value">{{ totalSales }}</span>
             <span class="counter-label">Vendido</span>
           </div>
           <div class="counter">
@@ -32,7 +32,7 @@
           </div>
         <div class="counter">
           <span class="counter-value">${{ tot_ventas }}</span>
-          <span class="counter-label">Total en 90 días</span>
+          <span class="counter-label">Total Vendido</span>
         </div>
         <div class="counter">
           <button class="sell-button">Vender Articulo</button>
@@ -48,20 +48,22 @@
         {% for context in context_list %}
         <div>
           <div class="food-menu-box">
-            <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+            <div>
+              <div class="food-menu-img">
+                <img src="{{ context.urlImages.0 }}" class="img-responsive img-curve">
+              </div>
+    
+              <div class="food-menu-desc">
+                <h4 class="food-title">{{ context.title }}</h4>
+                <p class="food-price">${{ context.price }}</p>
+                <p class="food-detail">
+                  {{ context.description }}
+                </p>
+                <!-- <br> -->
+    
+              </div>
             </div>
-  
-            <div class="food-menu-desc">
-              <h4 class="food-title">{{ context.title }}</h4>
-              <p class="food-price">${{ context.price }}</p>
-              <p class="food-detail">
-                {{ context.description }}
-              </p>
-              <br>
-  
-              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
-            </div>
+            <a href="{% url 'details' user_id=user product_id=context.product_id %}" class="btn btn-primary">Ver producto</a>
           </div>
         </div>
         {% endfor %}
@@ -73,11 +75,11 @@
     <div class="container">
       <h2 class="text-left">Objetos Vendidos</h2>
       <div class="counters">
-        {% for context in nocontext_list %}
-        <div>
-          <div class="food-menu-box">
+        {% for nocontext in nocontext_list %}
+        <div class="food-menu-box">
+          <div>
             <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+              <img src="{{ nocontext.urlImages.0 }}" class="img-responsive img-curve">
             </div>
   
             <div class="food-menu-desc">
@@ -86,12 +88,13 @@
               <p class="food-detail">
                 {{ nocontext.description }}
               </p>
-              <br>
+              <!-- <br> -->
   
-              <a href="{% url 'details' %}" class="btn btn-primary">Ver producto</a>
             </div>
           </div>
+          <a href="{% url 'details' user_id=user product_id=nocontext.product_id %}" class="btn btn-primary">Ver producto</a>
         </div>
+      </div>
         {% endfor %}
       </div>
     </div>

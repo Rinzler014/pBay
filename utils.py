@@ -12,7 +12,6 @@ config = {
   "measurementId": "G-TC6V309YST"
 }
 
-
 firebase = pyrebase.initialize_app(config)
 
 auth = firebase.auth()

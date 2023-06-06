@@ -1,0 +1,55 @@
+body {
+  background-color: #f8f1f1;
+  color: rgb(0, 0, 0);
+  font-family: sans-serif;
+}
+
+.row {
+  align-items: flex-end;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.mybutton {
+  width: inherit;
+  height: 60px;
+  border: none;
+  background: #16c79a;
+  color: white;
+  border-radius: 57px;
+  margin-left: 5%;
+  margin-top: 5%;
+}
+
+.p {
+  font-size: large;
+}
+
+h1 {
+  text-align: right;
+  margin-top: 5%;
+  color: #858585;
+  margin-right: 5%;
+}
+
+.addtocart {
+  width: 160px;
+}
+
+.main_row {
+  margin-top: 5%;
+  align-items: flex-start;
+}
+
+img {
+  margin-bottom: 5%;
+  width: 30% !important;
+}
+
+.notify {
+  background: #11698e;
+}
+
+.description {
+  margin-top: 5%;
+}

@@ -9,26 +9,35 @@
     <link rel="stylesheet" href="{% static 'styles/my_products.css' %}" />
   </head>
 <body>
-
+    {% if products %}
     {% for product in products %}
         {% for key, value in product.items %}
         <div class="container" style="margin-top: 5%;">
             <div class="item">
-                <img src="https://www.lenovo.com/medias/?context=bWFzdGVyfHJvb3R8MjAyMjE5fGltYWdlL3BuZ3xoY2YvaDEyLzE0NzMwMTY4MDc0MjcwLnBuZ3w1NzFhNmVlYjQ0ODFmMDgxYzA3NWQ2YWQ5ZDZlOWQ2ODFmOTA5YTYxYTVjZGIyMTRmNzI2ZWI3MGMzOTNlZjE4" alt="Product Image">
+                <img src="{{ value.urlImages.0 }}">
                 <div>
-                    <div class="title">Product Title {{ value.productName }}</div>
-                    <div class="price">Precio por unidad {{ value.price }}</div>
-                    <div class="inventory">Unidades disponibles {{ value.quantity }}</div>
+                    <div class="title">{{ value.title }}</div>
+                    <div class="price">Precio por unidad <p class="price" style="margin-left: 70px;">$ <p class="areaColor"> {{ value.price }}</p></p></div> 
+                    <div class="inventory">Unidades disponibles <p class="areaColor" style="margin-left: 50px;"> {{ value.stock }}</p></div> 
                 </div>
             </div>
-        
+            <a class="btn btn-primary" style="margin-top: 5px;" href="{% url 'edit_info_prod' user_id=user product_id=key %}">Editar</a>
         </div>
         {% endfor %}
     {% endfor %}
 
+    {% else %}
+        <center>
+        <img src="../static/assets/img/no-product.png" alt="No Results">
+        <h3>Clic en el botón de abajo para agregar un producto</h3>
+        </center>
+    {% endif %}
+    
 
     <div class="bar-button">
-        <button>Add Product</button>
+        <button>
+            <a href="{% url 'new_product' user_id=user %}">Add Product</a>
+        </button>
     </div>
 </body>
 </html>

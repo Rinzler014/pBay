@@ -15,7 +15,6 @@ class LoginForm(forms.Form):
                 "placeholder": "Password"}
             ))  
     
-    
 class CacheSignUpFormP1(forms.Form):
     
     name = forms.CharField(required=True,
@@ -162,29 +161,25 @@ class SignUpForm(forms.Form):
                 'placeholder': 'Confirma tu contraseña',
             }))
     
-
-    def clean_password2(self):
-
+    
+    def clean(self):
+        
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
+        
+        password = self.cleaned_data.get('password')
         password2 = cleaned_data.get('password2')
-
+        regex = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$')
+        
+        if not regex.match(password):
+            messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
+            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
+        
         if password != password2:
             messages.error(self.request, "Las contraseñas no coinciden")
             raise forms.ValidationError("Las contraseñas no coinciden")
-
-        return password2
-    
-    def clean_password(self):
-            
-            password = self.cleaned_data.get('password')
-            regex = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
-            
-            if not regex.match(password):
-                messages.error(self.request, "La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
-                raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial")
         
-            return password
+        return cleaned_data
+    
 
 class formNewProduct(forms.Form):
     title = forms.CharField(label='Condición',
@@ -227,11 +222,7 @@ class formNewProduct(forms.Form):
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de C/I'
         }))
-    
-
-
-    
-    
+        
 class formEditInfoProduct(forms.Form):
     title = forms.CharField(label='Condición',
         widget=forms.widgets.Textarea(attrs={
@@ -277,3 +268,5 @@ class formEditInfoProduct(forms.Form):
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de C/I',
         }))
+    
+    
