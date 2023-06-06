@@ -75,9 +75,9 @@
     <div class="container">
       <h2 class="text-left">Objetos Vendidos</h2>
       <div class="counters">
-        {% for context in nocontext_list %}
-        <div>
-          <div class="food-menu-box">
+        {% for nocontext in nocontext_list %}
+        <div class="food-menu-box">
+          <div>
             <div class="food-menu-img">
               <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
             </div>
@@ -88,11 +88,13 @@
               <p class="food-detail">
                 {{ nocontext.description }}
               </p>
-              <br>
-              <a href="{% url 'details' user_id=user product_id=context.product_id %}" class="btn btn-primary">Ver producto</a>
+              <!-- <br> -->
+  
             </div>
           </div>
+          <a href="{% url 'details' user_id=user product_id=nocontext.product_id %}" class="btn btn-primary">Ver producto</a>
         </div>
+      </div>
         {% endfor %}
       </div>
     </div>
