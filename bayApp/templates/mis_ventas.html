@@ -48,20 +48,22 @@
         {% for context in context_list %}
         <div>
           <div class="food-menu-box">
-            <div class="food-menu-img">
-              <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+            <div>
+              <div class="food-menu-img">
+                <img src="../static/assets/img/laptop.jpg" class="img-responsive img-curve">
+              </div>
+    
+              <div class="food-menu-desc">
+                <h4 class="food-title">{{ context.title }}</h4>
+                <p class="food-price">${{ context.price }}</p>
+                <p class="food-detail">
+                  {{ context.description }}
+                </p>
+                <!-- <br> -->
+    
+              </div>
             </div>
-  
-            <div class="food-menu-desc">
-              <h4 class="food-title">{{ context.title }}</h4>
-              <p class="food-price">${{ context.price }}</p>
-              <p class="food-detail">
-                {{ context.description }}
-              </p>
-              <br>
-  
-              <a href="{% url 'details' user_id=user product_id=context.product_id %}" class="btn btn-primary">Ver producto</a>
-            </div>
+            <a href="{% url 'details' user_id=user product_id=context.product_id %}" class="btn btn-primary">Ver producto</a>
           </div>
         </div>
         {% endfor %}
