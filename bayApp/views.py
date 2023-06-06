@@ -381,7 +381,7 @@ def eraseProductShoppingCart(request):
 
     return HttpResponse(status = 200)
 
-def mis_ventas(request, user):
+def sales(request, user):
     prods = [prod.to_dict() for prod in db.collection("products").get()]
     prod_id = [prod.id for prod in db.collection("products").get()]
 
@@ -435,7 +435,7 @@ def mis_ventas(request, user):
         "tot_ventas": tot_ventas,
     }
 
-    return render(request, "mis_ventas.html", context)
+    return render(request, "sales.html", context)
 
 def shopping_cart(request, user_id):
     docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
