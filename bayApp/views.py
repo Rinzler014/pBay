@@ -574,7 +574,13 @@ def new_product(request, user_id):
                     os.remove(file_path)
 
                 optionSale = form.cleaned_data['option']
-                
+                subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
                 if optionSale == 'subasta':
                     creationDate = datetime.now()
                     deletionDate = creationDate + timedelta(days= data['durationDays'] )
@@ -594,6 +600,8 @@ def new_product(request, user_id):
                         u"auctionAvailable": True,
                         u"deletionDate": deletionDate,
                         u"sellerID": user_id,
+                        u"category": data['category'],
+                        u"subcategory": data[subcategories[data['category']]],
                         }
                     db.collection('products').document(productName).set(dataP)
 
@@ -608,6 +616,8 @@ def new_product(request, user_id):
                         u"optionSale": data['option'],
                         u"standOut": data['standOut'],
                         u"sellerID": user_id,
+                        u"category": data['category'],
+                        u"subcategory": data[subcategories[data['category']]],
                         }
                     db.collection('products').document(productName).set(dataP)
 
