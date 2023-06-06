@@ -180,13 +180,30 @@ def myProfile(request, user_id):
     docRef = db.collection("users").document(user_id).get()
 
     doc = docRef.to_dict()
-    
 
     context = {
         "user": user_id,
         "doc": doc
     }
     return render(request, "my_profile.html", context)
+
+""" def updatePersonalInfo(request):
+    name = request.GET.get('name')
+    mom_last_name = request.GET.get('mom_last_name')
+    phone = request.GET.get('phone')
+    email = request.GET.get('email')
+    last_name = request.GET.get('last_name')
+    zipCode = request.GET.get('zipCode')
+    street = request.GET.get('street')
+    country = request.GET.get('country')
+    state = request.GET.get('state')
+    user = request.GET.get('user')
+
+    print(user)
+
+    #docRef = db.collection("users").
+    
+    return HttpResponse(status = 200) """
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
@@ -364,7 +381,7 @@ def eraseProductShoppingCart(request):
 
     return HttpResponse(status = 200)
 
-def mis_ventas(request, user):
+def sales(request, user):
     prods = [prod.to_dict() for prod in db.collection("products").get()]
     prod_id = [prod.id for prod in db.collection("products").get()]
 
@@ -418,7 +435,7 @@ def mis_ventas(request, user):
         "tot_ventas": tot_ventas,
     }
 
-    return render(request, "mis_ventas.html", context)
+    return render(request, "sales.html", context)
 
 def shopping_cart(request, user_id):
     docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
