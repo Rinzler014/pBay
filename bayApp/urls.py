@@ -15,10 +15,11 @@ urlpatterns = [
     path("bids_state/<str:user_id>", views.bids_state, name="bids_state"),
     path("new_product/<str:user_id>",views.new_product, name="new_product"),
     path("edit_info_prod/<str:user_id>/<str:product_id>", views.edit_info_prod, name="edit_info_prod"),
-    path("mis_ventas/<str:user>", views.mis_ventas, name="mis_ventas"),
+    path("sales/<str:user>", views.sales, name="sales"),
     #path("shopping_cart/<str:user_id>", views.addProductShoppingCart, name="addProductShoppingCart")
     path("addProductShoppingCart/", views.addProductShoppingCart, name="addProductShoppingCart"),
     path("eraseProductShoppingCart/", views.eraseProductShoppingCart, name="eraseProductShoppingCart"),
-    
+    path("my_profile/<str:user_id>", views.myProfile, name="my_profile"),
     path('search/<str:user_id>', views.search_products, name='search_products'),
+    #path("updatePersonalInfo/", views.updatePersonalInfo, name="updatePersonalInfo")
 ]

@@ -17,6 +17,11 @@ from firebase_admin import firestore
 
 from django.http import HttpResponse
 
+from datetime import datetime, timedelta
+
+from django.utils import timezone
+
+
 # Use a service account.
 cred = credentials.Certificate('./serAccountKey.json')
 
@@ -40,11 +45,11 @@ def login(request):
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
+                checkAuctions()
                 return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
-
     return render(request, "login.html", context)
 
 
@@ -172,6 +177,35 @@ def landing(request, user_id):
 
     return render(request, "landing.html", context)
 
+
+def myProfile(request, user_id):
+    docRef = db.collection("users").document(user_id).get()
+
+    doc = docRef.to_dict()
+
+    context = {
+        "user": user_id,
+        "doc": doc
+    }
+    return render(request, "my_profile.html", context)
+
+""" def updatePersonalInfo(request):
+    name = request.GET.get('name')
+    mom_last_name = request.GET.get('mom_last_name')
+    phone = request.GET.get('phone')
+    email = request.GET.get('email')
+    last_name = request.GET.get('last_name')
+    zipCode = request.GET.get('zipCode')
+    street = request.GET.get('street')
+    country = request.GET.get('country')
+    state = request.GET.get('state')
+    user = request.GET.get('user')
+
+    print(user)
+
+    #docRef = db.collection("users").
+    
+    return HttpResponse(status = 200) """
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
@@ -350,29 +384,13 @@ def eraseProductShoppingCart(request):
 
     return HttpResponse(status = 200)
 
-def mis_ventas(request, user):
-    # prods = [db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()]
-    # Productos tienen diferentes campos, hasta que se normalizen solo usar un producto
+def sales(request, user):
     prods = [prod.to_dict() for prod in db.collection("products").get()]
     prod_id = [prod.id for prod in db.collection("products").get()]
 
     for prod in prods:
         prod["product_id"] = prod_id[0]
         prod_id.pop(0)
-
-
-    # PARA VENTA
-    # prodDetails["description"],
-    # prodDetails["optionSale"],
-    # prodDetails["price"],
-    # prodDetails["stock"],
-    # prodDetails["title"],
-    # prodDetails["urlImages"],
-    # prodDetails["totalSales"],
-    # PARA SUBASTA
-    # prodDetails["priceCI"],
-    # prodDetails["startingPrice"],
-    # prodDetails["durationDays"],
 
     num_vendidos = 0
 
@@ -402,9 +420,6 @@ def mis_ventas(request, user):
             tot_ventas += subtot
 
     prod_list = []
-    # for product_data in prods:
-    #     if product_data["totalSales"] != 0:
-    #         prod_list.append(product_data)
     for product_data in prods:
         if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
             prod_list.append(product_data)
@@ -423,7 +438,7 @@ def mis_ventas(request, user):
         "tot_ventas": tot_ventas,
     }
 
-    return render(request, "mis_ventas.html", context)
+    return render(request, "sales.html", context)
 
 def shopping_cart(request, user_id):
     docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
@@ -560,8 +575,17 @@ def new_product(request, user_id):
                     os.remove(file_path)
 
                 optionSale = form.cleaned_data['option']
-                
+                subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
                 if optionSale == 'subasta':
+                    creationDate = datetime.now()
+                    deletionDate = creationDate + timedelta(days= data['durationDays'] )
+                    print(deletionDate)
                     dataP = {
                         u"title": data['title'],
                         u"description": data['description'],
@@ -570,22 +594,31 @@ def new_product(request, user_id):
                         u"stock": data['stock'],
                         u"totalSales": 0,
                         u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
                         u"startingPrice": data['startingPrice'],
                         u"durationDays": data['durationDays'],
-                        u"priceCI": data['priceCI']
+                        u"priceCI": data['priceCI'],
+                        u"auctionAvailable": True,
+                        u"deletionDate": deletionDate,
+                        u"sellerID": user_id,
+                        u"category": data['category'],
+                        u"subcategory": data[subcategories[data['category']]],
                         }
                     db.collection('products').document(productName).set(dataP)
 
-                else:
+                if optionSale == 'venta_directa':
                     dataP = {
-                            u"title": data['title'],
-                            u"description": data['description'],
-                            u"urlImages": urlImages,
-                            u"price": data['price'],
-                            u"stock": data['stock'],
-                            u"totalSales": 0,
-                            u"optionSale": data['option'],
-                            u"sellerID": user_id,
+                        u"title": data['title'],
+                        u"description": data['description'],
+                        u"urlImages": urlImages,
+                        u"price": data['price'],
+                        u"stock": data['stock'],
+                        u"totalSales": 0,
+                        u"optionSale": data['option'],
+                        u"standOut": data['standOut'],
+                        u"sellerID": user_id,
+                        u"category": data['category'],
+                        u"subcategory": data[subcategories[data['category']]],
                         }
                     db.collection('products').document(productName).set(dataP)
 
@@ -615,3 +648,17 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
+def checkAuctions():
+    col = db.collection('products').stream()
+
+    for document in col:
+        dic = document.to_dict()
+
+        if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
+            date = timezone.now()
+
+            if date > dic["deletionDate"]:
+                docId = document.id
+                db.collection("products").document(docId).update({
+                    "auctionAvailable": False
+                })

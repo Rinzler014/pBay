@@ -196,10 +196,6 @@ class formNewProduct(forms.Form):
         "rows":"5",
         "resize":"none"
         }))
-    # images = forms.FileField(required=True,
-    #     widget=forms.widgets.FileInput(attrs={
-    #     'placeholder': 'Imágenes del producto',
-    #     }))
     images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     price = forms.IntegerField(label='Largo', 
         widget=forms.widgets.NumberInput(attrs={
@@ -210,6 +206,13 @@ class formNewProduct(forms.Form):
         'placeholder': 'Unidades disponibles',
         }))
     option = forms.ChoiceField(label='Opción', choices=[('venta_directa', 'Venta Directa'), ('subasta', 'Subasta')], widget=forms.RadioSelect)
+    category = forms.ChoiceField(label='Categoria', choices=[('tecnologia', 'Tecnologia'), ('entretenimiento', 'Entretenimiento'), ('vehiculos', 'Vehiculos'), ('muebles', 'Muebles'), ('vestimenta', 'Vestimenta'), ('otros', 'Otros')])
+    technology = forms.ChoiceField(label='Tecnologia', choices=[('computadoras', 'Computadoras'), ('microondas', 'Microondas'), ('televisiones', 'Televisiones'), ('telefonos', 'Telefonos'), ('mouse', 'Mouse'), ('otros', 'Otros')])
+    entertainment = forms.ChoiceField(label='Entretenimiento', choices=[('peliculas', 'Peliculas'), ('videojuegos', 'Videojuegos'), ('personal', 'Entretenimiento Personal'), ('musica', 'Musica'), ('deportes', 'Deportes'), ('otros', 'Otros')])
+    vehicles = forms.ChoiceField(label='Vehiculos', choices=[('motos', 'Motocicletas'), ('coches', 'Coches'), ('aviones', 'Aviones'), ('camiones', 'Camiones'), ('bicicletas', 'Bicicletas'), ('otros', 'Otros')])
+    furniture = forms.ChoiceField(label='Muebles', choices=[('sillas', 'Sillas'), ('mesas', 'Mesas'), ('camas', 'Camas'), ('sofas', 'Sofas'), ('cajones', 'Cajones'), ('otros', 'Otros')])
+    clothing = forms.ChoiceField(label='Vestimenta', choices=[('vestidos', 'Vestidos'), ('pantalones', 'Pantalones'), ('accesorios', 'Accesorios'), ('playeras', 'Playeras'), ('abrigos', 'Abrigos'), ('otros', 'Otros')])
+    standOut = forms.BooleanField(required=False)
     startingPrice = forms.IntegerField(label='Campo Adicional 1', required=False, 
         widget=forms.widgets.NumberInput(attrs={
         'placeholder': 'Precio de Inicio'
