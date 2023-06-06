@@ -169,6 +169,18 @@ def landing(request, user_id):
     return render(request, "landing.html", context)
 
 
+def myProfile(request, user_id):
+    docRef = db.collection("users").document(user_id).get()
+
+    doc = docRef.to_dict()
+    
+
+    context = {
+        "user": user_id,
+        "doc": doc
+    }
+    return render(request, "my_profile.html", context)
+
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
     doc_ref = db.collection("products").document(productID)

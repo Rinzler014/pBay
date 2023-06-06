@@ -1,0 +1,120 @@
+
+{% extends "layouts/header2.html"%}
+
+
+{% block content %}
+
+  {% load static %}
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Mi perfil</title>
+      <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+    </head>
+    <style>
+        .element-column{
+            margin: 15px;
+        }
+
+        .img-profile img {
+            width: 300px;
+            margin: 50px;
+            border-radius: 50%;
+            box-shadow: 3px;
+        }
+
+        .element-column p {
+            margin-bottom: 0px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .element-column input {
+            height: 40px;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #eee4e4;
+            border-width: 0px;
+            
+        }
+
+        .personal-info {
+            text-align: center;
+        }
+        .title-new-product {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .update-button {
+            margin: 50px;
+        }
+        
+        .update-button button {
+            background-color: #16C79A;
+            color: white;
+            border: 0px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+    </style>
+    <body style="background-color: #f8f1f1;">
+        <h2 class="title-new-product">Información personal</h2>
+        <div class="d-flex justify-content-center">
+            
+            <div class="d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-evenly">
+                    <div class="column d-flex flex-column">
+                        <div class="element-column d-flex flex-column">
+                            <p>Nombre</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Apellido Materno</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Celular</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Correo</p>
+                            <input type="text">
+                        </div>
+                    </div>
+                    <div class="column d-flex flex-column">
+                        <div class="element-column d-flex flex-column">
+                            <p>Apellido Paterno</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Código postal</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Calle</p>
+                            <input type="text">
+                        </div>
+                        <div class="element-column d-flex flex-column">
+                            <p>Estado</p>
+                            <input type="text">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="update-button d-flex justify-content-center">
+                    <button>Actualizar información</button>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+    </html>
+
+{% endblock %}
