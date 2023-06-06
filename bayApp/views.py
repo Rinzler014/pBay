@@ -8,6 +8,8 @@ import bson
 from django.core.files.storage import FileSystemStorage, default_storage
 import os
 from .models import producto as pr
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 import firebase_admin
 from firebase_admin import credentials
@@ -156,9 +158,11 @@ def signup_3(request):
 
 def landing(request, user_id):
     
-    platform_products = db.collection("products").stream()
-    
-    products = [{product.id : product.to_dict()} for product in platform_products]
+
+    queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
+    results = queryset.get()
+    products = [{product.id : product.to_dict()} for product in results]
+   
 
     
     context = {
@@ -289,17 +293,6 @@ def details(request, user_id, product_id):
         "prodDetails" : prodDetails,
         "producto_id" : product_id
         }
-    # PARA VENTA
-    # prodDetails["description"],
-    # prodDetails["optionSale"],
-    # prodDetails["price"],
-    # prodDetails["stock"],
-    # prodDetails["title"],
-    # prodDetails["urlImages"],
-    # PARA SUBASTA
-    # prodDetails["priceCI"],
-    # prodDetails["startingPrice"],
-    # prodDetails["durationDays"],
 
     return render(request, "details_prod.html", context)
 
@@ -327,6 +320,7 @@ def addProductShoppingCart(request):
     }
     
     db.collection('carritos').document(docID).set(data)
+    messages.success(request, 'Producto agregado al carrito')
 
     return HttpResponse(status = 200)
 
@@ -368,26 +362,41 @@ def eraseProductShoppingCart(request):
     return HttpResponse(status = 200)
 
 def mis_ventas(request, user):
-    prods = [db.collection("products").document("5zSNGRaS8BFVOgpkDHhw").get().to_dict()]
+    # prods = [db.collection("products").document("64798b0c1cd6e1b4d67ac3de").get().to_dict()]
     # Productos tienen diferentes campos, hasta que se normalizen solo usar un producto
-    # prods = [prod.to_dict() for prod in db.collection("products").get()]
+    prods = [prod.to_dict() for prod in db.collection("products").get()]
+    prod_id = [prod.id for prod in db.collection("products").get()]
+
+    for prod in prods:
+        prod["product_id"] = prod_id[0]
+        prod_id.pop(0)
 
 
-    # print(prods)
+    # PARA VENTA
+    # prodDetails["description"],
+    # prodDetails["optionSale"],
+    # prodDetails["price"],
+    # prodDetails["stock"],
+    # prodDetails["title"],
+    # prodDetails["urlImages"],
+    # prodDetails["totalSales"],
+    # PARA SUBASTA
+    # prodDetails["priceCI"],
+    # prodDetails["startingPrice"],
+    # prodDetails["durationDays"],
+
     num_vendidos = 0
 
     nonum_vendidos = 0
-    """
-    for product_id, product_data in prods.items():
-        if product_data["availability"] == "Si":
+    for product_data in prods:
+        if product_data["stock"] > 0:
             num_vendidos += 1
 
     nonum_vendidos = 0
 
-    for product_id, product_data in prods.items():
-        if product_data["availability"] == "No":
+    for product_data in prods:
+        if product_data["stock"] <= 0:
             nonum_vendidos += 1
-    """
 
     totalSales = 0
 
@@ -404,21 +413,17 @@ def mis_ventas(request, user):
             tot_ventas += subtot
 
     prod_list = []
+    # for product_data in prods:
+    #     if product_data["totalSales"] != 0:
+    #         prod_list.append(product_data)
     for product_data in prods:
-        if product_data["totalSales"] != 0:
+        if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
             prod_list.append(product_data)
-    """
-    for product_data in prods:
-        if product_data["availability"] == "Si" and  product_data["totalSales"] != 0:
-            prod_list.append(product_data)
-    """
 
     noprod_list = []
-    """
     for product_data in prods:
-        if product_data["availability"] == "No" and product_data["totalSales"] != 0:
+        if product_data["stock"] <= 0 and product_data["totalSales"] != 0:
             noprod_list.append(product_data)
-    """
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
@@ -616,6 +621,7 @@ def search_products(request, user_id):
     context = {
         "user": user_id,
         "products": products,
+        "search_name": search_name,
     }
 
     return render(request, "search_results.html", context)

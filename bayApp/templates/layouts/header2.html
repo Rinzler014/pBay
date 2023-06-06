@@ -13,6 +13,8 @@
       <link rel="stylesheet" href="{% static 'styles/navbar.css' %}" />
       <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
 
+      <link rel="shortcut icon" href="{% static 'assets/img/favicon.ico' %}" type="image/x-icon">
+
       <!-- Simple lightbox CSS -->
     <link rel="stylesheet" href="assets/css/simple-lightbox.min.css" />
     <!-- BootStrap CSS -->
@@ -46,6 +48,9 @@
         </form>
         <div class="buttons">
           <button class="user-btn" style="margin-right: 20px;">
+            <a href="{% url 'mis_ventas' user=user %}">{% bs_icon 'credit-card-2-back-fill' color='white'%}</a>
+          </button>
+          <button class="user-btn" style="margin-right: 20px;">
             <a href="{% url 'bids' user_id=user %}">{% bs_icon 'megaphone-fill' color='white'%}</a>
           </button>
           <button class="user-btn" style="margin-right: 20px;">
@@ -64,6 +69,8 @@
 
 </nav>
     </body>
+
+    {% include 'layouts/messaging.html' %}
 
     {% block content %}
     {% endblock %}
