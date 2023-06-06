@@ -280,6 +280,7 @@ def details(request, user_id, product_id):
         "user" : user_id,
         "prodDetails" : prodDetails,
         "producto_id" : product_id
+        
         }
 
     return render(request, "details_prod.html", context)

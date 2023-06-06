@@ -87,20 +87,23 @@
               onclick="clickPosition('{{ producto_id }}', '{{ user }}')">Agregar a carrito</button>
             </div>
           </div>
+          
           <div class="row" style="margin-top: 5%; align-items: flex-start;">
             <div class="col-sm">
+              {% for product in products %}
               <div class="text-center">
-                <img src="{% static 'images/prod_2.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen1" onclick="changemainimg(this)">
+                <img src="{{ prodDetails.urlImages.1 }}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen1" onclick="changemainimg(this)">
                 <div class="text-center">
-                  <img src="{% static 'images/prod_3.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen2" onclick="changemainimg(this)">
+                  <img src="{{ prodDetails.urlImages.2 }}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen2" onclick="changemainimg(this)">
                 </div>
                 <div class="text-center">
-                  <img src="{% static 'images/prod_4.jpg' %}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen3" onclick="changemainimg(this)">
+                  <img src="{{ prodDetails.urlImages.3 }}" style="margin-bottom: 5%;width: 30%!important;" alt="imagen3" onclick="changemainimg(this)">
                 </div>
               </div> 
+              {% endfor %}
             </div>
             <div class="col-sm">
-              <img id="imagenPrincipal" src="{% static 'images/prod_4.jpg' %}" class="w-75 p-3" alt="Imagen Principal">
+              <img id="imagenPrincipal" src="{{ prodDetails.urlImages.0 }}" class="w-75 p-3" alt="Imagen Principal">
               <p style="margin-top: 5%;">{{ prodDetails.description }}</p>
             </div>
             <div class="col-sm">
