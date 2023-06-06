@@ -581,6 +581,11 @@ def new_product(request, user_id):
                     "muebles": "furniture",
                     "vestimenta": "clothing",
                 }
+                subcategoryLabel = ""
+                if data['category'] == "otros":
+                    subcategoryLabel = None
+                else:
+                    subcategoryLabel = data[subcategories[data['category']]]
                 if optionSale == 'subasta':
                     creationDate = datetime.now()
                     deletionDate = creationDate + timedelta(days= data['durationDays'] )
@@ -601,7 +606,7 @@ def new_product(request, user_id):
                         u"deletionDate": deletionDate,
                         u"sellerID": user_id,
                         u"category": data['category'],
-                        u"subcategory": data[subcategories[data['category']]],
+                        u"subcategory": subcategoryLabel,
                         }
                     db.collection('products').document(productName).set(dataP)
 
@@ -617,7 +622,7 @@ def new_product(request, user_id):
                         u"standOut": data['standOut'],
                         u"sellerID": user_id,
                         u"category": data['category'],
-                        u"subcategory": data[subcategories[data['category']]],
+                        u"subcategory": subcategoryLabel,
                         }
                     db.collection('products').document(productName).set(dataP)
 
