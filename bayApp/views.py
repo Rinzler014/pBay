@@ -19,13 +19,16 @@ from django.http import HttpResponse
 
 from datetime import datetime, timedelta
 
+from django.utils import timezone
+
 
 # Use a service account.
-cred = credentials.Certificate('./serAccountKey.json')
+cred = credentials.Certificate("./serAccountKey.json")
 
 app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
 
 def login(request):
     form = LoginForm()
@@ -35,7 +38,6 @@ def login(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            
             try:
                 user = auth.sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
@@ -43,11 +45,11 @@ def login(request):
                 messages.success(
                     request, f"Usuario {user['localId']} autenticado correctamente"
                 )
+                checkAuctions()
                 return redirect("landing", user_id=user["localId"])
 
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
-
     return render(request, "login.html", context)
 
 
@@ -70,7 +72,6 @@ def signup(request):
 
 
 def signup_2(request):
-    
     form = CacheSignUpFormP2()
     context = {"form": form}
 
@@ -98,7 +99,6 @@ def signup_2(request):
 
 
 def signup_3(request):
-    
     form = SignUpForm(request=request)
     context = {"form": form}
 
@@ -117,37 +117,35 @@ def signup_3(request):
             data.pop("password2")
 
             try:
-                
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
-                
+
                 data.pop("password")
                 data["type"] = "user"
-                
+
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
-                
+
                 temp_file = data["personalID"]
-                
-                data["personalID"] = storage.child(f"users/{user['localId']}/personalID").get_url(None)
-                
+
+                data["personalID"] = storage.child(
+                    f"users/{user['localId']}/personalID"
+                ).get_url(None)
+
                 db.collection("users").document(user["localId"]).set(data)
-                
+
                 print("Usuario creado correctamente")
 
                 os.remove(f"temp/{temp_file}")
 
                 productos = []
 
-                data = {
-                    u'UIDUsuario': user["localId"],
-                    u'Productos' : productos
-                }
+                data = {"UIDUsuario": user["localId"], "Productos": productos}
 
-                db.collection(u'carritos').add(data)
-                
+                db.collection("carritos").add(data)
+
                 messages.success(request, f"Usuario creado correctamente")
 
                 return redirect("login")
@@ -155,19 +153,15 @@ def signup_3(request):
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-    
+
     return render(request, "signup_3.html", context)
 
 
 def landing(request, user_id):
-    
-
     queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
     results = queryset.get()
-    products = [{product.id : product.to_dict()} for product in results]
-   
+    products = [{product.id: product.to_dict()} for product in results]
 
-    
     context = {
         "user": user_id,
         "products": products,
@@ -256,7 +250,7 @@ def edit_info_prod(request, user_id, product_id):
     doc_ref = db.collection("products").document(productID)
     doc = doc_ref.get()
     initialData = doc.to_dict()
-    
+
     if initialData["optionSale"] == "subasta":
         initial = {
             "title": initialData["title"],
@@ -267,8 +261,8 @@ def edit_info_prod(request, user_id, product_id):
             "startingPrice": initialData["startingPrice"],
             "durationDays": initialData["durationDays"],
             "priceCI": initialData["priceCI"],
-            #"option": initialData["optionSale"]
-            }
+            # "option": initialData["optionSale"]
+        }
     else:
         initial = {
             "title": initialData["title"],
@@ -276,11 +270,10 @@ def edit_info_prod(request, user_id, product_id):
             "price": initialData["price"],
             "stock": initialData["stock"],
             "totalSales": initialData["totalSales"],
-            #"option": initialData["optionSale"]
+            # "option": initialData["optionSale"]
         }
-    
-    form = formEditInfoProduct(initial=initial)
 
+    form = formEditInfoProduct(initial=initial)
 
     context = {
         "user": user_id,
@@ -290,7 +283,6 @@ def edit_info_prod(request, user_id, product_id):
     }
 
     if request.method == "POST":
-        
         form = formEditInfoProduct(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
@@ -299,44 +291,68 @@ def edit_info_prod(request, user_id, product_id):
             file_extension = file.name.split(".")[-1]
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
-            
+
             storage.child(f"products/{productID}/{file_name}").put(file_path)
 
             urlImages = []
 
-            for image in request.FILES.getlist('images'):
-                    
-                    nombre_imagen = image.name
-                    
-                    file_extension = nombre_imagen.split(".")[-1]
-                    file_path = f"temp/{nombre_imagen}.{file_extension}"
-                    
-                    default_storage.save(file_path, image)
-                    
-                    ruta_guardado = f"products/{productID}/{nombre_imagen}"
-                    storage.child(ruta_guardado).put(file_path)
+            for image in request.FILES.getlist("images"):
+                nombre_imagen = image.name
 
-                    storage_path = storage.child(ruta_guardado).get_url("2")
-        
-                    urlImages.append(storage_path)
-                    os.remove(file_path)
-            
-            optionSale = form.cleaned_data['option']
-            
-            if optionSale == 'subasta':
+                file_extension = nombre_imagen.split(".")[-1]
+                file_path = f"temp/{nombre_imagen}.{file_extension}"
+
+                default_storage.save(file_path, image)
+
+                ruta_guardado = f"products/{productID}/{nombre_imagen}"
+                storage.child(ruta_guardado).put(file_path)
+
+                storage_path = storage.child(ruta_guardado).get_url("2")
+
+                urlImages.append(storage_path)
+                os.remove(file_path)
+
+            optionSale = form.cleaned_data["option"]
+
+            if optionSale == "subasta":
                 dataP = {
+<<<<<<< HEAD
+                    "title": data["title"],
+                    "description": data["description"],
+                    "urlImages": urlImages,
+                    "price": data["price"],
+                    "stock": data["stock"],
+                    "totalSales": data["totalSales"],
+                    "optionSale": data["option"],
+                    "startingPrice": data["startingPrice"],
+                    "durationDays": data["durationDays"],
+                    "priceCI": data["priceCI"],
+                }
+                db.collection("products").document(productID).set(dataP)
+
+            else:
+                dataP = {
+                    "title": data["title"],
+                    "description": data["description"],
+                    "urlImages": urlImages,
+                    "price": data["price"],
+                    "stock": data["stock"],
+                    "totalSales": data["totalSales"],
+                    "optionSale": data["option"],
+                }
+                db.collection("products").document(productID).set(dataP)
+=======
                     u"title": data['title'],
                     u"description": data['description'],
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     u"startingPrice": data['startingPrice'],
                     u"durationDays": data['durationDays'],
                     u"priceCI": data['priceCI']
                     }
-                db.collection('products').document(productID).set(dataP)
+                db.collection('products').document(productID).update(dataP)
 
             else:
                 dataP = {
@@ -345,67 +361,67 @@ def edit_info_prod(request, user_id, product_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     }
-                db.collection('products').document(productID).set(dataP)
+                db.collection('products').document(productID).update(dataP)
             
+>>>>>>> main
 
     return render(request, "edit_info_prod.html", context)
 
+
 def details(request, user_id, product_id):
     prodDetails = db.collection("products").document(product_id).get().to_dict()
-    context =  {
-        "user" : user_id,
-        "prodDetails" : prodDetails,
-        "producto_id" : product_id
-        }
+    context = {"user": user_id, "prodDetails": prodDetails, "producto_id": product_id}
 
     return render(request, "details_prod.html", context)
 
-def addProductShoppingCart(request):
-    idProducto = request.GET.get('idProducto')
-    idUsuario = request.GET.get('idUsuario')
 
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+def addProductShoppingCart(request):
+    idProducto = request.GET.get("idProducto")
+    idUsuario = request.GET.get("idUsuario")
+
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
+    )
 
     for doc in docShoppingCart:
         docID = doc.id
 
-    docs = db.collection('carritos').document(docID)
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
     products.append(idProducto)
 
-    data = {
-        u'UIDUsuario': idUsuario,
-        u'Productos' : products
-    }
-    
-    db.collection('carritos').document(docID).set(data)
-    messages.success(request, 'Producto agregado al carrito')
+    data = {"UIDUsuario": idUsuario, "Productos": products}
 
-    return HttpResponse(status = 200)
+    db.collection("carritos").document(docID).set(data)
+    messages.success(request, "Producto agregado al carrito")
+
+    return HttpResponse(status=200)
+
 
 def eraseProductShoppingCart(request):
-    idProducto = request.GET.get('idProducto')
-    idUsuario = request.GET.get('idUsuario')
+    idProducto = request.GET.get("idProducto")
+    idUsuario = request.GET.get("idUsuario")
 
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
+    )
 
     for doc in docShoppingCart:
         docID = doc.id
 
-    docs = db.collection('carritos').document(docID)
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
     print(products)
 
@@ -419,16 +435,14 @@ def eraseProductShoppingCart(request):
 
     print(products)
 
-    data = {
-        u'UIDUsuario': idUsuario,
-        u'Productos' : products
-    }
-    
-    db.collection('carritos').document(docID).set(data)
+    data = {"UIDUsuario": idUsuario, "Productos": products}
 
-    return HttpResponse(status = 200)
+    db.collection("carritos").document(docID).set(data)
 
-def mis_ventas(request, user):
+    return HttpResponse(status=200)
+
+
+def sales(request, user):
     prods = [prod.to_dict() for prod in db.collection("products").get()]
     prod_id = [prod.id for prod in db.collection("products").get()]
 
@@ -465,7 +479,7 @@ def mis_ventas(request, user):
 
     prod_list = []
     for product_data in prods:
-        if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
+        if product_data["stock"] > 0 and product_data["totalSales"] != 0:
             prod_list.append(product_data)
 
     noprod_list = []
@@ -482,23 +496,26 @@ def mis_ventas(request, user):
         "tot_ventas": tot_ventas,
     }
 
-    return render(request, "mis_ventas.html", context)
+    return render(request, "sales.html", context)
+
 
 def shopping_cart(request, user_id):
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", user_id).stream()
+    )
 
-    docID = ''    
+    docID = ""
     for doc in docShoppingCart:
         docID = doc.id
 
-    arrayProducts=[]
+    arrayProducts = []
 
-    docs = db.collection('carritos').document(docID)
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
     for product in products:
         n = 0
@@ -508,14 +525,20 @@ def shopping_cart(request, user_id):
                 totalProductoNum += 1
             n += 1
 
-        
-        docs = db.collection('products').document(product)
+        docs = db.collection("products").document(product)
         doc = docs.get()
-        datos = doc.to_dict()
-        prue = datos['urlImages']
-        productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
-                    priceModel=datos['price'], imgModel=prue[0], totalProductModel=totalProductoNum)
-           
+
+        prue = datos["urlImages"]
+        imgPro = storage.child(prue[0]).get_url("2")
+        productObject = pr(
+            id=product,
+            nameModel=datos["title"],
+            descriptionModel=datos["description"],
+            priceModel=datos["price"],
+            imgModel=imgPro,
+            totalProductModel=totalProductoNum,
+        )
+
         if productObject not in arrayProducts:
             arrayProducts.append(productObject)
 
@@ -526,24 +549,22 @@ def shopping_cart(request, user_id):
         totalShoppingCartPrice += product.priceModel * product.totalProductModel
         totalShoppingCartProducts += product.totalProductModel
 
-
     context = {
         "arrayProducts": arrayProducts,
-        "user" : user_id,
-        "totalShoppingCartPrice" : totalShoppingCartPrice,
-        "totalShoppingCartProducts" : totalShoppingCartProducts
+        "user": user_id,
+        "totalShoppingCartPrice": totalShoppingCartPrice,
+        "totalShoppingCartProducts": totalShoppingCartProducts,
     }
 
-    
-    
+
     return render(request, "shopping_cart.html", context)
 
+
 def auctions(request, user_id):
-    
     platform_bids = db.collection("subasta").stream()
-    
-    bids = [{bid.id : bid.to_dict()} for bid in platform_bids]
-    
+
+    bids = [{bid.id: bid.to_dict()} for bid in platform_bids]
+
     context = {
         "user": user_id,
         "bids": bids,
@@ -551,14 +572,12 @@ def auctions(request, user_id):
 
     return render(request, "bids.html", context)
 
-def bids_state(request, user_id):
-    
-    user_bids = db.collection(u"users").document(user_id).collection("bids").stream()
 
-    
-    bids = [{bid.id : bid.to_dict()} for bid in user_bids]
-    
-    
+def bids_state(request, user_id):
+    user_bids = db.collection("users").document(user_id).collection("bids").stream()
+
+    bids = [{bid.id: bid.to_dict()} for bid in user_bids]
+
     context = {
         "user": user_id,
         "bids": bids,
@@ -566,10 +585,11 @@ def bids_state(request, user_id):
 
     return render(request, "bids_state.html", context)
 
+
 def my_products(request, user_id):
-
-
-    platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
+    platform_products = (
+        db.collection("products").where("sellerID", "==", user_id).stream()
+    )
     products = [{product.id: product.to_dict()} for product in platform_products]
 
     context = {
@@ -578,11 +598,11 @@ def my_products(request, user_id):
     }
     return render(request, "my_products.html", context)
 
+
 def new_product(request, user_id):
     form = formNewProduct()
 
     productName = str(bson.ObjectId())
-
 
     context = {
         "user": user_id,
@@ -590,88 +610,147 @@ def new_product(request, user_id):
     }
 
     if request.method == "POST":
-        
         form = formNewProduct(request.POST, request.FILES)
-        
+
         if form.is_valid():
-            
             data = form.cleaned_data
-            
+
             urlImages = []
-            
-            try: 
-        
-                for image in request.FILES.getlist('images'):
-                    
+
+            try:
+                for image in request.FILES.getlist("images"):
                     nombre_imagen = image.name
-                    
+
                     file_extension = nombre_imagen.split(".")[-1]
                     file_path = f"temp/{nombre_imagen}.{file_extension}"
-                    
+
                     default_storage.save(file_path, image)
-                    
+
                     ruta_guardado = f"products/{productName}/{nombre_imagen}"
                     storage.child(ruta_guardado).put(file_path)
 
                     storage_path = storage.child(ruta_guardado).get_url("2")
-        
+
                     urlImages.append(storage_path)
                     os.remove(file_path)
 
-                optionSale = form.cleaned_data['option']
-                
-                if optionSale == 'subasta':
+                optionSale = form.cleaned_data["option"]
+                subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
+                subcategoryLabel = ""
+                if data["category"] == "otros":
+                    subcategoryLabel = None
+                else:
+                    subcategoryLabel = data[subcategories[data["category"]]]
+                if optionSale == "subasta":
                     creationDate = datetime.now()
-                    deletionDate = creationDate + timedelta(days= data['durationDays'] )
+                    deletionDate = creationDate + timedelta(days=data["durationDays"])
+                    print(deletionDate)
                     dataP = {
-                        u"title": data['title'],
-                        u"description": data['description'],
-                        u"urlImages": urlImages,
-                        u"price": data['price'],
-                        u"stock": data['stock'],
-                        u"totalSales": 0,
-                        u"optionSale": data['option'],
-                        u"standOut": data['standOut'],
-                        u"startingPrice": data['startingPrice'],
-                        u"durationDays": data['durationDays'],
-                        u"priceCI": data['priceCI'],
-                        u"auctionAvailable": True,
-                        u"deletionDate": deletionDate,
-                        u"sellerID": user_id,
-                        }
-                    db.collection('products').document(productName).set(dataP)
+                        "title": data["title"],
+                        "description": data["description"],
+                        "urlImages": urlImages,
+                        "price": data["price"],
+                        "stock": data["stock"],
+                        "totalSales": 0,
+                        "optionSale": data["option"],
+                        "standOut": data["standOut"],
+                        "startingPrice": data["startingPrice"],
+                        "durationDays": data["durationDays"],
+                        "priceCI": data["priceCI"],
+                        "auctionAvailable": True,
+                        "deletionDate": deletionDate,
+                        "sellerID": user_id,
+                        "category": data["category"],
+                        "subcategory": subcategoryLabel,
+                    }
+                    db.collection("products").document(productName).set(dataP)
 
-                if optionSale == 'venta_directa':
+                if optionSale == "venta_directa":
                     dataP = {
-                        u"title": data['title'],
-                        u"description": data['description'],
-                        u"urlImages": urlImages,
-                        u"price": data['price'],
-                        u"stock": data['stock'],
-                        u"totalSales": 0,
-                        u"optionSale": data['option'],
-                        u"standOut": data['standOut'],
-                        u"sellerID": user_id,
-                        }
-                    db.collection('products').document(productName).set(dataP)
+                        "title": data["title"],
+                        "description": data["description"],
+                        "urlImages": urlImages,
+                        "price": data["price"],
+                        "stock": data["stock"],
+                        "totalSales": 0,
+                        "optionSale": data["option"],
+                        "standOut": data["standOut"],
+                        "sellerID": user_id,
+                        "category": data["category"],
+                        "subcategory": subcategoryLabel,
+                    }
+                    db.collection("products").document(productName).set(dataP)
 
                 messages.success(request, "Producto guardado correctamente")
-                
+
             except Exception as e:
-                
                 print(e)
                 messages.error(request, "Error al guardar la información")
-            
+
     return render(request, "new_product.html", context)
 
-def search_products(request, user_id):
-    search_name = request.GET.get('q')  
-    platform_products = db.collection("products").where("title", "==", search_name).stream()
-    products = [{product.id : product.to_dict()} for product in platform_products]
 
-    platform_products = db.collection("products").stream()
-    
-    
+def search_products(request, user_id):
+    search_name = request.GET.get("q")
+
+    categories = [
+        "tecnologia",
+        "entretenimiento",
+        "vehiculos",
+        "muebles",
+        "vestimenta",
+        "otros",
+    ]
+
+    subcategories = [
+        "computadoras",
+        "microondas",
+        "televisiones",
+        "telefonos",
+        "mouse",
+        "peliculas",
+        "videojuegos",
+        "personal",
+        "musica",
+        "deportes",
+        "motos",
+        "coches",
+        "aviones",
+        "camiones",
+        "bicicletas",
+        "sillas",
+        "mesas",
+        "camas",
+        "sofas",
+        "cajones",
+        "vestidos",
+        "pantalones",
+        "accesorios",
+        "playeras",
+        "abrigos",
+    ]
+
+    platform_products = (
+        db.collection("products").where("title", "==", search_name).stream()
+    )
+    products = [{product.id: product.to_dict()} for product in platform_products]
+
+    if not products and search_name in subcategories:
+        platform_products = (
+            db.collection("products").where("subcategory", "==", search_name).stream()
+        )
+        products = [{product.id: product.to_dict()} for product in platform_products]
+    elif not products and search_name in categories:
+        platform_products = (
+            db.collection("products").where("category", "==", search_name).stream()
+        )
+        products = [{product.id: product.to_dict()} for product in platform_products]
 
     context = {
         "user": user_id,
@@ -681,3 +760,18 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
+
+def checkAuctions():
+    col = db.collection("products").stream()
+
+    for document in col:
+        dic = document.to_dict()
+
+        if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
+            date = timezone.now()
+
+            if date > dic["deletionDate"]:
+                docId = document.id
+                db.collection("products").document(docId).update(
+                    {"auctionAvailable": False}
+                )
