@@ -268,6 +268,7 @@ def edit_info_prod(request, user_id, product_id):
 
             if optionSale == "subasta":
                 dataP = {
+<<<<<<< HEAD
                     "title": data["title"],
                     "description": data["description"],
                     "urlImages": urlImages,
@@ -292,6 +293,31 @@ def edit_info_prod(request, user_id, product_id):
                     "optionSale": data["option"],
                 }
                 db.collection("products").document(productID).set(dataP)
+=======
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    u"startingPrice": data['startingPrice'],
+                    u"durationDays": data['durationDays'],
+                    u"priceCI": data['priceCI']
+                    }
+                db.collection('products').document(productID).update(dataP)
+
+            else:
+                dataP = {
+                    u"title": data['title'],
+                    u"description": data['description'],
+                    u"urlImages": urlImages,
+                    u"price": data['price'],
+                    u"stock": data['stock'],
+                    u"optionSale": data['option'],
+                    }
+                db.collection('products').document(productID).update(dataP)
+            
+>>>>>>> main
 
     return render(request, "edit_info_prod.html", context)
 
