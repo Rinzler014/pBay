@@ -272,4 +272,34 @@ class formEditInfoProduct(forms.Form):
         'placeholder': 'Precio de C/I',
         }))
     
-    
+class updatePersonalInfo(forms.Form):
+    newName = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo nombre',
+    }))
+    newMomLastName = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo Apellido Materno',
+    }))
+    newPhone = forms.CharField(required=False, widget=forms.widgets.NumberInput(attrs={
+    'placeholder': 'Nuevo celular',
+    }))
+    newEmail = forms.EmailField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo correo',
+    }))
+    newPassword = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nueva contraseña',
+    }))
+    newLastName = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo Apellido Paterno',
+    }))
+    newZipCode = forms.CharField(required=False, widget=forms.widgets.NumberInput(attrs={
+    'placeholder': 'Nuevo Código Postal',
+    }))
+    newStreet = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nueva calle',
+    }))
+    newState = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo estado',
+    }))
+    newCountry = forms.CharField(required=False, widget=forms.widgets.Textarea(attrs={
+    'placeholder': 'Nuevo País',
+    }))

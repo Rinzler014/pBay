@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 
 from django.utils import timezone
 
+from django.http import JsonResponse
 
 # Use a service account.
 cred = credentials.Certificate("./serAccountKey.json")
@@ -171,32 +172,79 @@ def landing(request, user_id):
 
 
 def myProfile(request, user_id):
-    docRef = db.collection("users").document(user_id).get()
+    docRef = db.collection("users").document(user_id)
 
-    doc = docRef.to_dict()
+    doc = docRef.get()
 
-    context = {"user": user_id, "doc": doc}
-    return render(request, "my_profile.html", context)
+    initialData = doc.to_dict()
 
+    imagen = initialData["personalID"]
 
-""" def updatePersonalInfo(request):
-    name = request.GET.get('name')
-    mom_last_name = request.GET.get('mom_last_name')
-    phone = request.GET.get('phone')
-    email = request.GET.get('email')
-    last_name = request.GET.get('last_name')
-    zipCode = request.GET.get('zipCode')
-    street = request.GET.get('street')
-    country = request.GET.get('country')
-    state = request.GET.get('state')
-    user = request.GET.get('user')
-
-    print(user)
-
-    #docRef = db.collection("users").
+    initial = {
+            "name": initialData["name"],
+            "mom_last_name": initialData["mom_last_name"],
+            "phone": initialData["cellular"],
+            "email": initialData["email"],
+            "last_name": initialData["last_name"],
+            "zipcode": initialData["zipcode"],
+            "street": initialData["street"],
+            "state": initialData["state"],
+            "country": initialData["country"],
+            #"option": initialData["optionSale"]
+        }
     
-    return HttpResponse(status = 200) """
+    form = updatePersonalInfo(initial=initial)
 
+    context = {
+        "user": user_id,
+        "doc": initialData,
+        "form": form
+    }
+
+    
+    
+
+    if request.method == "POST":
+        form = updatePersonalInfo(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            if data['newName'] == '':
+                data['newName'] = initialData["name"]
+            if data['newMomLastName'] == '':
+                data['newMomLastName'] = initialData["mom_last_name"]
+            if not data['newPhone'] or not data['newPhone'].isdigit():
+                data['newPhone'] = initialData["cellular"]
+            if data['newEmail'] == '':
+                data['newEmail'] = initialData["email"]
+            """ if data['newPassword'] != '':
+                auth.update_profile(user_id, password = data['newPassword']) """
+            if data['newLastName'] == '':
+                data['newLastName'] = initialData["last_name"]
+            if not data['newZipCode'] or not['newZipCode'].isdigit():
+                data['newZipCode'] = initialData["zipcode"]
+            if data['newStreet'] == '':
+                data['newStreet'] = initialData["street"]
+            if data['newState'] == '':
+                data['newState'] = initialData["state"]
+            if data['newCountry'] == '':
+                data['newCountry'] = initialData["country"]
+
+            dataP = {
+                u"name": data['newName'],
+                u"mom_last_name": data['newMomLastName'],
+                u"cellular": data['newPhone'],
+                u"email": data['newEmail'],
+                u"last_name": data['newLastName'],
+                u"zipcode": data['newZipCode'],
+                u"personalID" : imagen,
+                u"street": data['newStreet'],
+                u"state": data['newState'],
+                u"country": data['newCountry'],
+                }
+            db.collection('users').document(user_id).set(dataP)
+        
+            
+    return render(request, "my_profile.html", context)
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
@@ -232,6 +280,7 @@ def edit_info_prod(request, user_id, product_id):
         "user": user_id,
         "product": productID,
         "form": form,
+        
     }
 
     if request.method == "POST":
@@ -268,26 +317,26 @@ def edit_info_prod(request, user_id, product_id):
 
             if optionSale == "subasta":
                 dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
-                    u"startingPrice": data['startingPrice'],
-                    u"durationDays": data['durationDays'],
-                    u"priceCI": data['priceCI']
+                    "title": data['title'],
+                    "description": data['description'],
+                    "urlImages": urlImages,
+                    "price": data['price'],
+                    "stock": data['stock'],
+                    "optionSale": data['option'],
+                    "startingPrice": data['startingPrice'],
+                    "durationDays": data['durationDays'],
+                    "priceCI": data['priceCI']
                     }
                 db.collection('products').document(productID).update(dataP)
 
             else:
                 dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
+                    "title": data['title'],
+                    "description": data['description'],
+                    "urlImages": urlImages,
+                    "price": data['price'],
+                    "stock": data['stock'],
+                    "optionSale": data['option'],
                     }
                 db.collection('products').document(productID).update(dataP)
             
@@ -452,9 +501,9 @@ def shopping_cart(request, user_id):
 
         docs = db.collection("products").document(product)
         doc = docs.get()
-
+        datos = doc.to_dict()
         prue = datos["urlImages"]
-        imgPro = storage.child(prue[0]).get_url("2")
+        imgPro = prue[0]
         productObject = pr(
             id=product,
             nameModel=datos["title"],
@@ -480,6 +529,7 @@ def shopping_cart(request, user_id):
         "totalShoppingCartPrice": totalShoppingCartPrice,
         "totalShoppingCartProducts": totalShoppingCartProducts,
     }
+
 
     return render(request, "shopping_cart.html", context)
 
@@ -660,11 +710,16 @@ def search_products(request, user_id):
         "abrigos",
     ]
 
-    platform_products = (
-        db.collection("products").where("title", "==", search_name).stream()
-    )
-    products = [{product.id: product.to_dict()} for product in platform_products]
+    if search_name and len(search_name) >= 3:
+        #convierta el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
+        regex = re.compile(search_name, re.IGNORECASE)
+        
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        products = [{product.id : product.to_dict()} for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        products = []
 
+    
     if not products and search_name in subcategories:
         platform_products = (
             db.collection("products").where("subcategory", "==", search_name).stream()
@@ -675,7 +730,7 @@ def search_products(request, user_id):
             db.collection("products").where("category", "==", search_name).stream()
         )
         products = [{product.id: product.to_dict()} for product in platform_products]
-
+    
     context = {
         "user": user_id,
         "products": products,
@@ -684,6 +739,23 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
+
+def get_product_suggestions(request):
+    search_term = request.GET.get('q')
+
+    if search_term and len(search_term) >= 3:
+        regex = re.compile(search_term, re.IGNORECASE)
+        
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        product_suggestions = [product.to_dict()["title"] for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        product_suggestions = []
+
+    data = {
+        'suggestions': product_suggestions
+    }
+
+    return JsonResponse(data)
 
 def checkAuctions():
     col = db.collection("products").stream()

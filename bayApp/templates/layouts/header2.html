@@ -15,6 +15,8 @@
 
       <link rel="shortcut icon" href="{% static 'assets/img/favicon.ico' %}" type="image/x-icon">
 
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
       <!-- Simple lightbox CSS -->
     <link rel="stylesheet" href="assets/css/simple-lightbox.min.css" />
     <!-- BootStrap CSS -->
@@ -28,24 +30,45 @@
     
     <!-- Jquery Library -->
     <script src="https://code.jquery.com/jquery-3.6.2.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     
+    <script>
+      $(function() {
+        $("#tags").autocomplete({
+          source: function(request, response) {
+            $.ajax({
+              url: "{% url 'get_product_suggestions' %}",
+              dataType: "json",
+              data: {
+                q: request.term
+              },
+              success: function(data) {
+                response(data.suggestions);
+              }
+            });
+          }
+        });
+      });
+    </script>
     
-
     </head>
     <body>
 
-<nav> 
+    <nav>
 
     <div class="search">
         <div class="logo">
           <a href="{% url 'landing' user_id=user %}"><img style="width: 150px;" src="{% static 'assets/img/Logo.png' %}"></a>
         </div>
         <form class="search-box" action="{% url 'search_products' user_id=user %}" method="GET">
-          <input type="text" name="q" placeholder="Buscar...">
+          <input type="text" name="q" placeholder="Buscar..." id="tags">
           <button type="submit">
-            {% bs_icon 'search' color='black'%}
+              {% bs_icon 'search' color='black'%}
           </button>
-        </form>
+      </form>
+      
+      
+
         <div class="buttons">
           <button class="user-btn" style="margin-right: 20px;">
             <a href="{% url 'my_products' user_id=user %}">{% bs_icon 'box-seam-fill' color='white'%}</a>
@@ -71,6 +94,8 @@
 
 
 </nav>
+
+
     </body>
 
     {% include 'layouts/messaging.html' %}
