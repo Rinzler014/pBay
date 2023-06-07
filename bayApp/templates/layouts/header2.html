@@ -43,7 +43,6 @@
                 q: request.term
               },
               success: function(data) {
-                console.log(data.suggestions);  // 打印结果到浏览器的控制台
                 response(data.suggestions);
               }
             });
