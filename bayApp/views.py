@@ -463,13 +463,13 @@ def shopping_cart(request, user_id):
                 totalProductoNum += 1
             n += 1
 
-        
         docs = db.collection('products').document(product)
         doc = docs.get()
-        datos = doc.to_dict()
+        
         prue = datos['urlImages']
+        imgPro = storage.child(prue[0]).get_url("2")
         productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
-                    priceModel=datos['price'], imgModel=prue[0], totalProductModel=totalProductoNum)
+                    priceModel=datos['price'], imgModel=imgPro, totalProductModel=totalProductoNum)
            
         if productObject not in arrayProducts:
             arrayProducts.append(productObject)
