@@ -316,26 +316,26 @@ def edit_info_prod(request, user_id, product_id):
 
             if optionSale == "subasta":
                 dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
-                    u"startingPrice": data['startingPrice'],
-                    u"durationDays": data['durationDays'],
-                    u"priceCI": data['priceCI']
+                    "title": data['title'],
+                    "description": data['description'],
+                    "urlImages": urlImages,
+                    "price": data['price'],
+                    "stock": data['stock'],
+                    "optionSale": data['option'],
+                    "startingPrice": data['startingPrice'],
+                    "durationDays": data['durationDays'],
+                    "priceCI": data['priceCI']
                     }
                 db.collection('products').document(productID).update(dataP)
 
             else:
                 dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"optionSale": data['option'],
+                    "title": data['title'],
+                    "description": data['description'],
+                    "urlImages": urlImages,
+                    "price": data['price'],
+                    "stock": data['stock'],
+                    "optionSale": data['option'],
                     }
                 db.collection('products').document(productID).update(dataP)
             
@@ -500,9 +500,9 @@ def shopping_cart(request, user_id):
 
         docs = db.collection("products").document(product)
         doc = docs.get()
-
+        datos = doc.to_dict()
         prue = datos["urlImages"]
-        imgPro = storage.child(prue[0]).get_url("2")
+        imgPro = prue[0]
         productObject = pr(
             id=product,
             nameModel=datos["title"],
