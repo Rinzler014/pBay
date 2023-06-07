@@ -285,13 +285,12 @@ def edit_info_prod(request, user_id, product_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     u"startingPrice": data['startingPrice'],
                     u"durationDays": data['durationDays'],
                     u"priceCI": data['priceCI']
                     }
-                db.collection('products').document(productID).set(dataP)
+                db.collection('products').document(productID).update(dataP)
 
             else:
                 dataP = {
@@ -300,10 +299,9 @@ def edit_info_prod(request, user_id, product_id):
                     u"urlImages": urlImages,
                     u"price": data['price'],
                     u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
                     u"optionSale": data['option'],
                     }
-                db.collection('products').document(productID).set(dataP)
+                db.collection('products').document(productID).update(dataP)
             
 
     return render(request, "edit_info_prod.html", context)
