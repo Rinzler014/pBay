@@ -246,23 +246,21 @@ def myProfile(request, user_id):
             
     return render(request, "my_profile.html", context)
 
+## Función en la que se maneja el backend de la pantalla para editar la
+## información de un producto
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
     doc_ref = db.collection("products").document(productID)
     doc = doc_ref.get()
     initialData = doc.to_dict()
 
+    # Se decide si el objeto a cambiar es una subasta o no para obtener la información
     if initialData["optionSale"] == "subasta":
         initial = {
             "title": initialData["title"],
             "description": initialData["description"],
-            "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            "startingPrice": initialData["startingPrice"],
-            "durationDays": initialData["durationDays"],
-            "priceCI": initialData["priceCI"],
-            # "option": initialData["optionSale"]
+            "price": initialData["price"],
         }
     else:
         initial = {
@@ -270,21 +268,25 @@ def edit_info_prod(request, user_id, product_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            # "option": initialData["optionSale"]
         }
 
+    # Se llama al formulario enviando un diccionario con la información que se obtuvo
+    # de la base de datos
     form = formEditInfoProduct(initial=initial)
 
     context = {
         "user": user_id,
         "product": productID,
         "form": form,
-        
     }
 
+    # En caso de que sí se haya enviado algo, se entra a estas líneas
     if request.method == "POST":
         form = formEditInfoProduct(request.POST, request.FILES)
+
+        # Sólo se entrará a las siguientes líenas si el formulario se envió de
+        # forma adecuada
+        print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
             file = request.FILES["images"]
@@ -297,6 +299,7 @@ def edit_info_prod(request, user_id, product_id):
 
             urlImages = []
 
+            # Se procesan y suben las imágenes que se hayan ingresado al formulario
             for image in request.FILES.getlist("images"):
                 nombre_imagen = image.name
 
@@ -313,34 +316,33 @@ def edit_info_prod(request, user_id, product_id):
                 urlImages.append(storage_path)
                 os.remove(file_path)
 
-            optionSale = form.cleaned_data["option"]
-
-            if optionSale == "subasta":
-                dataP = {
-                    "title": data['title'],
-                    "description": data['description'],
-                    "urlImages": urlImages,
-                    "price": data['price'],
-                    "stock": data['stock'],
-                    "optionSale": data['option'],
-                    "startingPrice": data['startingPrice'],
-                    "durationDays": data['durationDays'],
-                    "priceCI": data['priceCI']
-                    }
-                db.collection('products').document(productID).update(dataP)
-
+            subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
+            subcategoryLabel = ""
+            if data["category"] == "otros":
+                subcategoryLabel = None
             else:
-                dataP = {
-                    "title": data['title'],
-                    "description": data['description'],
-                    "urlImages": urlImages,
-                    "price": data['price'],
-                    "stock": data['stock'],
-                    "optionSale": data['option'],
-                    }
-                db.collection('products').document(productID).update(dataP)
-            
+                subcategoryLabel = data[subcategories[data["category"]]]
 
+            ## Se actualiza la información enviando los datos obtenidos del formulario
+            dataP = {
+                "title": data['title'],
+                "description": data['description'],
+                "urlImages": urlImages,
+                "stock": data['stock'],
+                "price": data['price'],
+                "category": data["category"],
+                "subcategory": subcategoryLabel,
+                }
+            db.collection('products').document(productID).update(dataP)
+            
+            return redirect("my_products", user_id=user_id)
+            
     return render(request, "edit_info_prod.html", context)
 
 
@@ -711,7 +713,7 @@ def search_products(request, user_id):
     ]
 
     if search_name and len(search_name) >= 3:
-        #convierta el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
+        # Convierte el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
         regex = re.compile(search_name, re.IGNORECASE)
         
         platform_products = db.collection("products").where("title", ">", "").stream()
@@ -757,17 +759,22 @@ def get_product_suggestions(request):
 
     return JsonResponse(data)
 
+## Función para poder ver si las subastas siguen vigentes
 def checkAuctions():
     col = db.collection("products").stream()
 
+    # Se itera a lo largo de toda la colección de productos
     for document in col:
         dic = document.to_dict()
 
+        # Checa que el producto sea una subasta que siga con la etiqueta de vigente
         if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
             date = timezone.now()
 
+            # Checa que la fecha de borrado ya haya pasado
             if date > dic["deletionDate"]:
                 docId = document.id
+                # Se cambia el booleano de vigente a falso
                 db.collection("products").document(docId).update(
                     {"auctionAvailable": False}
                 )
