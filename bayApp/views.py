@@ -212,15 +212,17 @@ def landing(request, user_id):
 
     return render(request, "landing.html", context)
 
+#Updating personal info view
 def myProfile(request, user_id):
+    #We access the document of the user logged in, get the data from the document and make a dict
     docRef = db.collection("users").document(user_id)
-
     doc = docRef.get()
-
     initialData = doc.to_dict()
 
+    #We access de personalID image in order to save this only data that can not be updated
     imagen = initialData["personalID"]
 
+    #Declared intial info (already stored info of the user)
     initial = {
             "name": initialData["name"],
             "mom_last_name": initialData["mom_last_name"],
@@ -234,6 +236,7 @@ def myProfile(request, user_id):
             #"option": initialData["optionSale"]
         }
     
+    #We call our form and send the initial data and we create our context that will be sent to the html file
     form = updatePersonalInfo(initial=initial)
 
     context = {
@@ -242,10 +245,12 @@ def myProfile(request, user_id):
         "form": form
     }
 
-
+    #Start of the form in which we recibe the info with the POST method. After that we make sure that de form is valid
     if request.method == "POST":
         form = updatePersonalInfo(request.POST, request.FILES)
         if form.is_valid():
+            #Next up we try to get the data from the form, later we compare if we get an empty data we collect the initial data
+            #(previously declared) in order to maintain all the info that will not be updated
             try:
                 data = form.cleaned_data
                 if data['newName'] == '':
@@ -270,6 +275,7 @@ def myProfile(request, user_id):
                 if data['newCountry'] == '':
                     data['newCountry'] = initialData["country"]
 
+                #We make the changes of data and we call our document with the user_id and set the data (update all data)
                 dataP = {
                     u"name": data['newName'],
                     u"mom_last_name": data['newMomLastName'],
@@ -283,6 +289,7 @@ def myProfile(request, user_id):
                     u"country": data['newCountry'],
                     }
                 db.collection('users').document(user_id).set(dataP)
+                #In case of error we let de user know what caused the system to fail
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
@@ -291,7 +298,10 @@ def myProfile(request, user_id):
             
     return render(request, "my_profile.html", context)
 
+#Update password view
 def updatePassword(request):
+    #Simply we just get the user_id sent from de data from the html with an ajax function. We get de ref of the doc and extract only
+    #the email of the user
     user_id = request.GET.get('idUsuario')
 
     docRef = db.collection("users").document(user_id).get()
@@ -300,6 +310,7 @@ def updatePassword(request):
 
     email = doc["email"]
 
+    #Sends an email to the current registered email in order to change the current password of the user
     auth.send_password_reset_email(email)
 
     return HttpResponse(status=200)
@@ -410,15 +421,18 @@ def details(request, user_id, product_id):
 
     return render(request, "details_prod.html", context)
 
-
+#Adding one more of a product to shopping cart view
 def addProductShoppingCart(request):
+    #We recieve the product and user ID in order to get the documents needed
     idProducto = request.GET.get("idProducto")
     idUsuario = request.GET.get("idUsuario")
 
+    #We get the shopping cart linked to our current user
     docShoppingCart = (
         db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
     )
 
+    #We get the ID of the shopping cart and get all the data from it and we assign our array of products from the database to a variable
     for doc in docShoppingCart:
         docID = doc.id
 
@@ -429,6 +443,7 @@ def addProductShoppingCart(request):
 
     products = datos["Productos"]
 
+    #We add the same product to the shopping cart and update the data of the shopping cart in the database
     products.append(idProducto)
 
     data = {"UIDUsuario": idUsuario, "Productos": products}
@@ -438,15 +453,18 @@ def addProductShoppingCart(request):
 
     return HttpResponse(status=200)
 
-
+#Erasing one more of a product to shopping cart view
 def eraseProductShoppingCart(request):
+    #We recieve the product and user ID in order to get the documents needed
     idProducto = request.GET.get("idProducto")
     idUsuario = request.GET.get("idUsuario")
 
+    #We get the shopping cart linked to our current user
     docShoppingCart = (
         db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
     )
 
+    #We get the ID of the shopping cart and get all the data from it and we assign our array of products from the database to a variable
     for doc in docShoppingCart:
         docID = doc.id
 
@@ -457,8 +475,7 @@ def eraseProductShoppingCart(request):
 
     products = datos["Productos"]
 
-    print(products)
-
+    #We look for the product in the list of products, if we find it we erase one of it
     n = 0
     while n != len(products):
         if idProducto == products[n]:
@@ -467,8 +484,7 @@ def eraseProductShoppingCart(request):
         else:
             n += 1
 
-    print(products)
-
+    #We save the data into the database again
     data = {"UIDUsuario": idUsuario, "Productos": products}
 
     db.collection("carritos").document(docID).set(data)
@@ -532,18 +548,22 @@ def sales(request, user):
 
     return render(request, "sales.html", context)
 
-
+#Pulling info to the shopping cart view
 def shopping_cart(request, user_id):
+    #We access to the shopping cart of the current user logged in
     docShoppingCart = (
         db.collection("carritos").where("UIDUsuario", "==", user_id).stream()
     )
 
+    #We get the id of the doc of the corresponding shopping cart
     docID = ""
     for doc in docShoppingCart:
         docID = doc.id
 
+    #Array that will contain the products in the shopping cart
     arrayProducts = []
 
+    #We get the data of the document of the shopping cart and make it a dict and we assign the array of products to a variable
     docs = db.collection("carritos").document(docID)
     doc = docs.get()
 
@@ -551,7 +571,9 @@ def shopping_cart(request, user_id):
 
     products = datos["Productos"]
 
+    #For cycle that passes all products in the array of products
     for product in products:
+        #This while cyclye counts how many times the product is in the shopping cart
         n = 0
         totalProductoNum = 0
         while n != len(products):
@@ -559,23 +581,29 @@ def shopping_cart(request, user_id):
                 totalProductoNum += 1
             n += 1
 
+        #We get the document of the product in order to get all the info of the product 
         docs = db.collection("products").document(product)
         doc = docs.get()
         datos = doc.to_dict()
-        prue = datos["urlImages"]
-        imgPro = prue[0]
+        #We get the first image of the product to show it in the shopping cart
+        firstImageProduct = datos["urlImages"]
+        imgProduct = firstImageProduct[0]
+        #We create our object of product using the information of the product in the database
         productObject = pr(
             id=product,
             nameModel=datos["title"],
             descriptionModel=datos["description"],
             priceModel=datos["price"],
-            imgModel=imgPro,
+            imgModel=imgProduct,
             totalProductModel=totalProductoNum,
         )
 
+        #We check if we are nos repeating products in the list that will be cycled in the for of
+        #the html in order to show the products in the shopping cart
         if productObject not in arrayProducts:
             arrayProducts.append(productObject)
 
+    #In this for cycle we just get the final price of all the products and the final amount of products
     totalShoppingCartProducts = 0
     totalShoppingCartPrice = 0
 
@@ -583,6 +611,7 @@ def shopping_cart(request, user_id):
         totalShoppingCartPrice += product.priceModel * product.totalProductModel
         totalShoppingCartProducts += product.totalProductModel
 
+    #We send the data to the html file
     context = {
         "arrayProducts": arrayProducts,
         "user": user_id,
