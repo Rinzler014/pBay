@@ -14,6 +14,7 @@ from django.urls import reverse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from firebase_admin import auth as Fauth
 
 from django.http import HttpResponse
 
@@ -170,7 +171,6 @@ def landing(request, user_id):
 
     return render(request, "landing.html", context)
 
-
 def myProfile(request, user_id):
     docRef = db.collection("users").document(user_id)
 
@@ -201,50 +201,69 @@ def myProfile(request, user_id):
         "form": form
     }
 
-    
-    
 
     if request.method == "POST":
         form = updatePersonalInfo(request.POST, request.FILES)
         if form.is_valid():
-            data = form.cleaned_data
-            if data['newName'] == '':
-                data['newName'] = initialData["name"]
-            if data['newMomLastName'] == '':
-                data['newMomLastName'] = initialData["mom_last_name"]
-            if not data['newPhone'] or not data['newPhone'].isdigit():
-                data['newPhone'] = initialData["cellular"]
-            if data['newEmail'] == '':
-                data['newEmail'] = initialData["email"]
-            """ if data['newPassword'] != '':
-                auth.update_profile(user_id, password = data['newPassword']) """
-            if data['newLastName'] == '':
-                data['newLastName'] = initialData["last_name"]
-            if not data['newZipCode'] or not['newZipCode'].isdigit():
-                data['newZipCode'] = initialData["zipcode"]
-            if data['newStreet'] == '':
-                data['newStreet'] = initialData["street"]
-            if data['newState'] == '':
-                data['newState'] = initialData["state"]
-            if data['newCountry'] == '':
-                data['newCountry'] = initialData["country"]
+            try:
+                data = form.cleaned_data
+                if data['newName'] == '':
+                    data['newName'] = initialData["name"]
+                if data['newMomLastName'] == '':
+                    data['newMomLastName'] = initialData["mom_last_name"]
+                if not data['newPhone'] or not data['newPhone'].isdigit():
+                    data['newPhone'] = initialData["cellular"]
+                if data['newEmail'] == '':
+                    data['newEmail'] = initialData["email"]
+                else:
+                    Fauth.update_user(user_id, email=data["newEmail"])
+                    
+                if data['newLastName'] == '':
+                    data['newLastName'] = initialData["last_name"]
+                if not data['newZipCode'] or not['newZipCode'].isdigit():
+                    data['newZipCode'] = initialData["zipcode"]
+                if data['newStreet'] == '':
+                    data['newStreet'] = initialData["street"]
+                if data['newState'] == '':
+                    data['newState'] = initialData["state"]
+                if data['newCountry'] == '':
+                    data['newCountry'] = initialData["country"]
 
-            dataP = {
-                u"name": data['newName'],
-                u"mom_last_name": data['newMomLastName'],
-                u"cellular": data['newPhone'],
-                u"email": data['newEmail'],
-                u"last_name": data['newLastName'],
-                u"zipcode": data['newZipCode'],
-                u"personalID" : imagen,
-                u"street": data['newStreet'],
-                u"state": data['newState'],
-                u"country": data['newCountry'],
-                }
-            db.collection('users').document(user_id).set(dataP)
+                dataP = {
+                    u"name": data['newName'],
+                    u"mom_last_name": data['newMomLastName'],
+                    u"cellular": data['newPhone'],
+                    u"email": data['newEmail'],
+                    u"last_name": data['newLastName'],
+                    u"zipcode": data['newZipCode'],
+                    u"personalID" : imagen,
+                    u"street": data['newStreet'],
+                    u"state": data['newState'],
+                    u"country": data['newCountry'],
+                    }
+                db.collection('users').document(user_id).set(dataP)
+            except Exception as e:
+                print(e)
+                messages.error(request, f"Error al crear usuario: {e}")
+            
         
             
     return render(request, "my_profile.html", context)
+
+def updatePassword(request):
+    user_id = request.GET.get('idUsuario')
+
+    docRef = db.collection("users").document(user_id).get()
+
+    doc = docRef.to_dict()
+
+    email = doc["email"]
+
+    auth.send_password_reset_email(email)
+
+    return HttpResponse(status=200)
+
+
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
