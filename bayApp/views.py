@@ -177,33 +177,79 @@ def landing(request, user_id):
 
 
 def myProfile(request, user_id):
-    docRef = db.collection("users").document(user_id).get()
+    docRef = db.collection("users").document(user_id)
 
-    doc = docRef.to_dict()
+    doc = docRef.get()
+
+    initialData = doc.to_dict()
+
+    imagen = initialData["personalID"]
+
+    initial = {
+            "name": initialData["name"],
+            "mom_last_name": initialData["mom_last_name"],
+            "phone": initialData["cellular"],
+            "email": initialData["email"],
+            "last_name": initialData["last_name"],
+            "zipcode": initialData["zipcode"],
+            "street": initialData["street"],
+            "state": initialData["state"],
+            "country": initialData["country"],
+            #"option": initialData["optionSale"]
+        }
+    
+    form = updatePersonalInfo(initial=initial)
 
     context = {
         "user": user_id,
-        "doc": doc
+        "doc": initialData,
+        "form": form
     }
-    return render(request, "my_profile.html", context)
 
-""" def updatePersonalInfo(request):
-    name = request.GET.get('name')
-    mom_last_name = request.GET.get('mom_last_name')
-    phone = request.GET.get('phone')
-    email = request.GET.get('email')
-    last_name = request.GET.get('last_name')
-    zipCode = request.GET.get('zipCode')
-    street = request.GET.get('street')
-    country = request.GET.get('country')
-    state = request.GET.get('state')
-    user = request.GET.get('user')
-
-    print(user)
-
-    #docRef = db.collection("users").
     
-    return HttpResponse(status = 200) """
+    
+
+    if request.method == "POST":
+        form = updatePersonalInfo(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            if data['newName'] == '':
+                data['newName'] = initialData["name"]
+            if data['newMomLastName'] == '':
+                data['newMomLastName'] = initialData["mom_last_name"]
+            if not data['newPhone'] or not data['newPhone'].isdigit():
+                data['newPhone'] = initialData["cellular"]
+            if data['newEmail'] == '':
+                data['newEmail'] = initialData["email"]
+            """ if data['newPassword'] != '':
+                auth.update_profile(user_id, password = data['newPassword']) """
+            if data['newLastName'] == '':
+                data['newLastName'] = initialData["last_name"]
+            if not data['newZipCode'] or not['newZipCode'].isdigit():
+                data['newZipCode'] = initialData["zipcode"]
+            if data['newStreet'] == '':
+                data['newStreet'] = initialData["street"]
+            if data['newState'] == '':
+                data['newState'] = initialData["state"]
+            if data['newCountry'] == '':
+                data['newCountry'] = initialData["country"]
+
+            dataP = {
+                u"name": data['newName'],
+                u"mom_last_name": data['newMomLastName'],
+                u"cellular": data['newPhone'],
+                u"email": data['newEmail'],
+                u"last_name": data['newLastName'],
+                u"zipcode": data['newZipCode'],
+                u"personalID" : imagen,
+                u"street": data['newStreet'],
+                u"state": data['newState'],
+                u"country": data['newCountry'],
+                }
+            db.collection('users').document(user_id).set(dataP)
+        
+            
+    return render(request, "my_profile.html", context)
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
@@ -240,6 +286,7 @@ def edit_info_prod(request, user_id, product_id):
         "user": user_id,
         "product": productID,
         "form": form,
+        
     }
 
     if request.method == "POST":
