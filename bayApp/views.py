@@ -159,9 +159,21 @@ def signup_3(request):
 
 
 def landing(request, user_id):
+    
+
+    #obtener los 10 productos con más numero de ventas 
     queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
     results = queryset.get()
     products = [{product.id: product.to_dict()} for product in results]
+
+    #obtener los productos destacados 
+    queryset2 = db.collection("products").where("standOut", "==", True)
+    results2 = queryset2.get()
+    products2 = [{product.id: product.to_dict()} for product in results2]
+
+    #products.update(products2)
+    [products.append(product) for product in products2 if product not in products]
+
 
     context = {
         "user": user_id,
