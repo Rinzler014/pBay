@@ -32,14 +32,19 @@ app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
+#Login View
 def login(request):
+    
+    #Created a form object to verify the user
     form = LoginForm()
     context = {"form": form}
-
+    
+    #Starting the verification process
     if request.method == "POST":
         form = LoginForm(request.POST)
 
         if form.is_valid():
+            #If the form is valid, we will try to log in the user
             try:
                 user = auth.sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
@@ -49,20 +54,25 @@ def login(request):
                 )
                 checkAuctions()
                 return redirect("landing", user_id=user["localId"])
-
+            
+            #If the user is not found, we will send an error message
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
     return render(request, "login.html", context)
 
-
+#Signup View First Part
 def signup(request):
+    
+    #Created a form object to request the user's personal information
     form = CacheSignUpFormP1()
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
         form = CacheSignUpFormP1(request.POST)
         print(form.is_valid())
-
+        
+        #If the form is valid, we will save the user's personal information in the session
         if form.is_valid():
             request.session["personal_info"] = json.dumps(form.cleaned_data)
 
@@ -72,15 +82,18 @@ def signup(request):
 
     return render(request, "signup.html", context)
 
-
+#Signup View Second Part
 def signup_2(request):
     form = CacheSignUpFormP2()
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
         form = CacheSignUpFormP2(request.POST, request.FILES)
 
+        #If the form is valid, we will save the user's location information in the session
         if form.is_valid():
+            #Saving the user's personal ID in the storage
             file = request.FILES["personalID"]
             file_name = bson.ObjectId()
             file_extension = file.name.split(".")[-1]
@@ -89,6 +102,7 @@ def signup_2(request):
 
             form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
+            #Saving the user's profile picture in the storage
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
             )
@@ -99,12 +113,15 @@ def signup_2(request):
 
     return render(request, "signup_2.html", context)
 
-
+#Signup View Third Part
 def signup_3(request):
     form = SignUpForm(request=request)
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
+        
+        #If the form is valid, we will update the request data with the user's personal and location information
         personal_info = json.loads(request.session["personal_info"])
         location_info = json.loads(request.session["location_info"])
 
@@ -112,13 +129,17 @@ def signup_3(request):
         updated_data.update(personal_info)
         updated_data.update(location_info)
 
+        #Fill the form with the updated data
         form = SignUpForm(updated_data, request=request)
 
+        #If the form is valid, we will create the user in the database
         if form.is_valid():
             data = form.cleaned_data
             data.pop("password2")
 
             try:
+                
+                #Creating the user in the authentication service
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
@@ -126,6 +147,7 @@ def signup_3(request):
                 data.pop("password")
                 data["type"] = "user"
 
+                #Saving the user's personal ID in the storage
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
@@ -136,22 +158,28 @@ def signup_3(request):
                     f"users/{user['localId']}/personalID"
                 ).get_url(None)
 
+
+                #Saving the user's information in the database
                 db.collection("users").document(user["localId"]).set(data)
 
                 print("Usuario creado correctamente")
 
+                #Deleting the temporary file
                 os.remove(f"temp/{temp_file}")
 
+                #Added Cart information to the user
                 productos = []
 
                 data = {"UIDUsuario": user["localId"], "Productos": productos}
 
                 db.collection("carritos").add(data)
 
+                #Redirecting the user to the login page
                 messages.success(request, f"Usuario creado correctamente")
 
                 return redirect("login")
 
+            #If the user is not created, we will send an error message
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
@@ -159,10 +187,23 @@ def signup_3(request):
     return render(request, "signup_3.html", context)
 
 
+#Landing View
 def landing(request, user_id):
+    
+
+    #Retrieve the 10 most sold products 
     queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
     results = queryset.get()
     products = [{product.id: product.to_dict()} for product in results]
+
+    #Retrieve the 10 most stand out products
+    queryset2 = db.collection("products").where("standOut", "==", True)
+    results2 = queryset2.get()
+    products2 = [{product.id: product.to_dict()} for product in results2]
+
+    #Filtering the products to avoid duplicates
+    [products.append(product) for product in products2 if product not in products]
+
 
     context = {
         "user": user_id,
@@ -271,17 +312,13 @@ def edit_info_prod(request, user_id, product_id):
     doc = doc_ref.get()
     initialData = doc.to_dict()
 
+    # Se decide si el objeto a cambiar es una subasta o no para obtener la información
     if initialData["optionSale"] == "subasta":
         initial = {
             "title": initialData["title"],
             "description": initialData["description"],
-            "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            "startingPrice": initialData["startingPrice"],
-            "durationDays": initialData["durationDays"],
-            "priceCI": initialData["priceCI"],
-            # "option": initialData["optionSale"]
+            "price": initialData["price"],
         }
     else:
         initial = {
@@ -289,21 +326,25 @@ def edit_info_prod(request, user_id, product_id):
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            # "option": initialData["optionSale"]
         }
 
+    # Se llama al formulario enviando un diccionario con la información que se obtuvo
+    # de la base de datos
     form = formEditInfoProduct(initial=initial)
 
     context = {
         "user": user_id,
         "product": productID,
         "form": form,
-        
     }
 
+    # En caso de que sí se haya enviado algo, se entra a estas líneas
     if request.method == "POST":
         form = formEditInfoProduct(request.POST, request.FILES)
+
+        # Sólo se entrará a las siguientes líenas si el formulario se envió de
+        # forma adecuada
+        print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
             file = request.FILES["images"]
@@ -316,6 +357,7 @@ def edit_info_prod(request, user_id, product_id):
 
             urlImages = []
 
+            # Se procesan y suben las imágenes que se hayan ingresado al formulario
             for image in request.FILES.getlist("images"):
                 nombre_imagen = image.name
 
@@ -332,34 +374,33 @@ def edit_info_prod(request, user_id, product_id):
                 urlImages.append(storage_path)
                 os.remove(file_path)
 
-            optionSale = form.cleaned_data["option"]
-
-            if optionSale == "subasta":
-                dataP = {
-                    "title": data['title'],
-                    "description": data['description'],
-                    "urlImages": urlImages,
-                    "price": data['price'],
-                    "stock": data['stock'],
-                    "optionSale": data['option'],
-                    "startingPrice": data['startingPrice'],
-                    "durationDays": data['durationDays'],
-                    "priceCI": data['priceCI']
-                    }
-                db.collection('products').document(productID).update(dataP)
-
+            subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
+            subcategoryLabel = ""
+            if data["category"] == "otros":
+                subcategoryLabel = None
             else:
-                dataP = {
-                    "title": data['title'],
-                    "description": data['description'],
-                    "urlImages": urlImages,
-                    "price": data['price'],
-                    "stock": data['stock'],
-                    "optionSale": data['option'],
-                    }
-                db.collection('products').document(productID).update(dataP)
-            
+                subcategoryLabel = data[subcategories[data["category"]]]
 
+            ## Se actualiza la información enviando los datos obtenidos del formulario
+            dataP = {
+                "title": data['title'],
+                "description": data['description'],
+                "urlImages": urlImages,
+                "stock": data['stock'],
+                "price": data['price'],
+                "category": data["category"],
+                "subcategory": subcategoryLabel,
+                }
+            db.collection('products').document(productID).update(dataP)
+            
+            return redirect("my_products", user_id=user_id)
+            
     return render(request, "edit_info_prod.html", context)
 
 
@@ -552,10 +593,13 @@ def shopping_cart(request, user_id):
 
     return render(request, "shopping_cart.html", context)
 
-
+#System Auctions View
 def auctions(request, user_id):
+    
+    #Retrieve all system auctions
     platform_bids = db.collection("subasta").stream()
 
+    #Create a list of dictionaries with the auctions
     bids = [{bid.id: bid.to_dict()} for bid in platform_bids]
 
     context = {
@@ -566,9 +610,13 @@ def auctions(request, user_id):
     return render(request, "bids.html", context)
 
 
+#User´s bids view
 def bids_state(request, user_id):
+    
+    #Retrieve all bids and auctions that user has participated in
     user_bids = db.collection("users").document(user_id).collection("bids").stream()
 
+    #Create a list of dictionaries with the bids
     bids = [{bid.id: bid.to_dict()} for bid in user_bids]
 
     context = {
@@ -730,7 +778,7 @@ def search_products(request, user_id):
     ]
 
     if search_name and len(search_name) >= 3:
-        #convierta el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
+        # Convierte el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
         regex = re.compile(search_name, re.IGNORECASE)
         
         platform_products = db.collection("products").where("title", ">", "").stream()
@@ -776,17 +824,22 @@ def get_product_suggestions(request):
 
     return JsonResponse(data)
 
+## Function to check if the auctions are still available
 def checkAuctions():
     col = db.collection("products").stream()
 
+    # Iteration across all the products list
     for document in col:
         dic = document.to_dict()
 
+        # Check if the product is an auction and if it is still available
         if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
             date = timezone.now()
 
+            # Check if the deletion date is less than the current date
             if date > dic["deletionDate"]:
                 docId = document.id
+                # Changes the auctionAvailable value to False
                 db.collection("products").document(docId).update(
                     {"auctionAvailable": False}
                 )
