@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 
 from django.utils import timezone
 
+from django.http import JsonResponse
 
 # Use a service account.
 cred = credentials.Certificate("./serAccountKey.json")
@@ -709,11 +710,16 @@ def search_products(request, user_id):
         "abrigos",
     ]
 
-    platform_products = (
-        db.collection("products").where("title", "==", search_name).stream()
-    )
-    products = [{product.id: product.to_dict()} for product in platform_products]
+    if search_name and len(search_name) >= 3:
+        #convierta el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
+        regex = re.compile(search_name, re.IGNORECASE)
+        
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        products = [{product.id : product.to_dict()} for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        products = []
 
+    
     if not products and search_name in subcategories:
         platform_products = (
             db.collection("products").where("subcategory", "==", search_name).stream()
@@ -724,7 +730,7 @@ def search_products(request, user_id):
             db.collection("products").where("category", "==", search_name).stream()
         )
         products = [{product.id: product.to_dict()} for product in platform_products]
-
+    
     context = {
         "user": user_id,
         "products": products,
@@ -733,6 +739,23 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
+
+def get_product_suggestions(request):
+    search_term = request.GET.get('q')
+
+    if search_term and len(search_term) >= 3:
+        regex = re.compile(search_term, re.IGNORECASE)
+        
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        product_suggestions = [product.to_dict()["title"] for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        product_suggestions = []
+
+    data = {
+        'suggestions': product_suggestions
+    }
+
+    return JsonResponse(data)
 
 def checkAuctions():
     col = db.collection("products").stream()
