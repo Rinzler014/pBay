@@ -575,23 +575,29 @@ def my_products(request, user_id):
 
 def new_product(request, user_id):
     form = formNewProduct()
-
     productName = str(bson.ObjectId())
-
+    #In the context, we pass the user_id and the form, which is the form we created for the new_product view called formNewProduct.
     context = {
         "user": user_id,
         "form": form,
     }
 
+    # When our form triggers the request and it is "POST".
     if request.method == "POST":
         form = formNewProduct(request.POST, request.FILES)
-
+        # We validate if the form is valid.
         if form.is_valid():
+            # We retrieve the data from the form and save it in the variable "data".
             data = form.cleaned_data
 
+            # The URLs of the images stored in the Firebase storage are saved.
             urlImages = []
 
+            # All the information processing is done. This will be inside a "try" block.
             try:
+                # Each image uploaded by the user will be temporarily stored in the "temp" folder.
+                # We will get the name of the image and its extension.
+                # Finally, we save the URLs in the Firebase storage and delete them from the "temp" folder.
                 for image in request.FILES.getlist("images"):
                     nombre_imagen = image.name
 
@@ -608,7 +614,9 @@ def new_product(request, user_id):
                     urlImages.append(storage_path)
                     os.remove(file_path)
 
+                # We obtain the purchase option.
                 optionSale = form.cleaned_data["option"]
+                # We declare the subcategories.
                 subcategories = {
                     "tecnologia": "technology",
                     "entretenimiento": "entertainment",
@@ -617,14 +625,18 @@ def new_product(request, user_id):
                     "vestimenta": "clothing",
                 }
                 subcategoryLabel = ""
+                # If the category is "others", the subcategory is "None".
                 if data["category"] == "otros":
                     subcategoryLabel = None
+                # If not, the subcategory is added to the corresponding category.
                 else:
                     subcategoryLabel = data[subcategories[data["category"]]]
+
+                # If the purchase option is "subasta", the data is processed specifically for that case.
                 if optionSale == "subasta":
                     creationDate = datetime.now()
                     deletionDate = creationDate + timedelta(days=data["durationDays"])
-                    print(deletionDate)
+                    # An object is created that contains the corresponding information for each attribute.
                     dataP = {
                         "title": data["title"],
                         "description": data["description"],
@@ -645,7 +657,9 @@ def new_product(request, user_id):
                     }
                     db.collection("products").document(productName).set(dataP)
 
+                # If the purchase option is "venta_directa", the data is processed specifically for that case.
                 if optionSale == "venta_directa":
+                    # An object is created that contains the corresponding information for each attribute.
                     dataP = {
                         "title": data["title"],
                         "description": data["description"],
@@ -661,10 +675,11 @@ def new_product(request, user_id):
                     }
                     db.collection("products").document(productName).set(dataP)
 
+                # Message indicating that the product was successfully saved.
                 messages.success(request, "Producto guardado correctamente")
 
+            # If the try block fails, we display the error message.
             except Exception as e:
-                print(e)
                 messages.error(request, "Error al guardar la información")
 
     return render(request, "new_product.html", context)
