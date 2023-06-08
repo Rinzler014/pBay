@@ -14,6 +14,11 @@
     <script>
       $(document).ready(function() {
         $("#auction").hide();
+        $("#tecnology").hide();
+        $("#entertainment").hide();
+        $("#vehicles").hide();
+        $("#furniture").hide();
+        $("#clothing").hide();
         $("input[name='option']").change(function() {
           if ($(this).val() === 'subasta') {
             $("#auction").show();
@@ -25,6 +30,76 @@
             $("#id_startingPrice").prop('required', false);
             $("#id_durationDays").prop('required', false);
             $("#id_priceCI").prop('required', false);
+          }
+          
+        });
+        $("#id_category").change(function() {
+          if ($(this).val() === 'tecnologia') {
+            $("#technology").show();
+            $("#entertainment").hide();
+            $("#vehicles").hide();
+            $("#furniture").hide();
+            $("#clothing").hide();
+            $("#id_technology").prop('required', true);
+            $("#id_entertainment").prop('required', false);
+            $("#id_vehicles").prop('required', false);
+            $("#id_furniture").prop('required', false);
+            $("#id_clothing").prop('required', false);
+          } else if ($(this).val() === 'entretenimiento') {
+            $("#technology").hide();
+            $("#entertainment").show();
+            $("#vehicles").hide();
+            $("#furniture").hide();
+            $("#clothing").hide();
+            $("#id_technology").prop('required', false);
+            $("#id_entertainment").prop('required', true);
+            $("#id_vehicles").prop('required', false);
+            $("#id_furniture").prop('required', false);
+            $("#id_clothing").prop('required', false);
+          } else if ($(this).val() === 'vehiculos') {
+            $("#technology").hide();
+            $("#entertainment").hide();
+            $("#vehicles").show();
+            $("#furniture").hide();
+            $("#clothing").hide();
+            $("#id_technology").prop('required', false);
+            $("#id_entertainment").prop('required', false);
+            $("#id_vehicles").prop('required', true);
+            $("#id_furniture").prop('required', false);
+            $("#id_clothing").prop('required', false);
+          } else if ($(this).val() === 'muebles') {
+            $("#technology").hide();
+            $("#entertainment").hide();
+            $("#vehicles").hide();
+            $("#furniture").show();
+            $("#clothing").hide();
+            $("#id_technology").prop('required', false);
+            $("#id_entertainment").prop('required', false);
+            $("#id_vehicles").prop('required', false);
+            $("#id_furniture").prop('required', true);
+            $("#id_clothing").prop('required', false);
+          } else if ($(this).val() === 'vestimenta') {
+            $("#technology").hide();
+            $("#entertainment").hide();
+            $("#vehicles").hide();
+            $("#furniture").hide();
+            $("#clothing").show();
+            $("#id_technology").prop('required', false);
+            $("#id_entertainment").prop('required', false);
+            $("#id_vehicles").prop('required', false);
+            $("#id_furniture").prop('required', false);
+            $("#id_clothing").prop('required', true);
+          } else if ($(this).val() === 'otros') {
+            $("#technology").hide();
+            $("#entertainment").hide();
+            $("#vehicles").hide();
+            $("#furniture").hide();
+            $("#clothing").hide();
+            $("#id_technology").prop('required', false);
+            $("#id_entertainment").prop('required', false);
+            $("#id_vehicles").prop('required', false);
+            $("#id_furniture").prop('required', false);
+            $("#id_clothing").prop('required', false);
           }
         });
       });
@@ -48,9 +123,6 @@
               {{form.images}}
             </div>
           </div>
-          <div class="checkbox-type-sale">
-            {{form.option}}
-          </div>
         </div>
         <div class="new-product-part">
           <div>
@@ -61,19 +133,24 @@
             <h3>Unidades disponibles</h3>
             {{form.stock}}
           </div>
-          <div id="auction">
-            <div>
-              <h3>Precio de Inicio</h3>
-              {{form.startingPrice}}
-            </div>
-            <div>
-              <h3>Duración en días</h3>
-              {{form.durationDays}}
+          <div>
+            <h3>Categoria</h3>
+            {{form.category}}
           </div>
-            <div>
-              <h3>Precio de C/I</h3>
-              {{form.priceCI}}
+          <div id="technology">
+            {{form.technology}}
           </div>
+          <div id="entertainment">
+            {{form.entertainment}}
+          </div>
+          <div id="vehicles">
+            {{form.vehicles}}
+          </div>
+          <div id="furniture">
+            {{form.furniture}}
+          </div>
+          <div id="clothing">
+            {{form.clothing}}
           </div>
           <br />
           <input

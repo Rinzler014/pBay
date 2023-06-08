@@ -22,4 +22,6 @@ urlpatterns = [
     path("my_profile/<str:user_id>", views.myProfile, name="my_profile"),
     path('search/<str:user_id>', views.search_products, name='search_products'),
     #path("updatePersonalInfo/", views.updatePersonalInfo, name="updatePersonalInfo")
+    path('get-product-suggestions/', views.get_product_suggestions, name='get_product_suggestions'),
+    path('updatePassword/', views.updatePassword, name="updatePassword")
 ]

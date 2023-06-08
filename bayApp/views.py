@@ -14,6 +14,7 @@ from django.urls import reverse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from firebase_admin import auth as Fauth
 
 from django.http import HttpResponse
 
@@ -21,23 +22,29 @@ from datetime import datetime, timedelta
 
 from django.utils import timezone
 
+from django.http import JsonResponse
 
 # Use a service account.
-cred = credentials.Certificate('./serAccountKey.json')
+cred = credentials.Certificate("./serAccountKey.json")
 
 app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
+
+#Login View
 def login(request):
+    
+    #Created a form object to verify the user
     form = LoginForm()
     context = {"form": form}
-
+    
+    #Starting the verification process
     if request.method == "POST":
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            
+            #If the form is valid, we will try to log in the user
             try:
                 user = auth.sign_in_with_email_and_password(
                     form.cleaned_data["email"], form.cleaned_data["password"]
@@ -47,20 +54,25 @@ def login(request):
                 )
                 checkAuctions()
                 return redirect("landing", user_id=user["localId"])
-
+            
+            #If the user is not found, we will send an error message
             except Exception as e:
                 messages.error(request, "Usuario o Contraseña incorrectos")
     return render(request, "login.html", context)
 
-
+#Signup View First Part
 def signup(request):
+    
+    #Created a form object to request the user's personal information
     form = CacheSignUpFormP1()
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
         form = CacheSignUpFormP1(request.POST)
         print(form.is_valid())
-
+        
+        #If the form is valid, we will save the user's personal information in the session
         if form.is_valid():
             request.session["personal_info"] = json.dumps(form.cleaned_data)
 
@@ -70,16 +82,18 @@ def signup(request):
 
     return render(request, "signup.html", context)
 
-
+#Signup View Second Part
 def signup_2(request):
-    
     form = CacheSignUpFormP2()
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
         form = CacheSignUpFormP2(request.POST, request.FILES)
 
+        #If the form is valid, we will save the user's location information in the session
         if form.is_valid():
+            #Saving the user's personal ID in the storage
             file = request.FILES["personalID"]
             file_name = bson.ObjectId()
             file_extension = file.name.split(".")[-1]
@@ -88,6 +102,7 @@ def signup_2(request):
 
             form.cleaned_data["personalID"] = str(file_name) + "." + file_extension
 
+            #Saving the user's profile picture in the storage
             request.session["location_info"] = json.dumps(
                 form.cleaned_data, default=str
             )
@@ -98,13 +113,15 @@ def signup_2(request):
 
     return render(request, "signup_2.html", context)
 
-
+#Signup View Third Part
 def signup_3(request):
-    
     form = SignUpForm(request=request)
     context = {"form": form}
 
+    #Starting the registration process
     if request.method == "POST":
+        
+        #If the form is valid, we will update the request data with the user's personal and location information
         personal_info = json.loads(request.session["personal_info"])
         location_info = json.loads(request.session["location_info"])
 
@@ -112,64 +129,82 @@ def signup_3(request):
         updated_data.update(personal_info)
         updated_data.update(location_info)
 
+        #Fill the form with the updated data
         form = SignUpForm(updated_data, request=request)
 
+        #If the form is valid, we will create the user in the database
         if form.is_valid():
             data = form.cleaned_data
             data.pop("password2")
 
             try:
                 
+                #Creating the user in the authentication service
                 user = auth.create_user_with_email_and_password(
                     data["email"], data["password"]
                 )
-                
+
                 data.pop("password")
                 data["type"] = "user"
-                
+
+                #Saving the user's personal ID in the storage
                 storage.child(f"users/{user['localId']}/personalID").put(
                     f"temp/{data['personalID']}"
                 )
-                
+
                 temp_file = data["personalID"]
-                
-                data["personalID"] = storage.child(f"users/{user['localId']}/personalID").get_url(None)
-                
+
+                data["personalID"] = storage.child(
+                    f"users/{user['localId']}/personalID"
+                ).get_url(None)
+
+
+                #Saving the user's information in the database
                 db.collection("users").document(user["localId"]).set(data)
-                
+
                 print("Usuario creado correctamente")
 
+                #Deleting the temporary file
                 os.remove(f"temp/{temp_file}")
 
+                #Added Cart information to the user
                 productos = []
 
-                data = {
-                    u'UIDUsuario': user["localId"],
-                    u'Productos' : productos
-                }
+                data = {"UIDUsuario": user["localId"], "Productos": productos}
 
-                db.collection(u'carritos').add(data)
-                
+                db.collection("carritos").add(data)
+
+                #Redirecting the user to the login page
                 messages.success(request, f"Usuario creado correctamente")
 
                 return redirect("login")
 
+            #If the user is not created, we will send an error message
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error al crear usuario: {e}")
-    
+
     return render(request, "signup_3.html", context)
 
 
+#Landing View
 def landing(request, user_id):
     
 
+    #Retrieve the 10 most sold products 
     queryset = db.collection("products").order_by("totalSales").limit_to_last(10)
     results = queryset.get()
-    products = [{product.id : product.to_dict()} for product in results]
-   
+    products = [{product.id: product.to_dict()} for product in results]
 
-    
+    #Retrieve the 10 most stand out products
+    queryset2 = db.collection("products").where("standOut", "==", True)
+    results2 = queryset2.get()
+    products2 = [{product.id: product.to_dict()} for product in results2]
+
+    #Filtering the products to avoid duplicates
+    [products.append(product) for product in products2 if product not in products]
+
+
     context = {
         "user": user_id,
         "products": products,
@@ -177,66 +212,136 @@ def landing(request, user_id):
 
     return render(request, "landing.html", context)
 
-
+#Updating personal info view
 def myProfile(request, user_id):
+    #We access the document of the user logged in, get the data from the document and make a dict
+    docRef = db.collection("users").document(user_id)
+    doc = docRef.get()
+    initialData = doc.to_dict()
+
+    #We access de personalID image in order to save this only data that can not be updated
+    imagen = initialData["personalID"]
+
+    #Declared intial info (already stored info of the user)
+    initial = {
+            "name": initialData["name"],
+            "mom_last_name": initialData["mom_last_name"],
+            "phone": initialData["cellular"],
+            "email": initialData["email"],
+            "last_name": initialData["last_name"],
+            "zipcode": initialData["zipcode"],
+            "street": initialData["street"],
+            "state": initialData["state"],
+            "country": initialData["country"],
+            #"option": initialData["optionSale"]
+        }
+    
+    #We call our form and send the initial data and we create our context that will be sent to the html file
+    form = updatePersonalInfo(initial=initial)
+
+    context = {
+        "user": user_id,
+        "doc": initialData,
+        "form": form
+    }
+
+    #Start of the form in which we recibe the info with the POST method. After that we make sure that de form is valid
+    if request.method == "POST":
+        form = updatePersonalInfo(request.POST, request.FILES)
+        if form.is_valid():
+            #Next up we try to get the data from the form, later we compare if we get an empty data we collect the initial data
+            #(previously declared) in order to maintain all the info that will not be updated
+            try:
+                data = form.cleaned_data
+                if data['newName'] == '':
+                    data['newName'] = initialData["name"]
+                if data['newMomLastName'] == '':
+                    data['newMomLastName'] = initialData["mom_last_name"]
+                if not data['newPhone'] or not data['newPhone'].isdigit():
+                    data['newPhone'] = initialData["cellular"]
+                if data['newEmail'] == '':
+                    data['newEmail'] = initialData["email"]
+                else:
+                    Fauth.update_user(user_id, email=data["newEmail"])
+                    
+                if data['newLastName'] == '':
+                    data['newLastName'] = initialData["last_name"]
+                if not data['newZipCode'] or not['newZipCode'].isdigit():
+                    data['newZipCode'] = initialData["zipcode"]
+                if data['newStreet'] == '':
+                    data['newStreet'] = initialData["street"]
+                if data['newState'] == '':
+                    data['newState'] = initialData["state"]
+                if data['newCountry'] == '':
+                    data['newCountry'] = initialData["country"]
+
+                #We make the changes of data and we call our document with the user_id and set the data (update all data)
+                dataP = {
+                    u"name": data['newName'],
+                    u"mom_last_name": data['newMomLastName'],
+                    u"cellular": data['newPhone'],
+                    u"email": data['newEmail'],
+                    u"last_name": data['newLastName'],
+                    u"zipcode": data['newZipCode'],
+                    u"personalID" : imagen,
+                    u"street": data['newStreet'],
+                    u"state": data['newState'],
+                    u"country": data['newCountry'],
+                    }
+                db.collection('users').document(user_id).set(dataP)
+                #In case of error we let de user know what caused the system to fail
+            except Exception as e:
+                print(e)
+                messages.error(request, f"Error al crear usuario: {e}")
+            
+        
+            
+    return render(request, "my_profile.html", context)
+
+#Update password view
+def updatePassword(request):
+    #Simply we just get the user_id sent from de data from the html with an ajax function. We get de ref of the doc and extract only
+    #the email of the user
+    user_id = request.GET.get('idUsuario')
+
     docRef = db.collection("users").document(user_id).get()
 
     doc = docRef.to_dict()
 
-    context = {
-        "user": user_id,
-        "doc": doc
-    }
-    return render(request, "my_profile.html", context)
+    email = doc["email"]
 
-""" def updatePersonalInfo(request):
-    name = request.GET.get('name')
-    mom_last_name = request.GET.get('mom_last_name')
-    phone = request.GET.get('phone')
-    email = request.GET.get('email')
-    last_name = request.GET.get('last_name')
-    zipCode = request.GET.get('zipCode')
-    street = request.GET.get('street')
-    country = request.GET.get('country')
-    state = request.GET.get('state')
-    user = request.GET.get('user')
+    #Sends an email to the current registered email in order to change the current password of the user
+    auth.send_password_reset_email(email)
 
-    print(user)
+    return HttpResponse(status=200)
 
-    #docRef = db.collection("users").
-    
-    return HttpResponse(status = 200) """
+
 
 def edit_info_prod(request, user_id, product_id):
     productID = product_id
     doc_ref = db.collection("products").document(productID)
     doc = doc_ref.get()
     initialData = doc.to_dict()
-    
+
+    # Se decide si el objeto a cambiar es una subasta o no para obtener la información
     if initialData["optionSale"] == "subasta":
         initial = {
             "title": initialData["title"],
             "description": initialData["description"],
-            "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            "startingPrice": initialData["startingPrice"],
-            "durationDays": initialData["durationDays"],
-            "priceCI": initialData["priceCI"],
-            #"option": initialData["optionSale"]
-            }
+            "price": initialData["price"],
+        }
     else:
         initial = {
             "title": initialData["title"],
             "description": initialData["description"],
             "price": initialData["price"],
             "stock": initialData["stock"],
-            "totalSales": initialData["totalSales"],
-            #"option": initialData["optionSale"]
         }
-    
-    form = formEditInfoProduct(initial=initial)
 
+    # Se llama al formulario enviando un diccionario con la información que se obtuvo
+    # de la base de datos
+    form = formEditInfoProduct(initial=initial)
 
     context = {
         "user": user_id,
@@ -244,9 +349,13 @@ def edit_info_prod(request, user_id, product_id):
         "form": form,
     }
 
+    # En caso de que sí se haya enviado algo, se entra a estas líneas
     if request.method == "POST":
-        
         form = formEditInfoProduct(request.POST, request.FILES)
+
+        # Sólo se entrará a las siguientes líenas si el formulario se envió de
+        # forma adecuada
+        print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
             file = request.FILES["images"]
@@ -254,117 +363,128 @@ def edit_info_prod(request, user_id, product_id):
             file_extension = file.name.split(".")[-1]
             file_path = f"temp/{file_name}.{file_extension}"
             default_storage.save(file_path, file)
-            
+
             storage.child(f"products/{productID}/{file_name}").put(file_path)
 
             urlImages = []
 
-            for image in request.FILES.getlist('images'):
-                    
-                    nombre_imagen = image.name
-                    
-                    file_extension = nombre_imagen.split(".")[-1]
-                    file_path = f"temp/{nombre_imagen}.{file_extension}"
-                    
-                    default_storage.save(file_path, image)
-                    
-                    ruta_guardado = f"products/{productID}/{nombre_imagen}"
-                    storage.child(ruta_guardado).put(file_path)
+            # Se procesan y suben las imágenes que se hayan ingresado al formulario
+            for image in request.FILES.getlist("images"):
+                nombre_imagen = image.name
 
-                    storage_path = storage.child(ruta_guardado).get_url("2")
-        
-                    urlImages.append(storage_path)
-                    os.remove(file_path)
-            
-            optionSale = form.cleaned_data['option']
-            
-            if optionSale == 'subasta':
-                dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
-                    u"optionSale": data['option'],
-                    u"startingPrice": data['startingPrice'],
-                    u"durationDays": data['durationDays'],
-                    u"priceCI": data['priceCI']
-                    }
-                db.collection('products').document(productID).set(dataP)
+                file_extension = nombre_imagen.split(".")[-1]
+                file_path = f"temp/{nombre_imagen}.{file_extension}"
 
+                default_storage.save(file_path, image)
+
+                ruta_guardado = f"products/{productID}/{nombre_imagen}"
+                storage.child(ruta_guardado).put(file_path)
+
+                storage_path = storage.child(ruta_guardado).get_url("2")
+
+                urlImages.append(storage_path)
+                os.remove(file_path)
+
+            subcategories = {
+                    "tecnologia": "technology",
+                    "entretenimiento": "entertainment",
+                    "vehiculos": "vehicles",
+                    "muebles": "furniture",
+                    "vestimenta": "clothing",
+                }
+            subcategoryLabel = ""
+            if data["category"] == "otros":
+                subcategoryLabel = None
             else:
-                dataP = {
-                    u"title": data['title'],
-                    u"description": data['description'],
-                    u"urlImages": urlImages,
-                    u"price": data['price'],
-                    u"stock": data['stock'],
-                    u"totalSales": data['totalSales'],
-                    u"optionSale": data['option'],
-                    }
-                db.collection('products').document(productID).set(dataP)
-            
+                subcategoryLabel = data[subcategories[data["category"]]]
 
+            ## Se actualiza la información enviando los datos obtenidos del formulario
+            dataP = {
+                "title": data['title'],
+                "description": data['description'],
+                "urlImages": urlImages,
+                "stock": data['stock'],
+                "price": data['price'],
+                "category": data["category"],
+                "subcategory": subcategoryLabel,
+                }
+            db.collection('products').document(productID).update(dataP)
+            
+            return redirect("my_products", user_id=user_id)
+            
     return render(request, "edit_info_prod.html", context)
+
 
 def details(request, user_id, product_id):
     prodDetails = db.collection("products").document(product_id).get().to_dict()
+<<<<<<< HEAD
     context =  {
         "user" : user_id,
         "prodDetails" : prodDetails,
         "producto_id" : product_id
         
         }
+=======
+    context = {"user": user_id, "prodDetails": prodDetails, "producto_id": product_id}
+>>>>>>> 3bd8311d5d31a28bce4b28c7cb85e57f8eb13cff
 
     return render(request, "details_prod.html", context)
 
+#Adding one more of a product to shopping cart view
 def addProductShoppingCart(request):
-    idProducto = request.GET.get('idProducto')
-    idUsuario = request.GET.get('idUsuario')
+    #We recieve the product and user ID in order to get the documents needed
+    idProducto = request.GET.get("idProducto")
+    idUsuario = request.GET.get("idUsuario")
 
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+    #We get the shopping cart linked to our current user
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
+    )
 
+    #We get the ID of the shopping cart and get all the data from it and we assign our array of products from the database to a variable
     for doc in docShoppingCart:
         docID = doc.id
 
-    docs = db.collection('carritos').document(docID)
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
+    #We add the same product to the shopping cart and update the data of the shopping cart in the database
     products.append(idProducto)
 
-    data = {
-        u'UIDUsuario': idUsuario,
-        u'Productos' : products
-    }
-    
-    db.collection('carritos').document(docID).set(data)
-    messages.success(request, 'Producto agregado al carrito')
+    data = {"UIDUsuario": idUsuario, "Productos": products}
 
-    return HttpResponse(status = 200)
+    db.collection("carritos").document(docID).set(data)
+    messages.success(request, "Producto agregado al carrito")
 
+    return HttpResponse(status=200)
+
+#Erasing one more of a product to shopping cart view
 def eraseProductShoppingCart(request):
-    idProducto = request.GET.get('idProducto')
-    idUsuario = request.GET.get('idUsuario')
+    #We recieve the product and user ID in order to get the documents needed
+    idProducto = request.GET.get("idProducto")
+    idUsuario = request.GET.get("idUsuario")
 
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',idUsuario).get()
+    #We get the shopping cart linked to our current user
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", idUsuario).get()
+    )
 
+    #We get the ID of the shopping cart and get all the data from it and we assign our array of products from the database to a variable
     for doc in docShoppingCart:
         docID = doc.id
 
-    docs = db.collection('carritos').document(docID)
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
-    print(products)
-
+    #We look for the product in the list of products, if we find it we erase one of it
     n = 0
     while n != len(products):
         if idProducto == products[n]:
@@ -373,16 +493,13 @@ def eraseProductShoppingCart(request):
         else:
             n += 1
 
-    print(products)
+    #We save the data into the database again
+    data = {"UIDUsuario": idUsuario, "Productos": products}
 
-    data = {
-        u'UIDUsuario': idUsuario,
-        u'Productos' : products
-    }
-    
-    db.collection('carritos').document(docID).set(data)
+    db.collection("carritos").document(docID).set(data)
 
-    return HttpResponse(status = 200)
+    return HttpResponse(status=200)
+
 
 def sales(request, user):
     prods = [prod.to_dict() for prod in db.collection("products").get()]
@@ -421,7 +538,7 @@ def sales(request, user):
 
     prod_list = []
     for product_data in prods:
-        if product_data["stock"] > 0 and  product_data["totalSales"] != 0:
+        if product_data["stock"] > 0 and product_data["totalSales"] != 0:
             prod_list.append(product_data)
 
     noprod_list = []
@@ -440,23 +557,32 @@ def sales(request, user):
 
     return render(request, "sales.html", context)
 
+#Pulling info to the shopping cart view
 def shopping_cart(request, user_id):
-    docShoppingCart = db.collection(u'carritos').where(u'UIDUsuario', u'==',user_id).stream()
+    #We access to the shopping cart of the current user logged in
+    docShoppingCart = (
+        db.collection("carritos").where("UIDUsuario", "==", user_id).stream()
+    )
 
-    docID = ''    
+    #We get the id of the doc of the corresponding shopping cart
+    docID = ""
     for doc in docShoppingCart:
         docID = doc.id
 
-    arrayProducts=[]
+    #Array that will contain the products in the shopping cart
+    arrayProducts = []
 
-    docs = db.collection('carritos').document(docID)
+    #We get the data of the document of the shopping cart and make it a dict and we assign the array of products to a variable
+    docs = db.collection("carritos").document(docID)
     doc = docs.get()
-    
+
     datos = doc.to_dict()
 
-    products = datos['Productos']
+    products = datos["Productos"]
 
+    #For cycle that passes all products in the array of products
     for product in products:
+        #This while cyclye counts how many times the product is in the shopping cart
         n = 0
         totalProductoNum = 0
         while n != len(products):
@@ -464,17 +590,29 @@ def shopping_cart(request, user_id):
                 totalProductoNum += 1
             n += 1
 
-        
-        docs = db.collection('products').document(product)
+        #We get the document of the product in order to get all the info of the product 
+        docs = db.collection("products").document(product)
         doc = docs.get()
         datos = doc.to_dict()
-        prue = datos['urlImages']
-        productObject = pr(id = product ,nameModel=datos['title'], descriptionModel=datos['description'], 
-                    priceModel=datos['price'], imgModel=prue[0], totalProductModel=totalProductoNum)
-           
+        #We get the first image of the product to show it in the shopping cart
+        firstImageProduct = datos["urlImages"]
+        imgProduct = firstImageProduct[0]
+        #We create our object of product using the information of the product in the database
+        productObject = pr(
+            id=product,
+            nameModel=datos["title"],
+            descriptionModel=datos["description"],
+            priceModel=datos["price"],
+            imgModel=imgProduct,
+            totalProductModel=totalProductoNum,
+        )
+
+        #We check if we are nos repeating products in the list that will be cycled in the for of
+        #the html in order to show the products in the shopping cart
         if productObject not in arrayProducts:
             arrayProducts.append(productObject)
 
+    #In this for cycle we just get the final price of all the products and the final amount of products
     totalShoppingCartProducts = 0
     totalShoppingCartPrice = 0
 
@@ -482,24 +620,26 @@ def shopping_cart(request, user_id):
         totalShoppingCartPrice += product.priceModel * product.totalProductModel
         totalShoppingCartProducts += product.totalProductModel
 
-
+    #We send the data to the html file
     context = {
         "arrayProducts": arrayProducts,
-        "user" : user_id,
-        "totalShoppingCartPrice" : totalShoppingCartPrice,
-        "totalShoppingCartProducts" : totalShoppingCartProducts
+        "user": user_id,
+        "totalShoppingCartPrice": totalShoppingCartPrice,
+        "totalShoppingCartProducts": totalShoppingCartProducts,
     }
 
-    
-    
+
     return render(request, "shopping_cart.html", context)
 
+#System Auctions View
 def auctions(request, user_id):
     
+    #Retrieve all system auctions
     platform_bids = db.collection("subasta").stream()
-    
-    bids = [{bid.id : bid.to_dict()} for bid in platform_bids]
-    
+
+    #Create a list of dictionaries with the auctions
+    bids = [{bid.id: bid.to_dict()} for bid in platform_bids]
+
     context = {
         "user": user_id,
         "bids": bids,
@@ -507,14 +647,16 @@ def auctions(request, user_id):
 
     return render(request, "bids.html", context)
 
+
+#User´s bids view
 def bids_state(request, user_id):
     
-    user_bids = db.collection(u"users").document(user_id).collection("bids").stream()
+    #Retrieve all bids and auctions that user has participated in
+    user_bids = db.collection("users").document(user_id).collection("bids").stream()
 
-    
-    bids = [{bid.id : bid.to_dict()} for bid in user_bids]
-    
-    
+    #Create a list of dictionaries with the bids
+    bids = [{bid.id: bid.to_dict()} for bid in user_bids]
+
     context = {
         "user": user_id,
         "bids": bids,
@@ -522,59 +664,68 @@ def bids_state(request, user_id):
 
     return render(request, "bids_state.html", context)
 
+
 def my_products(request, user_id):
+    # Retrieve platform products associated with the seller ID
+    platform_products = (
+        db.collection("products").where("sellerID", "==", user_id).stream()
+    )
 
-
-    platform_products = db.collection("products").where("sellerID", "==", user_id).stream()
+    # Create a list of dictionaries with the retrieved products
     products = [{product.id: product.to_dict()} for product in platform_products]
 
+    # Create the context with the data to be passed to the template
     context = {
         "user": user_id,
         "products": products,
     }
     return render(request, "my_products.html", context)
 
+
 def new_product(request, user_id):
     form = formNewProduct()
-
     productName = str(bson.ObjectId())
-
-
+    #In the context, we pass the user_id and the form, which is the form we created for the new_product view called formNewProduct.
     context = {
         "user": user_id,
         "form": form,
     }
 
+    # When our form triggers the request and it is "POST".
     if request.method == "POST":
-        
         form = formNewProduct(request.POST, request.FILES)
-        
+        # We validate if the form is valid.
         if form.is_valid():
-            
+            # We retrieve the data from the form and save it in the variable "data".
             data = form.cleaned_data
-            
+
+            # The URLs of the images stored in the Firebase storage are saved.
             urlImages = []
-            
-            try: 
-        
-                for image in request.FILES.getlist('images'):
-                    
+
+            # All the information processing is done. This will be inside a "try" block.
+            try:
+                # Each image uploaded by the user will be temporarily stored in the "temp" folder.
+                # We will get the name of the image and its extension.
+                # Finally, we save the URLs in the Firebase storage and delete them from the "temp" folder.
+                for image in request.FILES.getlist("images"):
                     nombre_imagen = image.name
-                    
+
                     file_extension = nombre_imagen.split(".")[-1]
                     file_path = f"temp/{nombre_imagen}.{file_extension}"
-                    
+
                     default_storage.save(file_path, image)
-                    
+
                     ruta_guardado = f"products/{productName}/{nombre_imagen}"
                     storage.child(ruta_guardado).put(file_path)
 
                     storage_path = storage.child(ruta_guardado).get_url("2")
-        
+
                     urlImages.append(storage_path)
                     os.remove(file_path)
 
-                optionSale = form.cleaned_data['option']
+                # We obtain the purchase option.
+                optionSale = form.cleaned_data["option"]
+                # We declare the subcategories.
                 subcategories = {
                     "tecnologia": "technology",
                     "entretenimiento": "entertainment",
@@ -582,64 +733,134 @@ def new_product(request, user_id):
                     "muebles": "furniture",
                     "vestimenta": "clothing",
                 }
-                if optionSale == 'subasta':
+                subcategoryLabel = ""
+                # If the category is "others", the subcategory is "None".
+                if data["category"] == "otros":
+                    subcategoryLabel = None
+                # If not, the subcategory is added to the corresponding category.
+                else:
+                    subcategoryLabel = data[subcategories[data["category"]]]
+
+                # If the purchase option is "subasta", the data is processed specifically for that case.
+                if optionSale == "subasta":
                     creationDate = datetime.now()
-                    deletionDate = creationDate + timedelta(days= data['durationDays'] )
-                    print(deletionDate)
+                    deletionDate = creationDate + timedelta(days=data["durationDays"])
+                    # An object is created that contains the corresponding information for each attribute.
                     dataP = {
-                        u"title": data['title'],
-                        u"description": data['description'],
-                        u"urlImages": urlImages,
-                        u"price": data['price'],
-                        u"stock": data['stock'],
-                        u"totalSales": 0,
-                        u"optionSale": data['option'],
-                        u"standOut": data['standOut'],
-                        u"startingPrice": data['startingPrice'],
-                        u"durationDays": data['durationDays'],
-                        u"priceCI": data['priceCI'],
-                        u"auctionAvailable": True,
-                        u"deletionDate": deletionDate,
-                        u"sellerID": user_id,
-                        u"category": data['category'],
-                        u"subcategory": data[subcategories[data['category']]],
-                        }
-                    db.collection('products').document(productName).set(dataP)
+                        "title": data["title"],
+                        "description": data["description"],
+                        "urlImages": urlImages,
+                        "price": data["price"],
+                        "stock": data["stock"],
+                        "totalSales": 0,
+                        "optionSale": data["option"],
+                        "standOut": data["standOut"],
+                        "startingPrice": data["startingPrice"],
+                        "durationDays": data["durationDays"],
+                        "priceCI": data["priceCI"],
+                        "auctionAvailable": True,
+                        "deletionDate": deletionDate,
+                        "sellerID": user_id,
+                        "category": data["category"],
+                        "subcategory": subcategoryLabel,
+                    }
+                    db.collection("products").document(productName).set(dataP)
 
-                if optionSale == 'venta_directa':
+                # If the purchase option is "venta_directa", the data is processed specifically for that case.
+                if optionSale == "venta_directa":
+                    # An object is created that contains the corresponding information for each attribute.
                     dataP = {
-                        u"title": data['title'],
-                        u"description": data['description'],
-                        u"urlImages": urlImages,
-                        u"price": data['price'],
-                        u"stock": data['stock'],
-                        u"totalSales": 0,
-                        u"optionSale": data['option'],
-                        u"standOut": data['standOut'],
-                        u"sellerID": user_id,
-                        u"category": data['category'],
-                        u"subcategory": data[subcategories[data['category']]],
-                        }
-                    db.collection('products').document(productName).set(dataP)
+                        "title": data["title"],
+                        "description": data["description"],
+                        "urlImages": urlImages,
+                        "price": data["price"],
+                        "stock": data["stock"],
+                        "totalSales": 0,
+                        "optionSale": data["option"],
+                        "standOut": data["standOut"],
+                        "sellerID": user_id,
+                        "category": data["category"],
+                        "subcategory": subcategoryLabel,
+                    }
+                    db.collection("products").document(productName).set(dataP)
 
+                # Message indicating that the product was successfully saved.
                 messages.success(request, "Producto guardado correctamente")
-                
+
+            # If the try block fails, we display the error message.
             except Exception as e:
-                
-                print(e)
                 messages.error(request, "Error al guardar la información")
-            
+
     return render(request, "new_product.html", context)
 
+
 def search_products(request, user_id):
-    search_name = request.GET.get('q')  
-    platform_products = db.collection("products").where("title", "==", search_name).stream()
-    products = [{product.id : product.to_dict()} for product in platform_products]
+    # Get the search query from the request's GET parameters
+    search_name = request.GET.get("q")
 
-    platform_products = db.collection("products").stream()
-    
-    
+    # Define categories and subcategories
+    categories = [
+        "tecnologia",
+        "entretenimiento",
+        "vehiculos",
+        "muebles",
+        "vestimenta",
+        "otros",
+    ]
 
+    subcategories = [
+        "computadoras",
+        "microondas",
+        "televisiones",
+        "telefonos",
+        "mouse",
+        "peliculas",
+        "videojuegos",
+        "personal",
+        "musica",
+        "deportes",
+        "motos",
+        "coches",
+        "aviones",
+        "camiones",
+        "bicicletas",
+        "sillas",
+        "mesas",
+        "camas",
+        "sofas",
+        "cajones",
+        "vestidos",
+        "pantalones",
+        "accesorios",
+        "playeras",
+        "abrigos",
+    ]
+
+    if search_name and len(search_name) >= 3:
+        # Convert the search term into a regular expression, ignoring case sensitivity
+        regex = re.compile(search_name, re.IGNORECASE)
+        
+        # Search for platform products with titles matching the search term
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        products = [{product.id : product.to_dict()} for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        products = []
+
+    
+    if not products and search_name in subcategories:
+        # Search for platform products with matching subcategory
+        platform_products = (
+            db.collection("products").where("subcategory", "==", search_name).stream()
+        )
+        products = [{product.id: product.to_dict()} for product in platform_products]
+    elif not products and search_name in categories:
+        # Search for platform products with matching category
+        platform_products = (
+            db.collection("products").where("category", "==", search_name).stream()
+        )
+        products = [{product.id: product.to_dict()} for product in platform_products]
+     
+    # Create the context with the data to be passed to the template
     context = {
         "user": user_id,
         "products": products,
@@ -648,17 +869,44 @@ def search_products(request, user_id):
 
     return render(request, "search_results.html", context)
 
-def checkAuctions():
-    col = db.collection('products').stream()
 
+def get_product_suggestions(request):
+    # Get the search term from the request's GET parameters
+    search_term = request.GET.get('q')
+
+    if search_term and len(search_term) >= 3:
+        # Convert the search term into a regular expression, ignoring case sensitivity
+        regex = re.compile(search_term, re.IGNORECASE)
+        
+        # Retrieve platform products with titles matching the search term
+        platform_products = db.collection("products").where("title", ">", "").stream()
+        product_suggestions = [product.to_dict()["title"] for product in platform_products if regex.search(product.to_dict()["title"])]
+    else:
+        product_suggestions = []
+
+    # Prepare the JSON response with the product suggestions
+    data = {
+        'suggestions': product_suggestions
+    }
+
+    return JsonResponse(data)
+
+## Function to check if the auctions are still available
+def checkAuctions():
+    col = db.collection("products").stream()
+
+    # Iteration across all the products list
     for document in col:
         dic = document.to_dict()
 
+        # Check if the product is an auction and if it is still available
         if dic["optionSale"] == "subasta" and dic["auctionAvailable"]:
             date = timezone.now()
 
+            # Check if the deletion date is less than the current date
             if date > dic["deletionDate"]:
                 docId = document.id
-                db.collection("products").document(docId).update({
-                    "auctionAvailable": False
-                })
+                # Changes the auctionAvailable value to False
+                db.collection("products").document(docId).update(
+                    {"auctionAvailable": False}
+                )

@@ -45,25 +45,23 @@
         imagenPrincipal.src = imagen.src;
       }
 
-      function clickPosition(iddelproducto,idUsuario) {
-
-          $.ajax({
-            type: "GET",
-            url: "/addProductShoppingCart",
-            async: false,
-            data: {
-                "idProducto" : iddelproducto,
-                "idUsuario": idUsuario
-            },
-            success: function (data) {
-                console.log("Data sended");
-                location.reload();
-            },
-            failure: function (data) {
-                alert("Failed to send data to server");
-            }
-          })
-
+      function clickPosition(iddelproducto, idUsuario) {
+        $.ajax({
+          type: "GET",
+          url: "/addProductShoppingCart",
+          async: false,
+          data: {
+            idProducto: iddelproducto,
+            idUsuario: idUsuario,
+          },
+          success: function (data) {
+            console.log("Data sended");
+            location.reload();
+          },
+          failure: function (data) {
+            alert("Failed to send data to server");
+          },
+        });
       }
     </script>
 
@@ -72,7 +70,12 @@
         <h1>Detalles del producto</h1>
       </div>
       <div class="col-sm-4">
-        <button onclick="clickPosition('{{ producto_id }}', '{{ user }}')" class="mybutton addtocart">Agregar a carrito</button>
+        <button
+          onclick="clickPosition('{{ producto_id }}', '{{ user }}')"
+          class="mybutton addtocart"
+        >
+          Agregar a carrito
+        </button>
       </div>
     </div>
 
@@ -113,8 +116,15 @@
       <div class="col-sm">
         <p>Titulo: {{ prodDetails.title }}</p>
         <p>Precio: $ {{ prodDetails.price }}</p>
-        <p>Tipo: {{ prodDetails.optionSale }}</p>
+        {% if prodDetails.optionSale == "venta_directa" %}
+        <p>Tipo: Venta Directa</p>
+        {% endif %}
         <p>Disponibilidad: {{ prodDetails.stock }}</p>
+        {% if prodDetails.stock >= 1 %}
+        <button class="mybutton" style="background: #11698e47" disabled>
+          Notificarme cuando este disponible
+        </button>
+        {% else %}
         <button
           class="mybutton"
           style="background: #11698e"
@@ -122,6 +132,7 @@
         >
           Notificarme cuando este disponible
         </button>
+        {% endif %}
         <script>
           function enviarMail() {
             window.location.href =
