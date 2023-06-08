@@ -657,11 +657,15 @@ def bids_state(request, user_id):
 
 
 def my_products(request, user_id):
+    # Retrieve platform products associated with the seller ID
     platform_products = (
         db.collection("products").where("sellerID", "==", user_id).stream()
     )
+
+    # Create a list of dictionaries with the retrieved products
     products = [{product.id: product.to_dict()} for product in platform_products]
 
+    # Create the context with the data to be passed to the template
     context = {
         "user": user_id,
         "products": products,
@@ -782,8 +786,10 @@ def new_product(request, user_id):
 
 
 def search_products(request, user_id):
+    # Get the search query from the request's GET parameters
     search_name = request.GET.get("q")
 
+    # Define categories and subcategories
     categories = [
         "tecnologia",
         "entretenimiento",
@@ -822,9 +828,10 @@ def search_products(request, user_id):
     ]
 
     if search_name and len(search_name) >= 3:
-        # Convierte el término de búsqueda en una expresión regular, ignorando mayúsculas y minúsculas
+        # Convert the search term into a regular expression, ignoring case sensitivity
         regex = re.compile(search_name, re.IGNORECASE)
         
+        # Search for platform products with titles matching the search term
         platform_products = db.collection("products").where("title", ">", "").stream()
         products = [{product.id : product.to_dict()} for product in platform_products if regex.search(product.to_dict()["title"])]
     else:
@@ -832,16 +839,19 @@ def search_products(request, user_id):
 
     
     if not products and search_name in subcategories:
+        # Search for platform products with matching subcategory
         platform_products = (
             db.collection("products").where("subcategory", "==", search_name).stream()
         )
         products = [{product.id: product.to_dict()} for product in platform_products]
     elif not products and search_name in categories:
+        # Search for platform products with matching category
         platform_products = (
             db.collection("products").where("category", "==", search_name).stream()
         )
         products = [{product.id: product.to_dict()} for product in platform_products]
-    
+     
+    # Create the context with the data to be passed to the template
     context = {
         "user": user_id,
         "products": products,
@@ -852,16 +862,20 @@ def search_products(request, user_id):
 
 
 def get_product_suggestions(request):
+    # Get the search term from the request's GET parameters
     search_term = request.GET.get('q')
 
     if search_term and len(search_term) >= 3:
+        # Convert the search term into a regular expression, ignoring case sensitivity
         regex = re.compile(search_term, re.IGNORECASE)
         
+        # Retrieve platform products with titles matching the search term
         platform_products = db.collection("products").where("title", ">", "").stream()
         product_suggestions = [product.to_dict()["title"] for product in platform_products if regex.search(product.to_dict()["title"])]
     else:
         product_suggestions = []
 
+    # Prepare the JSON response with the product suggestions
     data = {
         'suggestions': product_suggestions
     }

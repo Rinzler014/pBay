@@ -37,13 +37,13 @@
         $("#tags").autocomplete({
           source: function(request, response) {
             $.ajax({
-              url: "{% url 'get_product_suggestions' %}",
+              url: "{% url 'get_product_suggestions' %}",  // URL to retrieve product suggestions
               dataType: "json",
               data: {
-                q: request.term
+                q: request.term  // Pass the search term as 'q' parameter
               },
               success: function(data) {
-                response(data.suggestions);
+                response(data.suggestions);  // Provide the received suggestions as the autocomplete response
               }
             });
           }
