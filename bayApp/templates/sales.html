@@ -15,7 +15,8 @@
     </head>
     <body>
     
-      <!-- Contadores -->
+      <!-- Counters -->
+      <!-- These counters will display sold products and the revenue -->
       <div class="container" >
         <div class="counters">
           <div class="counter">
@@ -35,15 +36,16 @@
           <span class="counter-label">Total Vendido</span>
         </div>
         <div class="counter">
-          <button class="sell-button">Vender Articulo</button>
+          <a href="{% url 'new_product' user_id=user %}"><button class="sell-button">Vender Articulo</button></a>
         </div>
       </div>
       </div>
-    <!-- Contadores -->
+    <!-- Counters -->
 
-    <!-- Sección 1 -->
+    <!-- Section 1 -->
+    <!-- First container in which products that are still in stock are displayed -->
     <div class="container2">
-      <h2 class="text-left">Objetos Vendidos</h2>
+      <h2 class="text-left">Objetos En Venta</h2>
       <div class="counters">
         {% for context in context_list %}
         <div>
@@ -69,11 +71,12 @@
         {% endfor %}
       </div>
     </div>
-    <!-- Fin Sección 1 -->
+    <!-- End Section 1 -->
 
-    <!-- Sección 2 -->
+    <!-- Section 2 -->
+    <!-- Second container in which the products that need to replenish their stock are displayed -->
     <div class="container2">
-      <h2 class="text-left">Objetos Vendidos</h2>
+      <h2 class="text-left">Objetos Sin Inventario</h2>
       <div class="counters">
         {% for nocontext in nocontext_list %}
         <div class="food-menu-box">
@@ -98,7 +101,7 @@
         {% endfor %}
       </div>
     </div>
-    <!-- Fin Sección 1 -->
+    <!-- End Section 1 -->
     
 </body> 
 

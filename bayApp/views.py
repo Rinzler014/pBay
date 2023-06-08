@@ -417,16 +417,7 @@ def edit_info_prod(request, user_id, product_id):
 
 def details(request, user_id, product_id):
     prodDetails = db.collection("products").document(product_id).get().to_dict()
-<<<<<<< HEAD
-    context =  {
-        "user" : user_id,
-        "prodDetails" : prodDetails,
-        "producto_id" : product_id
-        
-        }
-=======
     context = {"user": user_id, "prodDetails": prodDetails, "producto_id": product_id}
->>>>>>> 3bd8311d5d31a28bce4b28c7cb85e57f8eb13cff
 
     return render(request, "details_prod.html", context)
 
@@ -500,34 +491,45 @@ def eraseProductShoppingCart(request):
 
     return HttpResponse(status=200)
 
-
+#Module that displays user sales
 def sales(request, user):
-    prods = [prod.to_dict() for prod in db.collection("products").get()]
-    prod_id = [prod.id for prod in db.collection("products").get()]
+    #Getting products from the database
+    #This also gets the product id inside the dictionary to access with product details
+    #We also verify that the user is indeed the seller of the product
+    prods = []
+    for prod in db.collection("products").get():
+        prodDict = prod.to_dict()
+        prodDict["product_id"] = prod.id
+        try:
+            if prodDict["sellerID"] == user:
+                prods.append(prodDict)
+        except KeyError:
+            #If program goes here, it means that not all database fields are identical
+            #All products need to have a seller ID
+            pass
 
-    for prod in prods:
-        prod["product_id"] = prod_id[0]
-        prod_id.pop(0)
-
+    #Gets the number of products that are currently in stock
     num_vendidos = 0
 
-    nonum_vendidos = 0
     for product_data in prods:
         if product_data["stock"] > 0:
             num_vendidos += 1
 
+    #Gets the number of products that need to restock
     nonum_vendidos = 0
 
     for product_data in prods:
         if product_data["stock"] <= 0:
             nonum_vendidos += 1
 
+    #Gets the total number of sales across all products
     totalSales = 0
 
     for product_data in prods:
         if product_data["totalSales"] != 0:
             totalSales += product_data["totalSales"]
 
+    #Gets the revenue across all products sold
     tot_ventas = 0
     subtot = 0
 
@@ -536,15 +538,18 @@ def sales(request, user):
             subtot += product_data["price"] * product_data["totalSales"]
             tot_ventas += subtot
 
+    #Gets the products that have stock to display in the first container in the page
     prod_list = []
     for product_data in prods:
-        if product_data["stock"] > 0 and product_data["totalSales"] != 0:
+        if product_data["stock"] > 0:
             prod_list.append(product_data)
 
+    #Products that aren't in stock are displayed in the second container
     noprod_list = []
     for product_data in prods:
-        if product_data["stock"] <= 0 and product_data["totalSales"] != 0:
+        if product_data["stock"] <= 0:
             noprod_list.append(product_data)
+    #The data is passed onto the web page for rendering through the context
     context = {
         "user": user,
         "num_vendidos": num_vendidos,
