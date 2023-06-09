@@ -1,9 +1,7 @@
 {% include "layouts/messaging.html"%}
 
 <!--  -->
-{% block content %}
-
-{% load static %}
+{% block content %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,14 +14,11 @@
   <body>
     <div class="container">
       <h1 class="title">
-        Solo unos datos mas $user y tendras tu cuenta lista !
+        Solo unos datos mas $user y tendras tu cuenta lista!
       </h1>
       <div class="flex-box">
         <form method="POST" class="flex-form">
-          {% csrf_token %}
-          
-          {{ form.email }}
-          {{ form.password }}
+          {% csrf_token %} {{ form.email }} {{ form.password }}
           <div class="list">
             <p>Para una mejor seguridad tu contraseña debe tener :</p>
             <ul>
@@ -39,7 +34,9 @@
             <input class="form-check" type="checkbox" />
             <p class="terminos">Acepto terminos y condiciones.</p>
           </div>
-          <button class="btn-sig" onclick="return checked()">Crear mi cuenta</button>
+          <button class="btn-sig" onclick="return checked()">
+            Crear mi cuenta
+          </button>
         </form>
         <img
           class="logo"
@@ -51,24 +48,17 @@
   </body>
 
   <script>
-
-    function checked(){
-
+    function checked() {
       const check = document.querySelector(".form-check");
 
       if (check.checked === false) {
         alert("Debes Aceptar Terminos y Condiciones");
         return false;
-      }
-
-      else{
+      } else {
         return true;
       }
-      
     }
-
   </script>
-
 </html>
 
 {% endblock %}
