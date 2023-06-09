@@ -323,7 +323,7 @@ def edit_info_prod(request, user_id, product_id):
     doc = doc_ref.get()
     initialData = doc.to_dict()
 
-    # Se decide si el objeto a cambiar es una subasta o no para obtener la información
+    # Checks if the product is an auction or not
     if initialData["optionSale"] == "subasta":
         initial = {
             "title": initialData["title"],
@@ -339,8 +339,7 @@ def edit_info_prod(request, user_id, product_id):
             "stock": initialData["stock"],
         }
 
-    # Se llama al formulario enviando un diccionario con la información que se obtuvo
-    # de la base de datos
+    # Calls the form using a dictionary with the data fetched from the database
     form = formEditInfoProduct(initial=initial)
 
     context = {
@@ -349,12 +348,11 @@ def edit_info_prod(request, user_id, product_id):
         "form": form,
     }
 
-    # En caso de que sí se haya enviado algo, se entra a estas líneas
+    # If the user sent information, the flow will go down this lines
     if request.method == "POST":
         form = formEditInfoProduct(request.POST, request.FILES)
 
-        # Sólo se entrará a las siguientes líenas si el formulario se envió de
-        # forma adecuada
+        # The next lines will only run if the form was filled correctly
         print(form.errors)
         if form.is_valid():
             data = form.cleaned_data
@@ -368,7 +366,8 @@ def edit_info_prod(request, user_id, product_id):
 
             urlImages = []
 
-            # Se procesan y suben las imágenes que se hayan ingresado al formulario
+            # The images that were fetched from the dictionary are processed
+            # and uploaded to the database
             for image in request.FILES.getlist("images"):
                 nombre_imagen = image.name
 
@@ -398,7 +397,7 @@ def edit_info_prod(request, user_id, product_id):
             else:
                 subcategoryLabel = data[subcategories[data["category"]]]
 
-            ## Se actualiza la información enviando los datos obtenidos del formulario
+            # The info from the database is updated using the info from the formulary
             dataP = {
                 "title": data['title'],
                 "description": data['description'],
@@ -653,7 +652,7 @@ def auctions(request, user_id):
     return render(request, "bids.html", context)
 
 
-#User´s bids view
+#User's bids view
 def bids_state(request, user_id):
     
     #Retrieve all bids and auctions that user has participated in
