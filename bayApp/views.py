@@ -290,9 +290,12 @@ def myProfile(request, user_id):
                     }
                 db.collection('users').document(user_id).set(dataP)
                 #In case of error we let de user know what caused the system to fail
+                messages.success(
+                    request, "Se actualizó la información"
+                )
             except Exception as e:
                 print(e)
-                messages.error(request, f"Error al crear usuario: {e}")
+                messages.error(request, f"Error al actualizar usuario: {e}")
             
         
             
@@ -487,6 +490,7 @@ def eraseProductShoppingCart(request):
     data = {"UIDUsuario": idUsuario, "Productos": products}
 
     db.collection("carritos").document(docID).set(data)
+    messages.success(request, "Producto eliminado del carrito")
 
     return HttpResponse(status=200)
 
