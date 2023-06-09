@@ -65,7 +65,9 @@ def signup(request):
     
     #Created a form object to request the user's personal information
     form = CacheSignUpFormP1()
-    context = {"form": form}
+    context = {
+        "form": form
+    }
 
     #Starting the registration process
     if request.method == "POST":
@@ -85,7 +87,8 @@ def signup(request):
 #Signup View Second Part
 def signup_2(request):
     form = CacheSignUpFormP2()
-    context = {"form": form}
+    context = {"form": form,
+            }
 
     #Starting the registration process
     if request.method == "POST":
@@ -116,7 +119,9 @@ def signup_2(request):
 #Signup View Third Part
 def signup_3(request):
     form = SignUpForm(request=request)
-    context = {"form": form}
+    context = {"form": form,
+               "name" : json.loads(request.session["personal_info"])["name"]
+            }
 
     #Starting the registration process
     if request.method == "POST":
